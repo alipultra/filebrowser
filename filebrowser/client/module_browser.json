@@ -1,0 +1,45 @@
+{
+  "appId":"soyut.module.browser",
+  "appName":"Browser",
+  "version":"1.0.0",
+  "isMultiInstance":true,
+  "startup" : false,
+  "isWidget" : false,
+  "activities":[
+    {
+      "class":"soyut.module.browser.main",
+      "title":"Browser",
+      "launcher" : true,
+      "libraryScript":[
+        {"name":"vue","url":"/libs/vue.min.js"},
+        {"name":"contextMenu","url":"/libs/contextMenu.min.js"}
+      ],
+      "instanceScript":[
+        {"name":"browserjs","url":"/js/browser.js"}
+      ],
+      "styles":[
+        {"name":"browsercss","url":"/css/browser.css"},
+        {"name":"filemanagercss","url":"/css/filemanager.css"}
+      ],
+      "contents":[
+        {"name":"index","url":"/index.html"}
+      ]
+    },
+    {
+      "class":"soyut.module.browser.viewer",
+      "title":"File Viewer",
+      "launcher" : false,
+      "externalUse": true,
+      "libraryScript":[
+      ],
+      "instanceScript":[
+        {"name":"viewerjs","url":"/App/viewer.js"}
+      ],
+      "styles":[
+      ],
+      "contents":[
+        {"name":"viewer","url":"/App/viewer.html"}
+      ]
+    }
+  ]
+}
