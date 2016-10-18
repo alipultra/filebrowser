@@ -46,9 +46,11 @@ httpServer.listen(config.port, function () {
 
   var methods = {
     getOrigin : function (authServerUrl, remoteSocket, reqMsg, resCallback) {
-      //creating clock service and just return it service uuid
-
-      resCallback(false, ip.address() + ':' + config.port)
+      var dns = require('dns');
+      dns.lookupService(ip.address(),config.port, function (err, hostname, service) {
+        // resCallback(false, hostname+ ':' + config.port)
+        resCallback(false, 'localhost:' + config.port)
+      });
     },
     generateDocKey:function  (authServerUrl, remoteSocket, reqMsg, resCallback) {
         var key = randomString.generate(12);
