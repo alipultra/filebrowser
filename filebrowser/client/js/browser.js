@@ -111,101 +111,101 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
         }
     }
     /*
-    $.contextMenu({
-        selector: "figure:not(.back-directory), .list-view2 figure:not(.back-directory)",
-        autoHide: !0,
-        build: function (d) {
-            d.addClass("selected");
-            var e = {
-                callback: function (a, c) {
-                    contextActions[a](d);
-                },
-                items: {}
-            };
-            return (d.find(".img-precontainer-mini .filetype").hasClass("png") || d.find(".img-precontainer-mini .filetype").hasClass("jpg") || d.find(".img-precontainer-mini .filetype").hasClass("jpeg")) && (e.items.edit_img = {
-                name: "Edit Image",
-                icon: "edit_img",
-                disabled: !1
-            }), d.hasClass("directory") && 0 != $("#type_param").val() && (e.items.select = {
-                name: "Select",
-                icon: "",
-                disabled: !1
-            }), e.items.copy_url = {
-                name: "Show URL",
-                icon: "url",
-                disabled: !1
-            }, (d.find(".img-precontainer-mini .filetype").hasClass("zip") || d.find(".img-precontainer-mini .filetype").hasClass("tar") || d.find(".img-precontainer-mini .filetype").hasClass("gz")) && (e.items.unzip = {
-                name: "Extract here",
-                icon: "extract",
-                disabled: !1
-            }), d.find(".img-precontainer-mini .filetype").hasClass("edit-text-file-allowed") && (e.items.edit_text_file = {
-                name: "Edit file's content",
-                icon: "edit",
-                disabled: !1
-            }), d.hasClass("directory") || 1 != $("#duplicate").val() || (e.items.duplicate = {
-                name: "Duplicate",
-                icon: "duplicate",
-                disabled: !1
-            }), d.hasClass("directory") || 1 != $("#copy_cut_files_allowed").val() ? d.hasClass("directory") && 1 == $("#copy_cut_dirs_allowed").val() && (e.items.copy = {
-                name: "Copy",
-                icon: "copy",
-                disabled: !1
-            }, e.items.cut = {
-                name: "Cut",
-                icon: "cut",
-                disabled: !1
-            }) : (e.items.copy = {
-                name: "Copy",
-                icon: "copy",
-                disabled: !1
-            }, e.items.cut = {
-                name: "Cut",
-                icon: "cut",
-                disabled: !1
-            }), 0 == $("#clipboard").val() || d.hasClass("directory") || (e.items.paste = {
-                name: "Paste to this directory",
-                icon: "clipboard-apply",
-                disabled: !1
-            }), d.hasClass("directory") || 1 != $("#chmod_files_allowed").val() ? d.hasClass("directory") && 1 == $("#chmod_dirs_allowed").val() && (e.items.chmod = {
-                name: "File permission",
-                icon: "key",
-                disabled: !1
-            }) : e.items.chmod = {
-                name: "File permission",
-                icon: "key",
-                disabled: !1
-            }, e.items.sep = "----", e.items.info = {
-                name: "File Info",
-                disabled: !0
-            }, e.items.name = {
-                name: d.attr("data-name"),
-                icon: "label",
-                disabled: !0
-            }, "img" == d.attr("data-type") && (e.items.dimension = {
-                name: d.find(".img-dimension").html(),
-                icon: "dimension",
-                disabled: !0
-            }), ("true" === $("#show_folder_size").val() || "true" === $("#show_folder_size").val()) && (e.items.size = d.hasClass("directory") ? {
-                name: d.find(".file-size").html() + " - " + d.find(".nfiles").val() + " " + $("#lang_files").val() + " - " + d.find(".nfolders").val() + " " + $("#lang_folders").val(),
-                icon: "size",
-                disabled: !0
-            } : {
-                name: d.find(".file-size").html(),
-                icon: "size",
-                disabled: !0
-            }), e.items.date = {
-                name: d.find(".file-date").html(),
-                icon: "date",
-                disabled: !0
-            }, e;
-        },
-        events: {
-            hide: function () {
-                $("figure").removeClass("selected");
-            }
-        }
-    });
-    */
+     $.contextMenu({
+     selector: "figure:not(.back-directory), .list-view2 figure:not(.back-directory)",
+     autoHide: !0,
+     build: function (d) {
+     d.addClass("selected");
+     var e = {
+     callback: function (a, c) {
+     contextActions[a](d);
+     },
+     items: {}
+     };
+     return (d.find(".img-precontainer-mini .filetype").hasClass("png") || d.find(".img-precontainer-mini .filetype").hasClass("jpg") || d.find(".img-precontainer-mini .filetype").hasClass("jpeg")) && (e.items.edit_img = {
+     name: "Edit Image",
+     icon: "edit_img",
+     disabled: !1
+     }), d.hasClass("directory") && 0 != $("#type_param").val() && (e.items.select = {
+     name: "Select",
+     icon: "",
+     disabled: !1
+     }), e.items.copy_url = {
+     name: "Show URL",
+     icon: "url",
+     disabled: !1
+     }, (d.find(".img-precontainer-mini .filetype").hasClass("zip") || d.find(".img-precontainer-mini .filetype").hasClass("tar") || d.find(".img-precontainer-mini .filetype").hasClass("gz")) && (e.items.unzip = {
+     name: "Extract here",
+     icon: "extract",
+     disabled: !1
+     }), d.find(".img-precontainer-mini .filetype").hasClass("edit-text-file-allowed") && (e.items.edit_text_file = {
+     name: "Edit file's content",
+     icon: "edit",
+     disabled: !1
+     }), d.hasClass("directory") || 1 != $("#duplicate").val() || (e.items.duplicate = {
+     name: "Duplicate",
+     icon: "duplicate",
+     disabled: !1
+     }), d.hasClass("directory") || 1 != $("#copy_cut_files_allowed").val() ? d.hasClass("directory") && 1 == $("#copy_cut_dirs_allowed").val() && (e.items.copy = {
+     name: "Copy",
+     icon: "copy",
+     disabled: !1
+     }, e.items.cut = {
+     name: "Cut",
+     icon: "cut",
+     disabled: !1
+     }) : (e.items.copy = {
+     name: "Copy",
+     icon: "copy",
+     disabled: !1
+     }, e.items.cut = {
+     name: "Cut",
+     icon: "cut",
+     disabled: !1
+     }), 0 == $("#clipboard").val() || d.hasClass("directory") || (e.items.paste = {
+     name: "Paste to this directory",
+     icon: "clipboard-apply",
+     disabled: !1
+     }), d.hasClass("directory") || 1 != $("#chmod_files_allowed").val() ? d.hasClass("directory") && 1 == $("#chmod_dirs_allowed").val() && (e.items.chmod = {
+     name: "File permission",
+     icon: "key",
+     disabled: !1
+     }) : e.items.chmod = {
+     name: "File permission",
+     icon: "key",
+     disabled: !1
+     }, e.items.sep = "----", e.items.info = {
+     name: "File Info",
+     disabled: !0
+     }, e.items.name = {
+     name: d.attr("data-name"),
+     icon: "label",
+     disabled: !0
+     }, "img" == d.attr("data-type") && (e.items.dimension = {
+     name: d.find(".img-dimension").html(),
+     icon: "dimension",
+     disabled: !0
+     }), ("true" === $("#show_folder_size").val() || "true" === $("#show_folder_size").val()) && (e.items.size = d.hasClass("directory") ? {
+     name: d.find(".file-size").html() + " - " + d.find(".nfiles").val() + " " + $("#lang_files").val() + " - " + d.find(".nfolders").val() + " " + $("#lang_folders").val(),
+     icon: "size",
+     disabled: !0
+     } : {
+     name: d.find(".file-size").html(),
+     icon: "size",
+     disabled: !0
+     }), e.items.date = {
+     name: d.find(".file-date").html(),
+     icon: "date",
+     disabled: !0
+     }, e;
+     },
+     events: {
+     hide: function () {
+     $("figure").removeClass("selected");
+     }
+     }
+     });
+     */
     $.contextMenu({
         selector: "figure:not(.back-directory), .list-view2 figure:not(.back-directory)",
         autoHide: !0,
@@ -309,7 +309,7 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
         }
     });
 
-    new Vue({
+    var app = new Vue({
         el: '#main-content',
         data: {
             files: '',
@@ -323,15 +323,13 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
             xlsxPng: 'https://' + browserService.origin + '/img/ico/xlsx.jpg',
             pptxPng: 'https://' + browserService.origin + '/img/ico/pptx.jpg',
         },
-        ready: function () {
-            this.loadServer();
-        },
         methods: {
             loadServer: function () {
                 var _this = this;
+                console.log("coba");
                 var files = fileSystem.ls('/');
-                _this.$set('curDir', '');
-                _this.$set('files', files);
+                _this.$set(_this, 'curDir', '');
+                _this.$set(_this, 'files', files);
             },
             LoadFolder: function (currentDir, i) {
                 var _this = this;
@@ -342,9 +340,10 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                 else {
                     dir = currentDir + '/';
                 }
+                console.log(dir+i)
                 var files = fileSystem.ls(dir + i);
-                _this.$set('curDir', dir + i);
-                _this.$set('files', files);
+                _this.$set(_this, 'curDir', dir + i);
+                _this.$set(_this, 'files', files);
 
             },
             LoadFile: function (currentDir, i) {
@@ -369,8 +368,11 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
             },
             LoadFolderForm: function () {
                 $(getInstanceID('browser-form-container')).removeClass('disable');
-                console.log("new folder");
+                //console.log("new folder");
             }
         }
-    })
+    });
+
+    app.loadServer();
 });
+
