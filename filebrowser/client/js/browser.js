@@ -326,7 +326,7 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
         methods: {
             loadServer: function () {
                 var _this = this;
-                console.log("coba");
+
                 var files = fileSystem.ls('/');
                 _this.$set(_this, 'curDir', '');
                 _this.$set(_this, 'files', files);
@@ -340,7 +340,7 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                 else {
                     dir = currentDir + '/';
                 }
-                console.log(dir+i)
+
                 var files = fileSystem.ls(dir + i);
                 _this.$set(_this, 'curDir', dir + i);
                 _this.$set(_this, 'files', files);
