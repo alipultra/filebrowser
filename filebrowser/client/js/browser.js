@@ -361,9 +361,6 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                 var activitylistener = getActivityInstanceAsync();
                 activitylistener.then(function (activity) {
                     app.launchActivity("soyut.module.browser.viewer", {path: dir + i}, activity);
-                    // activity.on('loadradiogram_selected', function (activity) {
-                    //     UpdateListRadiogram(activity);
-                    // })
                 })
             },
             LoadFolderForm: function () {
