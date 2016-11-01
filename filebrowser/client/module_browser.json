@@ -39,6 +39,38 @@
       "contents":[
         {"name":"viewer","url":"/App/viewer.html"}
       ]
+    },
+    {
+      "class":"soyut.module.browser.selector",
+      "title":"File Selector",
+      "launcher" : false,
+      "externalUse": true,
+      "libraryScript":[
+      ],
+      "instanceScript":[
+        {"name":"selectorjs","url":"/App/selector.js"}
+      ],
+      "styles":[
+      ],
+      "contents":[
+        {"name":"selector","url":"/App/selector.html"}
+      ]
+    },
+    {
+      "class":"soyut.module.browser.fileviewer",
+      "title":"File Viewers",
+      "launcher" : false,
+      "externalUse": true,
+      "libraryScript":[
+      ],
+      "instanceScript":[
+        {"name":"fviewerjs","url":"/App/fileviewer.js"}
+      ],
+      "styles":[
+      ],
+      "contents":[
+        {"name":"fviewer","url":"/App/fileviewer.html"}
+      ]
     }
   ]
 }

@@ -1,0 +1,444 @@
+<div class="browser-content">
+
+    <div class="main-panel">
+        <div class="page-container full-width">
+
+            <div class="fx-container fx-opacity">
+
+                <div class="page-content block">
+
+                    <div class="browser-section">
+
+                        <div class="browser-panel">
+
+                            <div class="block full" id="main-content">
+
+                                <div class="block-title">
+
+                                    <div class="filters">
+                                        <div class="row-fluid">
+                                            <div class="span4 half">
+                                                <button class="tip btn upload-btn" title="Upload File"><i class="rficon-upload"></i></button>
+                                                <button class="tip btn create-file-btn" title="New File"><i class="icon-plus"></i><i class="icon-file"></i></button>
+                                                <button class="tip btn new-folder" title="New Folder" @click="LoadFolderForm()"><i class="icon-plus"></i><i class="icon-folder-open"></i></button>
+                                                <button class="tip btn paste-here-btn" title="paste Here"><i class="rficon-clipboard-apply"></i></button>
+                                                <button class="tip btn clear-clipboard-btn" title="Clear Clipboard"><i class="rficon-clipboard-clear"></i></button>
+                                            </div>
+                                            <div class="span2 half view-controller">
+                                                <button class="btn tip" id="view0" data-value="0" title="Box View"><i class="ricon-th"></i></button>
+                                                <button class="btn tip btn-inverse" id="view1" data-value="1" title="List View"><i class="ricon-align-justify icon-white"></i></button>
+                                                <button class="btn tip" id="view2" data-value="2" title="Column List View"><i class="ricon-fire"></i></button>
+                                            </div>
+                                            <div class="span6 entire types">
+                                                <span>Filters:</span>
+                                                <input id="select-type-1" name="radio-sort" type="radio" data-item="ff-item-type-1" checked="checked"  class="hide"  />
+                                                <label id="ff-item-type-1" title="Files" for="select-type-1" class="tip btn ff-label-type-1"><i class="ricon-file"></i></label>
+                                                <input id="select-type-2" name="radio-sort" type="radio" data-item="ff-item-type-2" class="hide"  />
+                                                <label id="ff-item-type-2" title="Images" for="select-type-2" class="tip btn ff-label-type-2"><i class="ricon-picture"></i></label>
+                                                <input id="select-type-3" name="radio-sort" type="radio" data-item="ff-item-type-3" class="hide"  />
+                                                <label id="ff-item-type-3" title="Archives" for="select-type-3" class="tip btn ff-label-type-3"><i class="ricon-inbox"></i></label>
+                                                <input id="select-type-4" name="radio-sort" type="radio" data-item="ff-item-type-4" class="hide"  />
+                                                <label id="ff-item-type-4" title="Videos" for="select-type-4" class="tip btn ff-label-type-4"><i class="ricon-film"></i></label>
+                                                <input id="select-type-5" name="radio-sort" type="radio" data-item="ff-item-type-5" class="hide"  />
+                                                <label id="ff-item-type-5" title="Music" for="select-type-5" class="tip btn ff-label-type-5"><i class="ricon-music"></i></label>
+                                                <input accesskey="f" type="text" class="filter-input" id="filter-input" name="filter" placeholder="Text Filter..." value=""/>
+                                                <input id="select-type-all" name="radio-sort" type="radio" data-item="ff-item-type-all" class="hide"  />
+                                                <label id="ff-item-type-all" title="" data-item="ff-item-type-all" for="select-type-all" style="margin-rigth:0px;" class="tip btn btn-inverse ff-label-type-all"><i class="ricon-remove icon-white"></i></label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="block-section">
+                                    <ul class="breadcrumb">
+                                        <li class="pull-left"><a href="#" @click="loadServer()"><i class="icon-home"></i></a></li>
+                                        <li><span class="divider">/</span></li>
+
+                                        <li class="pull-right"><a class="btn-small" href="javascript:void('')" id="info"><i class="ricon-question-sign"></i></a></li>
+                                        <li class="pull-right"><a class="btn-small" href="javascript:void('')" id="change_lang_btn"><i class="ricon-globe"></i></a></li>
+                                        <li class="pull-right"><a id="refresh" class="btn-small" href="#"><i class="ricon-refresh"></i></a></li>
+                                        <li class="pull-right">
+                                            <div class="btn-group">
+                                                <a class="btn dropdown-toggle sorting-btn" data-toggle="dropdown" href="#">
+                                                    <i class="ricon-signal"></i>
+                                                    <span class="caret"></span>
+                                                </a>
+                                                <ul class="dropdown-menu pull-left sorting">
+                                                    <li class="text-center"><strong>Sorting</strong></li>
+                                                    <li><a class="sorter sort-name descending" href="javascript:void('')" data-sort="name">Filename</a></li>
+                                                    <li><a class="sorter sort-date " href="javascript:void('')" data-sort="date">Date</a></li>
+                                                    <li><a class="sorter sort-size " href="javascript:void('')" data-sort="size">Size</a></li>
+                                                    <li><a class="sorter sort-extension " href="javascript:void('')" data-sort="extension">Type</a></li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li><small class="hidden-phone">(<span id="files_number">7</span> Files - <span id='folders_number'>1</span> Folders)</small></li>
+                                        <li><small class="hidden-phone"><span title="Total size">18 Mb</span></small>
+                                        </li>
+                                    </ul>
+
+                                    <div class="col-md-12">
+                                        <input type="hidden" name="view-status" id="view-status" value="0">
+                                        <input type="hidden" id="lang_edit_image" value="" />
+                                        <input type="hidden" id="lang_select" value="" />
+
+                                        <ul class="grid cs-style-2 list-view0" id="main-item-container">
+                                            <li v-if="folder.info.type == 'directory'" v-for="folder in files" data-name="{{folder.info.name}}" class="dir">
+                                                <figure data-name="{{folder.info.name}}" class="directory" data-type="dir">
+                                                    <input v-if="folder.info.name == '..'" type="hidden" class="path" value=""/>
+                                                    <input v-if="folder.info.name == '..'" type="hidden" class="path_thumb" value=""/>
+                                                    <a class="folder-link" href="#" @click="LoadFolder(curDir, folder.info.name)">
+                                                        <div class="img-precontainer">
+                                                            <div class="img-container directory">
+                                                                <span></span>
+                                                                <img class="directory-img" :src="folderPng" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="img-precontainer-mini directory">
+                                                            <div class="img-container-mini">
+                                                                <span></span>
+                                                                <img class="directory-img" :src="folderPng" />
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                    <div class="box">
+                                                        <h4 class="ellipsis">
+                                                            <a class="folder-link" data-file="{{folder.info.name}}" href="#">{{folder.info.name}}</a>
+                                                        </h4>
+                                                    </div>
+                                                    <div class='file-extension'>{{folder.info.type}}</div>
+                                                    <figcaption>
+                                                        <a href="javascript:void('')" class="tip-left edit-button rename-file-paths rename-folder" title="Rename" data-path="{{folder.info.name}}">
+                                                            <i class="icon-pencil"></i>
+                                                        </a>
+                                                        <a href="javascript:void('')" class="tip-left erase-button delete-folder" title="Erase" data-confirm="Confirm" data-path="{{folder.info.name}}" >
+                                                            <i class="icon-trash"></i>
+                                                        </a>
+                                                    </figcaption>
+                                                </figure>
+                                            </li>
+
+                                            <li v-if="file.info.type == 'text/plain'" v-for="file in files" data-name="{{file.info.name}}" class="ff-item-type-1 file">
+                                                <figure data-name="{{file.info.name}}" data-type="file">
+                                                    <a href="#" @click="LoadFile(curDir, file.info.name)" class="link" data-file="{{file.info.name}}" data-function="apply_none">
+                                                        <div class="img-precontainer">
+                                                            <div class="filetype">txt</div>
+                                                            <div class="img-container">
+                                                                <span></span>
+                                                                <img class="icon lazy-loaded" :src="txtPng">
+                                                            </div>
+                                                        </div>
+                                                        <div class="img-precontainer-mini">
+                                                            <div class="filetype txt">txt</div>
+                                                            <div class="img-container-mini">
+                                                                <span></span>
+                                                                <img class="icon lazy-loaded" :src="txtPng">
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                    <a href="javascript:void('')" class="link" data-file="{{file.info.name}}" data-function="apply_none">
+                                                        <div class="box">
+                                                            <h4 class="ellipsis">{{file.info.name}}</h4>
+                                                        </div>
+                                                    </a>
+                                                    <div class='file-extension'>{{file.info.type}}></div>
+                                                    <figcaption>
+                                                        <form action="#" method="post" class="download-form" id="form{{file.info._id}}">
+                                                            <a title="Download" class="tip-right" href="javascript:void('')" onclick=""><i class="icon-download"></i></a>
+                                                            <a class="tip-right preview" title="Preview" data-url="#" data-toggle="lightbox" href="#previewLightbox"><i class=" icon-eye-open"></i></a>
+                                                            <a href="javascript:void('')" class="tip-left edit-button rename-file-paths rename-file" title="Rename" data-path=""><i class="icon-pencil"></i></a>
+                                                            <a href="javascript:void('')" class="tip-left erase-button delete-file" title="Erase" data-confirm="" data-path=""><i class="icon-trash"></i></a>
+                                                        </form>
+                                                    </figcaption>
+                                                </figure>
+                                            </li>
+
+                                            <li v-if="pdf.info.type == 'application/pdf'" v-for="pdf in files" data-name="{{pdf.info.name}}" class="ff-item-type-1 file">
+                                                <figure data-name="{{pdf.info.name}}" data-type="file">
+                                                    <a href="#" @click="LoadFile(curDir, pdf.info.name)" class="link" data-file="{{pdf.info.name}}" data-function="apply_none">
+                                                        <div class="img-precontainer">
+                                                            <div class="filetype">pdf</div>
+                                                            <div class="img-container">
+                                                                <span></span>
+                                                                <img class="icon lazy-loaded" :src="pdfPng">
+                                                            </div>
+                                                        </div>
+                                                        <div class="img-precontainer-mini">
+                                                            <div class="filetype pdf">pdf</div>
+                                                            <div class="img-container-mini">
+                                                                <span></span>
+                                                                <img class="icon lazy-loaded" :src="pdfPng">
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                    <a href="javascript:void('')" class="link" data-file="{{pdf.info.name}}" data-function="apply_none">
+                                                        <div class="box">
+                                                            <h4 class="ellipsis">{{pdf.info.name}}</h4>
+                                                        </div>
+                                                    </a>
+                                                    <div class='file-extension'>{{pdf.info.type}}></div>
+                                                    <figcaption>
+                                                        <form action="#" method="post" class="download-form" id="form{{pdf.info._id}}">
+                                                            <a title="Download" class="tip-right" href="javascript:void('')" onclick=""><i class="icon-download"></i></a>
+                                                            <a class="tip-right preview" title="Preview" data-url="#" data-toggle="lightbox" href="#previewLightbox"><i class=" icon-eye-open"></i></a>
+                                                            <a href="javascript:void('')" class="tip-left edit-button rename-file-paths rename-file" title="Rename" data-path=""><i class="icon-pencil"></i></a>
+                                                            <a href="javascript:void('')" class="tip-left erase-button delete-file" title="Erase" data-confirm="" data-path=""><i class="icon-trash"></i></a>
+                                                        </form>
+                                                    </figcaption>
+                                                </figure>
+                                            </li>
+
+                                            <li v-if="mp4.info.type == 'video/mp4'" v-for="mp4 in files" data-name="{{mp4.info.name}}" class="ff-item-type-4 file">
+                                                <figure data-name="{{mp4.info.name}}" data-type="file">
+                                                    <a href="#" @click="LoadFile(curDir, mp4.info.name)" class="link" data-file="{{mp4.info.name}}" data-function="apply_none">
+                                                        <div class="img-precontainer">
+                                                            <div class="filetype">mp4</div>
+                                                            <div class="img-container">
+                                                                <span></span>
+                                                                <img class="icon lazy-loaded" :src="mp4Png">
+                                                            </div>
+                                                        </div>
+                                                        <div class="img-precontainer-mini">
+                                                            <div class="filetype mp4">mp4</div>
+                                                            <div class="img-container-mini">
+                                                                <span></span>
+                                                                <img class="icon lazy-loaded" :src="mp4Png">
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                    <a href="javascript:void('')" class="link" data-file="{{mp4.info.name}}" data-function="apply_none">
+                                                        <div class="box">
+                                                            <h4 class="ellipsis">{{mp4.info.name}}</h4>
+                                                        </div>
+                                                    </a>
+                                                    <div class='file-extension'>{{mp4.info.type}}></div>
+                                                    <figcaption>
+                                                        <form action="#" method="post" class="download-form" id="form{{mp4.info._id}}">
+                                                            <a title="Download" class="tip-right" href="javascript:void('')" onclick=""><i class="icon-download"></i></a>
+                                                            <a class="tip-right preview" title="Preview" data-url="#" data-toggle="lightbox" href="#previewLightbox"><i class=" icon-eye-open"></i></a>
+                                                            <a href="javascript:void('')" class="tip-left edit-button rename-file-paths rename-file" title="Rename" data-path=""><i class="icon-pencil"></i></a>
+                                                            <a href="javascript:void('')" class="tip-left erase-button delete-file" title="Erase" data-confirm="" data-path=""><i class="icon-trash"></i></a>
+                                                        </form>
+                                                    </figcaption>
+                                                </figure>
+                                            </li>
+
+                                            <li v-if="mp3.info.type == 'audio/mp3'" v-for="mp3 in files" data-name="{{mp3.info.name}}" class="ff-item-type-5 file">
+                                                <figure data-name="{{mp3.info.name}}" data-type="file">
+                                                    <a href="#" @click="LoadFile(curDir, mp4.info.name)" class="link" data-file="{{mp3.info.name}}" data-function="apply_none">
+                                                        <div class="img-precontainer">
+                                                            <div class="filetype">mp3</div>
+                                                            <div class="img-container">
+                                                                <span></span>
+                                                                <img class="icon lazy-loaded" :src="mp3Png">
+                                                            </div>
+                                                        </div>
+                                                        <div class="img-precontainer-mini">
+                                                            <div class="filetype mp3">mp3</div>
+                                                            <div class="img-container-mini">
+                                                                <span></span>
+                                                                <img class="icon lazy-loaded" :src="mp3Png">
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                    <a href="javascript:void('')" class="link" data-file="{{mp3.info.name}}" data-function="apply_none">
+                                                        <div class="box">
+                                                            <h4 class="ellipsis">{{mp3.info.name}}</h4>
+                                                        </div>
+                                                    </a>
+                                                    <div class='file-extension'>{{mp3.info.type}}></div>
+                                                    <figcaption>
+                                                        <form action="#" method="post" class="download-form" id="form{{mp3.info._id}}">
+                                                            <a title="Download" class="tip-right" href="javascript:void('')" onclick=""><i class="icon-download"></i></a>
+                                                            <a class="tip-right preview" title="Preview" data-url="#" data-toggle="lightbox" href="#previewLightbox"><i class=" icon-eye-open"></i></a>
+                                                            <a href="javascript:void('')" class="tip-left edit-button rename-file-paths rename-file" title="Rename" data-path=""><i class="icon-pencil"></i></a>
+                                                            <a href="javascript:void('')" class="tip-left erase-button delete-file" title="Erase" data-confirm="" data-path=""><i class="icon-trash"></i></a>
+                                                        </form>
+                                                    </figcaption>
+                                                </figure>
+                                            </li>
+
+                                            <li v-if="docx.info.type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'" v-for="docx in files" data-name="{{docx.info.name}}" class="ff-item-type-1 file">
+                                                <figure data-name="{{docx.info.name}}" data-type="file">
+                                                    <a href="#" @click="LoadFile(curDir, docx.info.name)" class="link" data-file="{{docx.info.name}}" data-function="apply_none">
+                                                        <div class="img-precontainer">
+                                                            <div class="filetype">docx</div>
+                                                            <div class="img-container">
+                                                                <span></span>
+                                                                <img class="icon lazy-loaded" :src="docxPng">
+                                                            </div>
+                                                        </div>
+                                                        <div class="img-precontainer-mini">
+                                                            <div class="filetype docx">docx</div>
+                                                            <div class="img-container-mini">
+                                                                <span></span>
+                                                                <img class="icon lazy-loaded" :src="docxPng">
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                    <a href="javascript:void('')" class="link" data-file="{{docx.info.name}}" data-function="apply_none">
+                                                        <div class="box">
+                                                            <h4 class="ellipsis">{{docx.info.name}}</h4>
+                                                        </div>
+                                                    </a>
+                                                    <div class='file-extension'>{{docx.info.type}}></div>
+                                                    <figcaption>
+                                                        <form action="#" method="post" class="download-form" id="form{{docx.info._id}}">
+                                                            <a title="Download" class="tip-right" href="javascript:void('')" onclick=""><i class="icon-download"></i></a>
+                                                            <a class="tip-right preview" title="Preview" data-url="#" data-toggle="lightbox" href="#previewLightbox"><i class=" icon-eye-open"></i></a>
+                                                            <a href="javascript:void('')" class="tip-left edit-button rename-file-paths rename-file" title="Rename" data-path=""><i class="icon-pencil"></i></a>
+                                                            <a href="javascript:void('')" class="tip-left erase-button delete-file" title="Erase" data-confirm="" data-path=""><i class="icon-trash"></i></a>
+                                                        </form>
+                                                    </figcaption>
+                                                </figure>
+                                            </li>
+                                            <li v-if="xlsx.info.type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'" v-for="xlsx in files" data-name="{{xlsx.info.name}}" class="ff-item-type-1 file">
+                                                <figure data-name="{{xlsx.info.name}}" data-type="file">
+                                                    <a href="#" @click="LoadFile(curDir, xlsx.info.name)" class="link" data-file="{{xlsx.info.name}}" data-function="apply_none">
+                                                        <div class="img-precontainer">
+                                                            <div class="filetype">xlsx</div>
+                                                            <div class="img-container">
+                                                                <span></span>
+                                                                <img class="icon lazy-loaded" :src="xlsxPng">
+                                                            </div>
+                                                        </div>
+                                                        <div class="img-precontainer-mini">
+                                                            <div class="filetype xlsx">xlsx</div>
+                                                            <div class="img-container-mini">
+                                                                <span></span>
+                                                                <img class="icon lazy-loaded" :src="xlsxPng">
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                    <a href="javascript:void('')" class="link" data-file="{{xlsx.info.name}}" data-function="apply_none">
+                                                        <div class="box">
+                                                            <h4 class="ellipsis">{{xlsx.info.name}}</h4>
+                                                        </div>
+                                                    </a>
+                                                    <div class='file-extension'>{{xlsx.info.type}}></div>
+                                                    <figcaption>
+                                                        <form action="#" method="post" class="download-form" id="form{{xlsx.info._id}}">
+                                                            <a title="Download" class="tip-right" href="javascript:void('')" onclick=""><i class="icon-download"></i></a>
+                                                            <a class="tip-right preview" title="Preview" data-url="#" data-toggle="lightbox" href="#previewLightbox"><i class=" icon-eye-open"></i></a>
+                                                            <a href="javascript:void('')" class="tip-left edit-button rename-file-paths rename-file" title="Rename" data-path=""><i class="icon-pencil"></i></a>
+                                                            <a href="javascript:void('')" class="tip-left erase-button delete-file" title="Erase" data-confirm="" data-path=""><i class="icon-trash"></i></a>
+                                                        </form>
+                                                    </figcaption>
+                                                </figure>
+                                            </li>
+
+                                            <li v-if="pptx.info.type == 'application/vnd.openxmlformats-officedocument.presentationml.presentation'" v-for="pptx in files" data-name="{{pptx.info.name}}" class="ff-item-type-1 file">
+                                                <figure data-name="{{pptx.info.name}}" data-type="file">
+                                                    <a href="#" @click="LoadFile(curDir, pptx.info.name)" class="link" data-file="{{pptx.info.name}}" data-function="apply_none">
+                                                        <div class="img-precontainer">
+                                                            <div class="filetype">pptx</div>
+                                                            <div class="img-container">
+                                                                <span></span>
+                                                                <img class="icon lazy-loaded" :src="pptxPng">
+                                                            </div>
+                                                        </div>
+                                                        <div class="img-precontainer-mini">
+                                                            <div class="filetype pptx">pptx</div>
+                                                            <div class="img-container-mini">
+                                                                <span></span>
+                                                                <img class="icon lazy-loaded" :src="pptxPng">
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                    <a href="javascript:void('')" class="link" data-file="{{pptx.info.name}}" data-function="apply_none">
+                                                        <div class="box">
+                                                            <h4 class="ellipsis">{{pptx.info.name}}</h4>
+                                                        </div>
+                                                    </a>
+                                                    <div class='file-extension'>{{pptx.info.type}}></div>
+                                                    <figcaption>
+                                                        <form action="#" method="post" class="download-form" id="form{{pptx.info._id}}">
+                                                            <a title="Download" class="tip-right" href="javascript:void('')" onclick=""><i class="icon-download"></i></a>
+                                                            <a class="tip-right preview" title="Preview" data-url="#" data-toggle="lightbox" href="#previewLightbox"><i class=" icon-eye-open"></i></a>
+                                                            <a href="javascript:void('')" class="tip-left edit-button rename-file-paths rename-file" title="Rename" data-path=""><i class="icon-pencil"></i></a>
+                                                            <a href="javascript:void('')" class="tip-left erase-button delete-file" title="Erase" data-confirm="" data-path=""><i class="icon-trash"></i></a>
+                                                        </form>
+                                                    </figcaption>
+                                                </figure>
+                                            </li>
+                                            <li v-if="img.info.type == 'image/jpeg'" v-for="img in files" data-name="{{img.info.name}}" class="ff-item-type-2 file">
+                                                <figure data-name="{{img.info.name}}" data-type="img">
+                                                    <a href="javascript:void('')" class="link" data-file="{{img.info.name}}" data-function="apply_none">
+                                                        <div class="img-precontainer">
+                                                            <div class="filetype jpg">img</div>
+                                                            <div class="img-container">
+                                                                <span></span>
+                                                                <img class="icon lazy-loaded" :src="img.info.url">
+                                                            </div>
+                                                        </div>
+                                                        <div class="img-precontainer-mini">
+                                                            <div class="filetype jpg img">img</div>
+                                                            <div class="img-container-mini">
+                                                                <span></span>
+                                                                <img class="icon lazy-loaded" :src="img.info.url">
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                    <a href="javascript:void('')" class="link" data-file="{{img.info.name}}" data-function="apply_none">
+                                                        <div class="box">
+                                                            <h4 class="ellipsis">{{img.info.name}}</h4>
+                                                        </div>
+                                                    </a>
+                                                    <div class='file-extension'>{{img.info.type}}></div>
+                                                    <figcaption>
+                                                        <form action="#" method="post" class="download-form" id="form{{img.info._id}}">
+                                                            <a title="Download" class="tip-right" href="javascript:void('')" onclick=""><i class="icon-download"></i></a>
+                                                            <a class="tip-right preview" title="Preview" data-url="#" data-toggle="lightbox" href="#previewLightbox"><i class=" icon-eye-open"></i></a>
+                                                            <a href="javascript:void('')" class="tip-left edit-button rename-file-paths rename-file" title="Rename" data-path=""><i class="icon-pencil"></i></a>
+                                                            <a href="javascript:void('')" class="tip-left erase-button delete-file" title="Erase" data-confirm="" data-path=""><i class="icon-trash"></i></a>
+                                                        </form>
+                                                    </figcaption>
+                                                </figure>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="browser-modal-panel disable" id="browser-form-container">
+                            <div class="browserpopup-container">
+                                <div class="browserpage-content">
+                                    <div class="block-header">
+                                        <h1 class="text-center">
+                                            <small>Add Folder</small>
+                                        </h1>
+                                    </div>
+
+                                    <form method="post">
+                                        <div class="form-group">
+                                            <input type="text" id="name" class="form-control" placeholder="Folder Name">
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-xs-4 text-right">
+                                                    <button type="button" class="btn btn-sm btn-primary">Save</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
