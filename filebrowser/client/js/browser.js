@@ -37,71 +37,82 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
     function p(c) {
         $(".breadcrumb").width() + c;
     }
-
     var contextActions = {
-        copy_url: function (b) {
-            var c = D(b);
-            bootbox.alert('URL:<br/><div class="input-append" style="width:100%"><input id="url_text' + B + '" type="text" style="width:80%; height:30px;" value="' + encodeURL(c) + '" /><button id="copy-button' + B + '" class="btn btn-inverse copy-button" style="width:20%; height:30px;" data-clipboard-target="url_text' + B + '" data-clipboard-text="Copy Me!" title="copy"></button></div>'),
-                a("#copy-button" + B).html('<i class="icon icon-white icon-share"></i> ' + a("#lang_copy").val());
-            var d = new ZeroClipboard(a("#copy-button" + B));
-            d.on("ready", function (b) {
-                d.on("wrongFlash noFlash", function () {
-                    ZeroClipboard.destroy();
-                }), d.on("aftercopy", function (b) {
-                    a("#copy-button" + B).html('<i class="icon icon-ok"></i> ' + a("#ok").val()), a("#copy-button" + B).attr("class", "btn disabled"),
-                        B++;
-                }), d.on("error", function (a) {
-                });
-            });
-        },
-        unzip: function (b) {
-            var c = a("#sub_folder").val() + a("#fldr_value").val() + b.find("a.link").attr("data-file");
-            a.ajax({
-                type: "POST",
-                url: "ajax_calls.php?action=extract",
-                data: {
-                    path: c
-                }
-            }).done(function (b) {
-                "" != b ? bootbox.alert(b) : window.location.href = a("#refresh").attr("href") + "&" + new Date().getTime();
-            });
-        },
-        edit_img: function (b) {
-            var c = b.attr("data-name"), d = a("#base_url").val() + a("#cur_dir").val() + c, e = a("#aviary_img");
-            e.attr("data-name", c), show_animation(), e.attr("src", d).load(x(e.attr("id"), d));
-        },
-        duplicate: function (b) {
-            var c = b.find("h4").text().trim();
-            bootbox.prompt(a("#lang_duplicate").val(), a("#cancel").val(), a("#ok").val(), function (a) {
-                if (null !== a && (a = u(a), a != c)) {
-                    var d = b.find(".rename-file");
-                    v("duplicate_file", d.attr("data-path"), a, d, "apply_file_duplicate");
-                }
-            }, c);
-        },
-        select: function (b) {
-            // var c, d = D(b), e = a("#field_id").val(), f = a("#return_relative_url").val();
-            // if (1 == f && (d = d.replace(a("#base_url").val(), "")), c = 1 == a("#popup").val() ? window.opener : window.parent,
-            //     "" != e) if (1 == a("#crossdomain").val()) c.postMessage({
-            //     sender: "responsivefilemanager",
-            //     url: d,
-            //     field_id: e
-            // }, "*"); else {
-            //     var g = a("#" + e, c.document);
-            //     g.val(d).trigger("change"), "function" == typeof c.responsive_filemanager_callback && c.responsive_filemanager_callback(e),
-            //         s();
-            // } else apply_any(d);
-            console.log("select " + b);
-        },
         copy: function (a) {
-            console.log("copy yah");
-            l(a, "copy");
+            var dir = '';
+            if (a.dir == '') {
+                dir = '/';
+            }
+            else {
+                dir = a.dir + '/';
+            }
+            console.log("path "+a.name)
+            soyut.Services.getInstance().getService("browserServer").FileAction_searchCopy({session: soyut.Session.id, role: soyut.Session.role.id}, function (err, data) {
+                if(data.length > 0){
+                    soyut.Services.getInstance().getService("browserServer").FileAction_updateCopy({
+                        id: data[0].id,
+                        path: dir+ a.name
+                    }, function (err, msg) {
+                        console.log(msg);
+                        if (!err) {
+                        }
+                    })
+                }
+                else {
+                    soyut.Services.getInstance().getService("browserServer").FileAction_copy({
+                        session: soyut.Session.id,
+                        role: soyut.Session.role.id,
+                        path: dir+ a.name,
+                        actions: 'copy'
+
+                    },function(err, msg) {
+                        console.log(msg);
+                        if (!err) {
+                        }
+                    })
+                }
+            })
         },
         cut: function (a) {
-            l(a, "cut");
+            //l(a, "cut");
+            console.log(a);
         },
-        paste: function () {
-            m();
+        paste: function (a) {
+            var dir = '';
+            if (a.dir == '') {
+                dir = '/';
+            }
+            else {
+                dir = a.dir + '/';
+            }
+            soyut.Services.getInstance().getService("browserServer").FileAction_searchCopy({session: soyut.Session.id, role: soyut.Session.role.id}, function (err, data) {
+                if (data.length > 0) {
+                    console.log(data[0].path+ " copy ke "+ dir+ a.name);
+                    fileSystem.cp(data[0].path, dir + a.name);
+                    app.LoadFolder(dir + a.name);
+                }
+            });
+        },
+        delete: function (a) {
+            var dir = '';
+            if (a.dir == '') {
+                dir = '/';
+            }
+            else {
+                dir = a.dir + '/';
+            }
+            fileSystem.rm(dir + a.name);
+            reloadFolder(dir, a.name);
+        },
+        rename: function (a) {
+            var app = getAppInstance();
+            var activitylistener = getActivityInstanceAsync();
+            activitylistener.then(function (activity) {
+                app.launchActivity("soyut.module.browser.rename.", {dir: a.dir, name: a.name}, activity);
+                activity.on('browser_renamed', function (activity) {
+                    app.loadServer();
+                })
+            })
         },
         chmod: function (a) {
             h(a);
@@ -110,210 +121,97 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
             f(a);
         }
     }
-    /*
-     $.contextMenu({
-     selector: "figure:not(.back-directory), .list-view2 figure:not(.back-directory)",
-     autoHide: !0,
-     build: function (d) {
-     d.addClass("selected");
-     var e = {
-     callback: function (a, c) {
-     contextActions[a](d);
-     },
-     items: {}
-     };
-     return (d.find(".img-precontainer-mini .filetype").hasClass("png") || d.find(".img-precontainer-mini .filetype").hasClass("jpg") || d.find(".img-precontainer-mini .filetype").hasClass("jpeg")) && (e.items.edit_img = {
-     name: "Edit Image",
-     icon: "edit_img",
-     disabled: !1
-     }), d.hasClass("directory") && 0 != $("#type_param").val() && (e.items.select = {
-     name: "Select",
-     icon: "",
-     disabled: !1
-     }), e.items.copy_url = {
-     name: "Show URL",
-     icon: "url",
-     disabled: !1
-     }, (d.find(".img-precontainer-mini .filetype").hasClass("zip") || d.find(".img-precontainer-mini .filetype").hasClass("tar") || d.find(".img-precontainer-mini .filetype").hasClass("gz")) && (e.items.unzip = {
-     name: "Extract here",
-     icon: "extract",
-     disabled: !1
-     }), d.find(".img-precontainer-mini .filetype").hasClass("edit-text-file-allowed") && (e.items.edit_text_file = {
-     name: "Edit file's content",
-     icon: "edit",
-     disabled: !1
-     }), d.hasClass("directory") || 1 != $("#duplicate").val() || (e.items.duplicate = {
-     name: "Duplicate",
-     icon: "duplicate",
-     disabled: !1
-     }), d.hasClass("directory") || 1 != $("#copy_cut_files_allowed").val() ? d.hasClass("directory") && 1 == $("#copy_cut_dirs_allowed").val() && (e.items.copy = {
-     name: "Copy",
-     icon: "copy",
-     disabled: !1
-     }, e.items.cut = {
-     name: "Cut",
-     icon: "cut",
-     disabled: !1
-     }) : (e.items.copy = {
-     name: "Copy",
-     icon: "copy",
-     disabled: !1
-     }, e.items.cut = {
-     name: "Cut",
-     icon: "cut",
-     disabled: !1
-     }), 0 == $("#clipboard").val() || d.hasClass("directory") || (e.items.paste = {
-     name: "Paste to this directory",
-     icon: "clipboard-apply",
-     disabled: !1
-     }), d.hasClass("directory") || 1 != $("#chmod_files_allowed").val() ? d.hasClass("directory") && 1 == $("#chmod_dirs_allowed").val() && (e.items.chmod = {
-     name: "File permission",
-     icon: "key",
-     disabled: !1
-     }) : e.items.chmod = {
-     name: "File permission",
-     icon: "key",
-     disabled: !1
-     }, e.items.sep = "----", e.items.info = {
-     name: "File Info",
-     disabled: !0
-     }, e.items.name = {
-     name: d.attr("data-name"),
-     icon: "label",
-     disabled: !0
-     }, "img" == d.attr("data-type") && (e.items.dimension = {
-     name: d.find(".img-dimension").html(),
-     icon: "dimension",
-     disabled: !0
-     }), ("true" === $("#show_folder_size").val() || "true" === $("#show_folder_size").val()) && (e.items.size = d.hasClass("directory") ? {
-     name: d.find(".file-size").html() + " - " + d.find(".nfiles").val() + " " + $("#lang_files").val() + " - " + d.find(".nfolders").val() + " " + $("#lang_folders").val(),
-     icon: "size",
-     disabled: !0
-     } : {
-     name: d.find(".file-size").html(),
-     icon: "size",
-     disabled: !0
-     }), e.items.date = {
-     name: d.find(".file-date").html(),
-     icon: "date",
-     disabled: !0
-     }, e;
-     },
-     events: {
-     hide: function () {
-     $("figure").removeClass("selected");
-     }
-     }
-     });
-     */
-    $.contextMenu({
-        selector: "figure:not(.back-directory), .list-view2 figure:not(.back-directory)",
-        autoHide: !0,
-        build: function (d) {
-            d.addClass("selected");
-            var e = {
-                callback: function (a, c) {
-                    contextActions[a](d);
-                },
-                items: {}
-            };
-            return (d.find(".img-precontainer-mini .filetype").hasClass("png") || d.find(".img-precontainer-mini .filetype").hasClass("jpg") || d.find(".img-precontainer-mini .filetype").hasClass("jpeg")) && (e.items.edit_img = {
-                name: "Edit Image",
-                icon: "edit_img",
-                disabled: !1
-            }), d.hasClass("directory") && 0 != $("#type_param").val() && (e.items.select = {
-                name: "Select",
-                icon: "",
-                disabled: !1
-            }), e.items.rename = {
-                name: "Rename",
-                icon: "url",
-                disabled: !1
-            },  e.items.copy = {
-                name: "Copy",
-                icon: "copy",
-                disabled: !1
-            },  e.items.copy_url = {
-                name: "Show URL",
-                icon: "url",
-                disabled: !1
-            }, (d.find(".img-precontainer-mini .filetype").hasClass("zip") || d.find(".img-precontainer-mini .filetype").hasClass("tar") || d.find(".img-precontainer-mini .filetype").hasClass("gz")) && (e.items.unzip = {
-                name: "Extract here",
-                icon: "extract",
-                disabled: !1
-            }), d.find(".img-precontainer-mini .filetype").hasClass("edit-text-file-allowed") && (e.items.edit_text_file = {
-                name: "Edit file's content",
-                icon: "edit",
-                disabled: !1
-            }), d.hasClass("directory") || 1 != $("#duplicate").val() || (e.items.duplicate = {
-                name: "Duplicate",
-                icon: "duplicate",
-                disabled: !1
-            }), d.hasClass("directory") || 1 != $("#copy_cut_files_allowed").val() ? d.hasClass("directory") && 1 == $("#copy_cut_dirs_allowed").val() && (e.items.copy = {
-                name: "Copy",
-                icon: "copy",
-                disabled: !1
-            }, e.items.cut = {
-                name: "Cut",
-                icon: "cut",
-                disabled: !1
-            }) : (e.items.copy = {
-                name: "Copy",
-                icon: "copy",
-                disabled: !1
-            }, e.items.cut = {
-                name: "Cut",
-                icon: "cut",
-                disabled: !1
-            }), 0 == $("#clipboard").val() || d.hasClass("directory") || (e.items.paste = {
-                name: "Paste to this directory",
-                icon: "clipboard-apply",
-                disabled: !1
-            }), d.hasClass("directory") || 1 != $("#chmod_files_allowed").val() ? d.hasClass("directory") && 1 == $("#chmod_dirs_allowed").val() && (e.items.chmod = {
-                name: "File permission",
-                icon: "key",
-                disabled: !1
-            }) : e.items.chmod = {
-                name: "File permission",
-                icon: "key",
-                disabled: !1
-            }, e.items.sep = "----", e.items.info = {
-                name: "File Info",
-                disabled: !0
-            }, e.items.name = {
-                name: d.attr("data-name"),
-                icon: "label",
-                disabled: !0
-            }, "img" == d.attr("data-type") && (e.items.dimension = {
-                name: d.find(".img-dimension").html(),
-                icon: "dimension",
-                disabled: !0
-            }), ("true" === $("#show_folder_size").val() || "true" === $("#show_folder_size").val()) && (e.items.size = d.hasClass("directory") ? {
-                name: d.find(".file-size").html() + " - " + d.find(".nfiles").val() + " " + $("#lang_files").val() + " - " + d.find(".nfolders").val() + " " + $("#lang_folders").val(),
-                icon: "size",
-                disabled: !0
-            } : {
-                name: d.find(".file-size").html(),
-                icon: "size",
-                disabled: !0
-            }), e.items.date = {
-                name: d.find(".file-date").html(),
-                icon: "date",
-                disabled: !0
-            }, e;
-        },
-        events: {
-            hide: function () {
-                $("figure").removeClass("selected");
+
+    function reloadFolder(dir, target) {
+        if(getFileExtension(target)){
+            console.log("file")
+            app.loadServer();
+        }
+        else {
+            console.log("folder")
+            app.loadServer();
+        }
+    }
+
+    function getFileExtension(fname) {
+        var pos = fname.lastIndexOf(".");
+        var strlen = fname.length;
+        if (pos != -1 && strlen != pos + 1) {
+            var ext = fname.split(".");
+            var len = ext.length;
+            var extension = true;
+        } else {
+            extension = false;
+        }
+        return extension;
+    }
+
+    function contextMenu(val){
+        if(val.hasOwnProperty('_id')){
+            if(val.type != 'device'){
+                $.contextMenu({
+                    selector: "figure[data-name='"+val.name+"']",
+                    callback: function(key, options) {
+                        var d = {};
+                        var m = "clicked: " + key + " value " + $(this).attr('data-name');
+                        d = {
+                            "name" : $(this).attr('data-name'),
+                            "dir" : $(this).attr('data-dir')
+                        };
+                        contextActions[key](d);
+                    },
+                    items: {
+                        "cut": {
+                            name: "Cut",
+                            icon: "cut"
+                        },
+                        "copy": {
+                            name: "Copy", 
+                            icon: "copy"
+                        },
+                        "delete": {
+                            name: "Delete",
+                            icon: "delete"
+                        }
+                    }
+                });
             }
         }
-    });
+    }
+
+    function loadMainContextMenu(val) {
+        if(val != '') {
+            $(".main-browser").contextMenu(true);
+            $.contextMenu({
+                selector: ".main-browser",
+                callback: function (key, options) {
+                    var d = {};
+                    var m = "clicked: " + key + " value " + $(this).attr('data-dir');
+                    d = {
+                        "name" : $(this).attr('data-name'),
+                        "dir" : $(this).attr('data-dir')
+                    };
+                    contextActions[key](d);
+                },
+                items: {
+                    "paste": {
+                        name: "Paste",
+                        icon: "paste"
+                    }
+                }
+            });
+        }
+        else {
+            $(".main-browser").contextMenu(false);
+        }
+    }
 
     var app = new Vue({
         el: '#main-content',
         data: {
             files: '',
             curDir: '',
+            dir: '',
             folderPng: 'https://' + browserService.origin + '/img/ico/folder.png',
             txtPng: 'https://' + browserService.origin + '/img/ico/txt.jpg',
             pdfPng: 'https://' + browserService.origin + '/img/ico/pdf.jpg',
@@ -322,14 +220,20 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
             docxPng: 'https://' + browserService.origin + '/img/ico/docx.jpg',
             xlsxPng: 'https://' + browserService.origin + '/img/ico/xlsx.jpg',
             pptxPng: 'https://' + browserService.origin + '/img/ico/pptx.jpg',
+            devicePng: 'https://' + browserService.origin + '/img/ico/dmg.jpg',
+            etcPng: 'https://' + browserService.origin + '/img/ico/default.jpg'
         },
         methods: {
             loadServer: function () {
                 var _this = this;
-
+                var menuPaste = '';
+                
                 var files = fileSystem.ls('/');
                 _this.$set(_this, 'curDir', '');
+                _this.$set(_this, 'dir', '');
                 _this.$set(_this, 'files', files);
+
+                loadMainContextMenu(menuPaste);
             },
             LoadFolder: function (currentDir, i) {
                 var _this = this;
@@ -342,9 +246,68 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                 }
 
                 var files = fileSystem.ls(dir + i);
+                console.log(files)
+                _this.$set(_this, 'dir', dir);
                 _this.$set(_this, 'curDir', dir + i);
-                _this.$set(_this, 'files', files);
+                //_this.getNavStructure(currentDir, dir+i);insert data json
 
+                var lsFile =[];                
+                for (var x in files) {
+                    if(files[x].info.hasOwnProperty('isLink')){
+                        if(files[x].info.type != undefined){
+                            if(files[x].info.source.hasOwnProperty('isDirectory')){     
+                                if(files[x].info.source.isDirectory && !files[x].info.source.isFile){                       
+                                    var dir = {};
+                                    dir.contents = {};
+                                    dir.info = {
+                                        _id: '',
+                                        type: files[x].info.source.type,
+                                        name: files[x].info.source.name,
+                                        size: files[x].info.source.size,
+                                        path: files[x].info.source.path
+                                    };
+                                    lsFile.push(dir);
+                                }
+                                else {
+                                    var devChar = files[x].info.source.name.substring(0,2);
+                                    if(devChar != "._"){                
+                                        var fileType = _this.getThumbFile(files[x].info.source.type);
+                                        var file = {};
+                                        file.contents = {};
+                                        file.info = {
+                                            _id: '',
+                                            type: files[x].info.source.type,
+                                            name: files[x].info.source.name,
+                                            size: files[x].info.source.size,
+                                            path: files[x].info.source.path,
+                                            url: fileType
+                                        };
+                                        lsFile.push(file);
+                                    }
+                                }
+                            }
+                            else {
+                                var devices = {};
+                                devices.contents = {};
+                                devices.info = {
+                                    _id: '',
+                                    type: 'device',
+                                    name: files[x].info.source.name,
+                                };
+                                                    
+                                lsFile.push(devices);
+                            }                    
+                        }    
+                    }        
+                    else{
+                        var uchar = files[x].info.name.substring(0,2);
+                        if(uchar != "._"){
+                            lsFile.push(files[x]);
+                        }
+                    }
+                }
+                _this.$set(_this, 'files', lsFile);
+                loadMainContextMenu(dir +i);
             },
             LoadFile: function (currentDir, i) {
                 var _this = this;
@@ -363,9 +326,106 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                     app.launchActivity("soyut.module.browser.viewer", {path: dir + i}, activity);
                 })
             },
-            LoadFolderForm: function () {
-                $(getInstanceID('browser-form-container')).removeClass('disable');
-                //console.log("new folder");
+            LoadFolderForm: function (currentDir, dir) {
+                var _this = this;
+                var app = getAppInstance();
+                var activitylistener = getActivityInstanceAsync();
+                activitylistener.then(function (activity) {
+                    app.launchActivity("soyut.module.browser.create.folder", {currentDir: currentDir, dir: dir}, activity);
+                    activity.on('folder_created', function (activity) {
+                        var fDir = activity.dir.split('/');
+                        var dirLength = fDir[1].length;
+                        var mdir = '';
+                        if(dirLength > 0){
+                            mdir = activity.dir + activity.currentDir;
+                        }
+                        var xDir = activity.currentDir.split('/');
+                        //_this.LoadFolder(mdir, xDir[1]);
+                        _this.loadServer();
+                        console.log("ls "+mdir+","+xDir[1])
+                    })
+                });
+            },
+            LoadNavigation: function (dir, curDir) {
+                console.log(dir+" == "+curDir);
+                var _this = this;
+                var currentDir = curDir;
+                var navFile = [];
+                var lsDir = currentDir.split('/');
+                var nav = '';
+                for(var x = 0; x < lsDir.length; x++){
+                    if(lsDir[x]!=""){
+                        //var arrNav = [lsDir[x], curDir];
+                        //navFile.push(arrNav);
+                        //console.log(lsDir[x]+" - "+dir)
+                        var nav = "<a href='#'>"+lsDir[x]+"</a>";
+                    }
+                }
+                return nav;
+            },
+            loadContextMenu: function(val){
+                contextMenu(val)
+            },
+            loadMainAttribute: function (curDir) {
+                var attr;
+                attr = {
+                    'data-name' : '',
+                    'data-dir': curDir
+                };
+                return attr;
+            },
+            loadAttribute: function(val, curDir){
+                var attr;
+                attr = {
+                    'data-name' : val,
+                    'data-dir': curDir
+                };
+	        	return attr;
+            },
+            getNavStructure: function(dir){
+                var _this = this;
+                var currentDir = dir;
+                var navFile = [];
+                var lsDir = currentDir.split('/');
+                for(var x = 0; x < lsDir.length; x++){
+                    if(lsDir[x]!=""){
+                        //var arrNav = [lsDir[x], curDir];
+                        //navFile.push(arrNav);
+                        console.log(lsDir[x]+" - "+dir)   
+                    }
+                }
+//                console.log(navFile);
+                //_this.$set(_this, 'navigation', context);
+                //_this.$set(_this, 'curNav', curDir);
+            },
+            getThumbFile: function(data){
+                var value = "";
+                if(data == "image/jpeg" || data == "image/png" || data == "image/gif" || data == "image/svg"){
+                    value = 'https://' + browserService.origin + '/img/ico/jpeg.jpg';
+                }
+                return value;
+            },
+            getFileType: function(data){
+                switch (data) {
+                    case "text/html":
+                        return true;
+                    case "application/x-msdos-program":
+                        return true;
+                    case "application/javascript":
+                        return true;
+                    default:
+                        return false;
+                }
+            },
+            getFolderType: function(data){
+                var imgSrc = "";
+                if(data.hasOwnProperty('_id')){
+                    var imgSrc = 'https://' + browserService.origin + '/img/ico/folder.png';
+                }
+                else{    
+                    var imgSrc = 'https://' + browserService.origin + '/img/ico/dmg.jpg';
+                }
+                return imgSrc;
             }
         }
     });

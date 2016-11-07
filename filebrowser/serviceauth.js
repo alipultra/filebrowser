@@ -375,12 +375,7 @@ module.exports = {
             websocket = self.authServer[authServerUrl].websocket;
         }
         else{
-            websocket = websocketClient.connect(authServerUrl, { reconnect: true, secure:true});
-            websocket.on("connect_error", function(error){
-                console.log("websocket connect error "+error.description+" ("+error.type+") to "+authServerUrl);
-                console.log(error.message);
-            });
-
+            websocket = websocketClient.connect(authServerUrl, { reconnect: true});
             this.authServer[authServerUrl].websocket = websocket;
             websocket.on('api', function(reqMsg, resCallback){
                 self.authServer[authServerUrl].websocketHandler(websocket,reqMsg, resCallback);
@@ -389,9 +384,6 @@ module.exports = {
                 var validRequest = self.validateServerRequest(reqMsg, authServerUrl);
                 if(validRequest !== null) {
                     self.updateRemoteService(authServerUrl, validRequest.data.params);
-                    self.events.onUpdateRemoteServices.forEach(function(handle){
-                      handle(validRequest.data.params)
-                    })
                 }
             });
             websocket.on('disconnect', function(){
@@ -438,7 +430,7 @@ module.exports = {
         }
     },
 
-    getClientServices : function(){
+    getClientServices : function(accessTokenList){
         var self = this;
         var serviceInfo = {};
         for(var serviceName in self.clientkey){
@@ -447,7 +439,29 @@ module.exports = {
                 serviceInfo[serviceName][serviceUid] = [];
                 if(self.clientkey[serviceName][serviceUid].hasOwnProperty('methods')){
                     for(var methodName in self.clientkey[serviceName][serviceUid].methods){
-                        serviceInfo[serviceName][serviceUid].push(methodName);
+                        if(self.clientkey[serviceName][serviceUid].hasOwnProperty('accessToken') && (accessTokenList instanceof Array)){
+                            //if restricted method
+                            if(self.clientkey[serviceName][serviceUid].accessToken.hasOwnProperty(methodName) &&
+                                self.clientkey[serviceName][serviceUid].accessToken[methodName].length > 0){
+                                if(accessTokenList.length > 0){
+                                    for(var ndx=0 ; ndx<accessTokenList.length ; ndx++){
+                                        if(self.clientkey[serviceName][serviceUid].accessToken[methodName].indexOf(accessTokenList[ndx]) > -1){
+                                            serviceInfo[serviceName][serviceUid].push(methodName);
+                                            break;
+                                        }
+                                    }
+                                }
+                                else{
+                                    serviceInfo[serviceName][serviceUid].push(methodName);
+                                }
+                            }
+                            else{
+                                serviceInfo[serviceName][serviceUid].push(methodName);
+                            }
+                        }
+                        else{
+                            serviceInfo[serviceName][serviceUid].push(methodName);
+                        }
                     }
                 }
             }
@@ -494,10 +508,14 @@ module.exports = {
             if(!client.hasOwnProperty('methods')){
                 client.methods = {};
             }
-            client.methods[methodName] = function(params, replyCallback){
+            if(!client.hasOwnProperty('accessToken')){
+                client.accessToken = {};
+            }
+            client.methods[methodName] = function(params, replyCallback, sessionData){
                 if(client.hasOwnProperty('socket')){
                     var socket = client.socket;
                     var request = self.createForwardRequest(service, serviceUid, methodName, params);
+                    request.sessionData = sessionData;
                     if(socket.connected){
                         socket.emit('api', request, function(response){
                             var validResponse = self.validateResponse(response,null);
@@ -514,8 +532,28 @@ module.exports = {
                     }
                 }
             };
+            client.accessToken[methodName] = [];
             console.log("registered remote method "+methodName+" for "+serviceUid);
             return client.methods[methodName];
+        }
+        return null;
+    },
+
+    setRemoteMethodRestriction : function(service, serviceUid, methodName, accessToken){
+        var self = this;
+        if( self.clientkey.hasOwnProperty(service) &&
+            self.clientkey[service].hasOwnProperty(serviceUid)){
+            var client = self.clientkey[service][serviceUid];
+            if(!client.hasOwnProperty('accessToken')){
+                client.accessToken = {};
+            }
+            if(!client.accessToken.hasOwnProperty(methodName)){
+                client.accessToken[methodName] = [];
+            }
+            client.accessToken[methodName] = accessToken;
+            console.log("set remote method restriction for "+methodName+" for "+serviceUid);
+            console.log(accessToken);
+            return client.accessToken[methodName];
         }
         return null;
     },
@@ -575,6 +613,12 @@ module.exports = {
             self.authServer[authServerUrl].services.api = newApi;
             self.authServer[authServerUrl].services.registerApi = function(methods, callback){
                 self.registerApi(authServerUrl, methods, callback);
+            };
+            self.authServer[authServerUrl].services.authorizeClient = function(clientId, sessionData, callback){
+                self.authorizeClient(authServerUrl, clientId, sessionData, callback);
+            };
+            self.authServer[authServerUrl].services.registerRestrictedApi = function(methods, callback){
+                self.registerRestrictedApi(authServerUrl, methods, callback);
             };
             self.authServer[authServerUrl].services.subscribeOnApiAdded = function(serviceName, methodName, handler){
                 self.subscribeOnApiAdded(authServerUrl, serviceName, methodName, handler);
@@ -673,6 +717,86 @@ module.exports = {
                 }
                 else{
                     done(false,'auth server response failed validation (registerApi)');
+                }
+            });
+        }
+        else{
+            done(false,'auth server credential not available, should login first');
+        }
+    },
+
+    authorizeClient : function( authServerUrl, clientId, sessionData, done){
+        var serverKey = this.key;
+        if(serverKey === null && authServerUrl !== null){
+            done(false,'no client key generated, please call identify first');
+        }
+
+        var self = this;
+        if(authServerUrl !== null && self.authServer.hasOwnProperty(authServerUrl)){
+            var websocket = self.getConnector(authServerUrl);
+            var args = {
+                clientId : clientId,
+                sessionData : sessionData
+            };
+
+            var request = self.createRequest(authServerUrl, 'auth','authorizeClient',args);
+            websocket.emit('api',request, function(response){
+                var validResponse = self.validateResponse(response, authServerUrl);
+                if(validResponse !== null){
+                    if(validResponse.data.hasOwnProperty('reply')){
+                        done(true,response.data.reply);
+                    }
+                    else{
+                        done(false,response.data.reason);
+                    }
+                }
+                else{
+                    done(false,'auth server response failed validation (authorizeClient)');
+                }
+            });
+        }
+        else{
+            done(false,'auth server credential not available, should login first');
+        }
+    },
+
+    registerRestrictedApi : function( authServerUrl, methods, done){
+        var serverKey = this.key;
+        if(serverKey === null && authServerUrl !== null){
+            done(false,'no client key generated, please call identify first');
+        }
+
+        var self = this;
+        if(authServerUrl !== null && self.authServer.hasOwnProperty(authServerUrl)){
+            var websocket = self.getConnector(authServerUrl);
+            var regMethods = [];
+            for(var methodName in methods){
+                if(typeof methods[methodName].method === 'function'){
+                    regMethods.push({
+                        name : methodName,
+                        accessToken : methods[methodName].accessToken
+                    });
+                }
+            }
+
+            var request = self.createRequest(authServerUrl, 'auth','registerRestrictedApi',regMethods);
+            websocket.emit('api',request, function(response){
+                var validResponse = self.validateResponse(response, authServerUrl);
+                if(validResponse !== null){
+                    if(validResponse.data.hasOwnProperty('reply')){
+                        if(validResponse.data.reply.length > 0){
+                            response.data.reply.forEach(function(methodName){
+                                self.api.local[methodName] = methods[methodName].method;
+                            });
+                        }
+                        done(true,response.data.reply);
+                    }
+                    else{
+                        done(false,response.data.reason);
+                    }
+                }
+                else{
+                    done(false,'auth server response failed validation (registerRestrictedApi)');
                 }
             });
         }

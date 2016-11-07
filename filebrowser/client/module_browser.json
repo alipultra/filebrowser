@@ -5,10 +5,12 @@
   "isMultiInstance":true,
   "startup" : false,
   "isWidget" : false,
+  "requiredPolicies":["browser-admin"],
   "activities":[
     {
       "class":"soyut.module.browser.main",
       "title":"Browser",
+      "requiredPolicies":["browser-admin"],
       "launcher" : true,
       "libraryScript":[
         {"name":"contextMenu","url":"/libs/contextMenu.min.js"}
@@ -22,6 +24,38 @@
       ],
       "contents":[
         {"name":"index","url":"/index.html"}
+      ]
+    },
+    {
+      "class":"soyut.module.browser.create.folder",
+      "title":"Folder Create",
+      "launcher" : false,
+      "externalUse": true,
+      "libraryScript":[
+      ],
+      "instanceScript":[
+        {"name":"createjs","url":"/App/create.js"}
+      ],
+      "styles":[
+      ],
+      "contents":[
+        {"name":"create","url":"/App/create.html"}
+      ]
+    },
+    {
+      "class":"soyut.module.browser.rename",
+      "title":"Rename",
+      "launcher" : false,
+      "externalUse": true,
+      "libraryScript":[
+      ],
+      "instanceScript":[
+        {"name":"renamejs","url":"/App/rename.js"}
+      ],
+      "styles":[
+      ],
+      "contents":[
+        {"name":"rename","url":"/App/rename.html"}
       ]
     },
     {
