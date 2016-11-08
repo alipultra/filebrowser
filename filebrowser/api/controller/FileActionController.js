@@ -1,4 +1,3 @@
-var randomString = require('randomstring')
 const BROWSER_MANAGER_TOKEN = "sdfhjkoiiousdfsdpoopuiiiuuhdsfsd98798sdfsdiu877";
 
 module.exports = {

@@ -150,6 +150,26 @@
     width: 100%;
     z-index: 100;
 }
+.load-browser{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 101;
+    background: #000000;
+    opacity: 0.5;
+}
+.load-browser .disable {
+    display: none;
+}
+.load-browserloader{
+    margin: 20% auto;
+    width: 64px;
+    height: 64px;
+    opacity: 1;
+    background: url("../img/storing_animation.gif") no-repeat;
+}
 .col-main-browser {
     margin: 5px;
 }

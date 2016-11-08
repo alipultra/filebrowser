@@ -15,6 +15,7 @@ rethinkdb = require('rethinkdb');
 var config = require('./config');
 var compression = require('compression');
 var ping = require('ping');
+var randomString = require('randomstring')
 mongoDb = {}
 remote_service = null
 //require('./waterlineHook')(mongoDb, config.waterline);

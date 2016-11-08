@@ -53,8 +53,7 @@
                                 <div class="block-section">
                                     <ul class="breadcrumb">
                                         <li class="pull-left"><a href="#" @click="loadServer()"><i class="icon-home"></i></a></li>
-                                        <li v-html="LoadNavigation(dir, curDir)"></li>
-                                        <li><span class="divider">/</span></li>
+                                        <li v-html="LoadNavigation(dir, curDir)" id="main-nav"></li>
 
                                         <li class="pull-right"><a class="btn-small" href="javascript:void('')" id="info"><i class="ricon-question-sign"></i></a></li>
                                         <li class="pull-right"><a class="btn-small" href="javascript:void('')" id="change_lang_btn"><i class="ricon-globe"></i></a></li>
@@ -64,7 +63,9 @@
                                         <li><small class="hidden-phone"><span title="Total size">108 Mb</span></small>
                                         </li>
                                     </ul>
-
+                                    <div class="load-browser" id="browser-loader">
+                                        <div class="load-browserloader"></div>
+                                    </div>
                                     <div class="main-browser" v-bind="loadMainAttribute(curDir)">
                                         <div class="col-md-12 col-main-browser">
                                             <input type="hidden" name="view-status" id="view-status" value="0">

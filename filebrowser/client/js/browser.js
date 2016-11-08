@@ -46,7 +46,6 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
             else {
                 dir = a.dir + '/';
             }
-            console.log("path "+a.name)
             soyut.Services.getInstance().getService("browserServer").FileAction_searchCopy({session: soyut.Session.id, role: soyut.Session.role.id}, function (err, data) {
                 if(data.length > 0){
                     soyut.Services.getInstance().getService("browserServer").FileAction_updateCopy({
@@ -87,9 +86,8 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
             }
             soyut.Services.getInstance().getService("browserServer").FileAction_searchCopy({session: soyut.Session.id, role: soyut.Session.role.id}, function (err, data) {
                 if (data.length > 0) {
-                    console.log(data[0].path+ " copy ke "+ dir+ a.name);
                     fileSystem.cp(data[0].path, dir + a.name);
-                    app.LoadFolder(dir + a.name);
+                    app.loadServer();
                 }
             });
         },
@@ -149,32 +147,32 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
     function contextMenu(val){
         if(val.hasOwnProperty('_id')){
             if(val.type != 'device'){
-                $.contextMenu({
-                    selector: "figure[data-name='"+val.name+"']",
-                    callback: function(key, options) {
-                        var d = {};
-                        var m = "clicked: " + key + " value " + $(this).attr('data-name');
-                        d = {
-                            "name" : $(this).attr('data-name'),
-                            "dir" : $(this).attr('data-dir')
-                        };
-                        contextActions[key](d);
-                    },
-                    items: {
-                        "cut": {
-                            name: "Cut",
-                            icon: "cut"
+                    $.contextMenu({
+                        selector: "figure[data-name='" + val.name + "']",
+                        callback: function (key, options) {
+                            var d = {};
+                            var m = "clicked: " + key + " value " + $(this).attr('data-name');
+                            d = {
+                                "name": $(this).attr('data-name'),
+                                "dir": $(this).attr('data-dir')
+                            };
+                            contextActions[key](d);
                         },
-                        "copy": {
-                            name: "Copy", 
-                            icon: "copy"
-                        },
-                        "delete": {
-                            name: "Delete",
-                            icon: "delete"
+                        items: {
+                            "cut": {
+                                name: "Cut",
+                                icon: "cut"
+                            },
+                            "copy": {
+                                name: "Copy",
+                                icon: "copy"
+                            },
+                            "delete": {
+                                name: "Delete",
+                                icon: "delete"
+                            }
                         }
-                    }
-                });
+                    });
             }
         }
     }
@@ -205,6 +203,9 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
             $(".main-browser").contextMenu(false);
         }
     }
+    function TesClick() {
+        console.log("aaa")
+    }
 
     var app = new Vue({
         el: '#main-content',
@@ -225,6 +226,7 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
         },
         methods: {
             loadServer: function () {
+                $(getInstanceID('browser-loader')).fadeIn('fast');
                 var _this = this;
                 var menuPaste = '';
                 
@@ -234,8 +236,11 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                 _this.$set(_this, 'files', files);
 
                 loadMainContextMenu(menuPaste);
+
+                $(getInstanceID('browser-loader')).fadeOut('fast');
             },
             LoadFolder: function (currentDir, i) {
+                $(getInstanceID('browser-loader')).fadeIn('fast');
                 var _this = this;
                 var dir = '';
                 if (currentDir == '') {
@@ -246,7 +251,6 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                 }
 
                 var files = fileSystem.ls(dir + i);
-                console.log(files)
                 _this.$set(_this, 'dir', dir);
                 _this.$set(_this, 'curDir', dir + i);
                 //_this.getNavStructure(currentDir, dir+i);insert data json
@@ -308,6 +312,8 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                 }
                 _this.$set(_this, 'files', lsFile);
                 loadMainContextMenu(dir +i);
+
+                $(getInstanceID('browser-loader')).fadeOut('fast');
             },
             LoadFile: function (currentDir, i) {
                 var _this = this;
@@ -347,20 +353,30 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                 });
             },
             LoadNavigation: function (dir, curDir) {
-                console.log(dir+" == "+curDir);
+                //console.log("nav "+dir+" - - - "+curDir)
                 var _this = this;
+                var xd = dir.slice(-1);
+                if (xd == '/') {
+                    dir = dir.slice(0, -1);
+                }
                 var currentDir = curDir;
-                var navFile = [];
+                var navTitle = [];
+                var navLink = [];
                 var lsDir = currentDir.split('/');
+                var fsDir = dir.split('/');
                 var nav = '';
+                for(var i = 0; i < fsDir.length; i++){
+                    //console.log("fs "+fsDir[i]);
+                }
                 for(var x = 0; x < lsDir.length; x++){
                     if(lsDir[x]!=""){
-                        //var arrNav = [lsDir[x], curDir];
-                        //navFile.push(arrNav);
-                        //console.log(lsDir[x]+" - "+dir)
-                        var nav = "<a href='#'>"+lsDir[x]+"</a>";
+                        //var arrNav = [lsDir[x]];
+                        //navTitle.push(lsDir[x]);
+                        //console.log("ls "+ lsDir[x]);
+                        nav += "<a href='#'>"+lsDir[x]+"</a> / ";
                     }
                 }
+                //console.log(navFile)
                 return nav;
             },
             loadContextMenu: function(val){
