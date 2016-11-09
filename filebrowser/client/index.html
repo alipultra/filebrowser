@@ -25,9 +25,9 @@
                                                 <button class="tip btn clear-clipboard-btn" title="Clear Clipboard"><i class="rficon-clipboard-clear"></i></button>
                                             </div>
                                             <div class="span2 half view-controller">
-                                                <button class="btn tip" id="view0" data-value="0" title="Box View"><i class="ricon-th"></i></button>
-                                                <button class="btn tip btn-inverse" id="view1" data-value="1" title="List View"><i class="ricon-align-justify icon-white"></i></button>
-                                                <button class="btn tip" id="view2" data-value="2" title="Column List View"><i class="ricon-fire"></i></button>
+                                                <button class="btn tip" id="view0" @click="ChangeBrowserView()" data-value="0" title="Box View"><i class="ricon-th"></i></button>
+                                                <button class="btn tip btn-inverse" @click="ChangeBrowserView()" id="view1" data-value="1" title="List View"><i class="ricon-align-justify icon-white"></i></button>
+                                                <button class="btn tip" id="view2" @click="ChangeBrowserView()" data-value="2" title="Column List View"><i class="ricon-fire"></i></button>
                                             </div>
                                             <div class="span6 entire types">
                                                 <span>Filters:</span>
@@ -53,14 +53,20 @@
                                 <div class="block-section">
                                     <ul class="breadcrumb">
                                         <li class="pull-left"><a href="#" @click="loadServer()"><i class="icon-home"></i></a></li>
-                                        <li v-html="LoadNavigation(dir, curDir)" id="main-nav"></li>
+
+                                            <template id="nav-template">
+                                                <li v-for ="nav in navigations">
+                                                    <a href="#" @click="redirectBrowser(nav)">{{nav.title}}</a>
+                                                </li>
+                                            </template>
+
 
                                         <li class="pull-right"><a class="btn-small" href="javascript:void('')" id="info"><i class="ricon-question-sign"></i></a></li>
                                         <li class="pull-right"><a class="btn-small" href="javascript:void('')" id="change_lang_btn"><i class="ricon-globe"></i></a></li>
                                         <li class="pull-right"><a id="refresh" class="btn-small" href="#"><i class="ricon-refresh"></i></a></li>
 
                                         <li><small class="hidden-phone">(<span id="files_number">7</span> Files - <span id='folders_number'>1</span> Folders)</small></li>
-                                        <li><small class="hidden-phone"><span title="Total size">108 Mb</span></small>
+                                        <li><small class="hidden-phone"><span title="Total size">180 Mb</span></small>
                                         </li>
                                     </ul>
                                     <div class="load-browser" id="browser-loader">
@@ -74,6 +80,26 @@
                                             <input type="hidden" id="select-dir" v-model="dir" />
 
                                             <ul class="grid cs-style-2 list-view0" id="main-item-container">
+                                                <li v-if="setBackButton(curDir, dir) == true" data-name=".." class="back ui-droppable">
+                                                    <figure data-name=".." class="back-directory" data-type="" v-bind="getParentFolder(curDir, dir)">
+                                                        <a class="folder-link" href="#" @click="BackBrowser(cdir, bdir)">
+                                                            <div class="img-precontainer">
+                                                                <div class="img-container directory"><span></span>
+                                                                    <img class="directory-img" :src="backPng">
+                                                                </div>
+                                                            </div>
+                                                            <div class="img-precontainer-mini directory">
+                                                                <div class="img-container-mini">
+                                                                    <span></span>
+                                                                    <img class="directory-img" :src="backPng">
+                                                                </div>
+                                                            </div>
+                                                            <div class="box no-effect">
+                                                                <h4>back</h4>
+                                                            </div>
+                                                        </a>
+                                                    </figure>
+                                                </li>
                                                 <li v-if="folder.info.type == 'directory'" v-for="folder in files" class="dir" v-bind="loadContextMenu(folder.info)">
                                                     <figure v-bind="loadAttribute(folder.info.name, curDir)" class="directory" data-type="dir">
                                                         <input v-if="folder.info.name == '..'" type="hidden" class="path" value=""/>

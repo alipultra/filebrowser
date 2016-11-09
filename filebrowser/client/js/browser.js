@@ -6,6 +6,7 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
     $.getScript(documentServerUrl + '/web-apps/apps/api/documents/api.js');
 
     $(".view-controller button").on("click", function () {
+        console.log("aaa")
         var b = $(this);
 
         $(".view-controller button").removeClass('btn-inverse');
@@ -203,17 +204,20 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
             $(".main-browser").contextMenu(false);
         }
     }
-    function TesClick() {
-        console.log("aaa")
-    }
 
+    Vue.component('navigation', {
+        template: '#nav-template',
+        props:['navigations']
+    });
     var app = new Vue({
         el: '#main-content',
         data: {
             files: '',
             curDir: '',
             dir: '',
+            navigations: '',
             folderPng: 'https://' + browserService.origin + '/img/ico/folder.png',
+            backPng: 'https://' + browserService.origin + '/img/ico/folder_back.png',
             txtPng: 'https://' + browserService.origin + '/img/ico/txt.jpg',
             pdfPng: 'https://' + browserService.origin + '/img/ico/pdf.jpg',
             mp4Png: 'https://' + browserService.origin + '/img/ico/mp4.jpg',
@@ -222,7 +226,9 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
             xlsxPng: 'https://' + browserService.origin + '/img/ico/xlsx.jpg',
             pptxPng: 'https://' + browserService.origin + '/img/ico/pptx.jpg',
             devicePng: 'https://' + browserService.origin + '/img/ico/dmg.jpg',
-            etcPng: 'https://' + browserService.origin + '/img/ico/default.jpg'
+            etcPng: 'https://' + browserService.origin + '/img/ico/default.jpg',
+            cdir:'',
+            bdir:''
         },
         methods: {
             loadServer: function () {
@@ -250,10 +256,10 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                     dir = currentDir + '/';
                 }
 
+                _this.LoadNavigation(dir, dir+i);
                 var files = fileSystem.ls(dir + i);
-                _this.$set(_this, 'dir', dir);
+                _this.$set(_this, 'dir', i);
                 _this.$set(_this, 'curDir', dir + i);
-                //_this.getNavStructure(currentDir, dir+i);insert data json
 
                 var lsFile =[];                
                 for (var x in files) {
@@ -353,31 +359,80 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                 });
             },
             LoadNavigation: function (dir, curDir) {
-                //console.log("nav "+dir+" - - - "+curDir)
                 var _this = this;
-                var xd = dir.slice(-1);
-                if (xd == '/') {
-                    dir = dir.slice(0, -1);
-                }
-                var currentDir = curDir;
-                var navTitle = [];
-                var navLink = [];
-                var lsDir = currentDir.split('/');
-                var fsDir = dir.split('/');
-                var nav = '';
-                for(var i = 0; i < fsDir.length; i++){
-                    //console.log("fs "+fsDir[i]);
-                }
+                var titleLink = _this.removeLastSlash(curDir);
+                var textLink = _this.removeLastSlash(dir);
+                var lsDir = titleLink.split('/');
+                var fsDir = textLink.split('/');
+                var nav = [];
+                var mnav = [];
                 for(var x = 0; x < lsDir.length; x++){
-                    if(lsDir[x]!=""){
-                        //var arrNav = [lsDir[x]];
-                        //navTitle.push(lsDir[x]);
-                        //console.log("ls "+ lsDir[x]);
-                        nav += "<a href='#'>"+lsDir[x]+"</a> / ";
+                     if(x>0){
+                         var a = _this.checkArray(x, fsDir[x], titleLink);
+                         nav.push({
+                            title:lsDir[x],
+                            link:a
+                         });
+                     }
+                }
+                //console.log(JSON.stringify(nav))
+                var link = nav;
+                _this.$set(_this, 'navigations', link);
+            },
+            removeLastSlash: function (val) {
+                var lastChar = val.slice(-1);
+                if (lastChar == '/') {
+                    val = val.slice(0, -1);
+                }
+                return val;
+            },
+            checkArray: function(count, text, textLink){
+                var _this = this;
+                var fsDir = textLink.split('/');
+                var textarray = "";
+                for(var i = 0; i < count; i++){
+                    if(fsDir[i]==""){
+                        textarray = "";
+                    }
+                    else{
+                        textarray += "/"+fsDir[i];
                     }
                 }
-                //console.log(navFile)
-                return nav;
+                return textarray;
+            },
+            setBackButton: function (curDir, dir) {
+                var _this = this;
+                if(curDir != ""){
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            },
+            getParentFolder: function (curDir, dir) {
+                var _this = this;
+                var resdir = curDir.substr(0, curDir.lastIndexOf("/"));
+                var cresdir = _this.removeLastSlash(resdir);
+                var lastSlash = cresdir.lastIndexOf("/");
+                var currentFolder = resdir.substr(0, resdir.lastIndexOf("/"));
+                var lastSlash = resdir.lastIndexOf("/");
+                var targetFolder = resdir.substring(lastSlash+1);
+
+                _this.$set(_this, 'cdir', currentFolder);
+                _this.$set(_this, 'bdir', targetFolder);
+            },
+            redirectBrowser: function (val) {
+                var _this = this;
+                _this.LoadFolder(val.link, val.title);
+            },
+            BackBrowser: function (curDir, dir) {
+                var _this = this;
+                if(curDir == "" && dir == ""){
+                    _this.loadServer();
+                }
+                else {
+                    _this.LoadFolder(curDir, dir);
+                }
             },
             loadContextMenu: function(val){
                 contextMenu(val)
@@ -397,22 +452,6 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                     'data-dir': curDir
                 };
 	        	return attr;
-            },
-            getNavStructure: function(dir){
-                var _this = this;
-                var currentDir = dir;
-                var navFile = [];
-                var lsDir = currentDir.split('/');
-                for(var x = 0; x < lsDir.length; x++){
-                    if(lsDir[x]!=""){
-                        //var arrNav = [lsDir[x], curDir];
-                        //navFile.push(arrNav);
-                        console.log(lsDir[x]+" - "+dir)   
-                    }
-                }
-//                console.log(navFile);
-                //_this.$set(_this, 'navigation', context);
-                //_this.$set(_this, 'curNav', curDir);
             },
             getThumbFile: function(data){
                 var value = "";
@@ -442,6 +481,9 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                     var imgSrc = 'https://' + browserService.origin + '/img/ico/dmg.jpg';
                 }
                 return imgSrc;
+            },
+            ChangeBrowserView: function () {
+                
             }
         }
     });
