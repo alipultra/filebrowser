@@ -31,108 +31,19 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
         $(".breadcrumb").width() + c;
     }
 
-    var contextActions = {
-        copy_url: function (b) {
-            var c = D(b);
-            bootbox.alert('URL:<br/><div class="input-append" style="width:100%"><input id="url_text' + B + '" type="text" style="width:80%; height:30px;" value="' + encodeURL(c) + '" /><button id="copy-button' + B + '" class="btn btn-inverse copy-button" style="width:20%; height:30px;" data-clipboard-target="url_text' + B + '" data-clipboard-text="Copy Me!" title="copy"></button></div>'),
-                a("#copy-button" + B).html('<i class="icon icon-white icon-share"></i> ' + a("#lang_copy").val());
-            var d = new ZeroClipboard(a("#copy-button" + B));
-            d.on("ready", function (b) {
-                d.on("wrongFlash noFlash", function () {
-                    ZeroClipboard.destroy();
-                }), d.on("aftercopy", function (b) {
-                    a("#copy-button" + B).html('<i class="icon icon-ok"></i> ' + a("#ok").val()), a("#copy-button" + B).attr("class", "btn disabled"),
-                        B++;
-                }), d.on("error", function (a) {
-                });
-            });
-        },
-        unzip: function (b) {
-            var c = a("#sub_folder").val() + a("#fldr_value").val() + b.find("a.link").attr("data-file");
-            a.ajax({
-                type: "POST",
-                url: "ajax_calls.php?action=extract",
-                data: {
-                    path: c
-                }
-            }).done(function (b) {
-                "" != b ? bootbox.alert(b) : window.location.href = a("#refresh").attr("href") + "&" + new Date().getTime();
-            });
-        },
-        edit_img: function (b) {
-            var c = b.attr("data-name"), d = a("#base_url").val() + a("#cur_dir").val() + c, e = a("#aviary_img");
-            e.attr("data-name", c), show_animation(), e.attr("src", d).load(x(e.attr("id"), d));
-        },
-        duplicate: function (b) {
-            var c = b.find("h4").text().trim();
-            bootbox.prompt(a("#lang_duplicate").val(), a("#cancel").val(), a("#ok").val(), function (a) {
-                if (null !== a && (a = u(a), a != c)) {
-                    var d = b.find(".rename-file");
-                    v("duplicate_file", d.attr("data-path"), a, d, "apply_file_duplicate");
-                }
-            }, c);
-        },
-        select: function (b) {
-            // var c, d = D(b), e = a("#field_id").val(), f = a("#return_relative_url").val();
-            // if (1 == f && (d = d.replace(a("#base_url").val(), "")), c = 1 == a("#popup").val() ? window.opener : window.parent,
-            //     "" != e) if (1 == a("#crossdomain").val()) c.postMessage({
-            //     sender: "responsivefilemanager",
-            //     url: d,
-            //     field_id: e
-            // }, "*"); else {
-            //     var g = a("#" + e, c.document);
-            //     g.val(d).trigger("change"), "function" == typeof c.responsive_filemanager_callback && c.responsive_filemanager_callback(e),
-            //         s();
-            // } else apply_any(d);
-            console.log("select " + b);
-        },
-        copy: function (a) {
-            console.log("copy yah");
-            l(a, "copy");
-        },
-        cut: function (a) {
-            l(a, "cut");
-        },
-        paste: function () {
-            m();
-        },
-        chmod: function (a) {
-            h(a);
-        },
-        edit_text_file: function (a) {
-            f(a);
-        }
-    }
-    $.contextMenu({
-        selector: "figure:not(.back-directory), .list-view2 figure:not(.back-directory)",
-        autoHide: !0,
-        build: function (d) {
-            d.addClass("selected");
-            var e = {
-                callback: function (a, c) {
-                    contextActions[a](d);
-                },
-                items: {}
-            };
-            return (e.items.select = {
-                name: "Select",
-                icon: "url",
-                disabled: !1
-            }),  e;
-        },
-        events: {
-            hide: function () {
-                $("figure").removeClass("selected");
-            }
-        }
+    Vue.component('navigation', {
+        template: '#nav-template',
+        props:['navigations']
     });
-
     var app = new Vue({
         el: '#main-content',
         data: {
             files: '',
             curDir: '',
+            dir: '',
+            navigations: '',
             folderPng: 'https://' + browserService.origin + '/img/ico/folder.png',
+            backPng: 'https://' + browserService.origin + '/img/ico/folder_back.png',
             txtPng: 'https://' + browserService.origin + '/img/ico/txt.jpg',
             pdfPng: 'https://' + browserService.origin + '/img/ico/pdf.jpg',
             mp4Png: 'https://' + browserService.origin + '/img/ico/mp4.jpg',
@@ -140,16 +51,26 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
             docxPng: 'https://' + browserService.origin + '/img/ico/docx.jpg',
             xlsxPng: 'https://' + browserService.origin + '/img/ico/xlsx.jpg',
             pptxPng: 'https://' + browserService.origin + '/img/ico/pptx.jpg',
+            devicePng: 'https://' + browserService.origin + '/img/ico/dmg.jpg',
+            etcPng: 'https://' + browserService.origin + '/img/ico/default.jpg',
+            cdir:'',
+            bdir:''
         },
         methods: {
             loadServer: function () {
+                $(getInstanceID('browser-loader')).fadeIn('fast');
                 var _this = this;
+                var menuPaste = '';
 
                 var files = fileSystem.ls('/');
                 _this.$set(_this, 'curDir', '');
+                _this.$set(_this, 'dir', '');
                 _this.$set(_this, 'files', files);
+
+                $(getInstanceID('browser-loader')).fadeOut('fast');
             },
             LoadFolder: function (currentDir, i) {
+                $(getInstanceID('browser-loader')).fadeIn('fast');
                 var _this = this;
                 var dir = '';
                 if (currentDir == '') {
@@ -159,9 +80,69 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                     dir = currentDir + '/';
                 }
 
+                _this.LoadNavigation(dir, dir+i);
                 var files = fileSystem.ls(dir + i);
+                _this.$set(_this, 'dir', i);
                 _this.$set(_this, 'curDir', dir + i);
-                _this.$set(_this, 'files', files);
+
+                var lsFile =[];
+                for (var x in files) {
+                    if(files[x].info.hasOwnProperty('isLink')){
+                        if(files[x].info.type != undefined){
+                            if(files[x].info.source.hasOwnProperty('isDirectory')){
+                                if(files[x].info.source.isDirectory && !files[x].info.source.isFile){
+                                    var dir = {};
+                                    dir.contents = {};
+                                    dir.info = {
+                                        _id: '',
+                                        type: files[x].info.source.type,
+                                        name: files[x].info.source.name,
+                                        size: files[x].info.source.size,
+                                        path: files[x].info.source.path
+                                    };
+                                    lsFile.push(dir);
+                                }
+                                else {
+                                    var devChar = files[x].info.source.name.substring(0,2);
+                                    if(devChar != "._"){
+                                        var fileType = _this.getThumbFile(files[x].info.source.type);
+                                        var file = {};
+                                        file.contents = {};
+                                        file.info = {
+                                            _id: '',
+                                            type: files[x].info.source.type,
+                                            name: files[x].info.source.name,
+                                            size: files[x].info.source.size,
+                                            path: files[x].info.source.path,
+                                            url: fileType
+                                        };
+                                        lsFile.push(file);
+                                    }
+                                }
+                            }
+                            else {
+                                var devices = {};
+                                devices.contents = {};
+                                devices.info = {
+                                    _id: '',
+                                    type: 'device',
+                                    name: files[x].info.source.name,
+                                };
+
+                                lsFile.push(devices);
+                            }
+                        }
+                    }
+                    else{
+                        var uchar = files[x].info.name.substring(0,2);
+                        if(uchar != "._"){
+                            lsFile.push(files[x]);
+                        }
+                    }
+                }
+                _this.$set(_this, 'files', lsFile);
+
+                $(getInstanceID('browser-loader')).fadeOut('fast');
 
             },
             LoadFile: function (currentDir, i) {
@@ -181,9 +162,149 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                 activity.context.invoke('loadfile_selected',files);
                 activity.window.close();
             },
-            LoadFolderForm: function () {
-                $(getInstanceID('browser-form-container')).removeClass('disable');
-                //console.log("new folder");
+            LoadFolderForm: function (currentDir, dir) {
+                var _this = this;
+                var app = getAppInstance();
+                var activitylistener = getActivityInstanceAsync();
+                activitylistener.then(function (activity) {
+                    app.launchActivity("soyut.module.browser.create.folder", {currentDir: currentDir, dir: dir}, activity);
+                    activity.on('folder_created', function (activity) {
+                        var fDir = activity.dir.split('/');
+                        var dirLength = fDir[1].length;
+                        var mdir = '';
+                        if(dirLength > 0){
+                            mdir = activity.dir + activity.currentDir;
+                        }
+                        var xDir = activity.currentDir.split('/');
+                        //_this.LoadFolder(mdir, xDir[1]);
+                        _this.loadServer();
+                        console.log("ls "+mdir+","+xDir[1])
+                    })
+                });
+            },
+            LoadNavigation: function (dir, curDir) {
+                var _this = this;
+                var titleLink = _this.removeLastSlash(curDir);
+                var textLink = _this.removeLastSlash(dir);
+                var lsDir = titleLink.split('/');
+                var fsDir = textLink.split('/');
+                var nav = [];
+                var mnav = [];
+                for(var x = 0; x < lsDir.length; x++){
+                    if(x>0){
+                        var a = _this.checkArray(x, fsDir[x], titleLink);
+                        nav.push({
+                            title:lsDir[x],
+                            link:a
+                        });
+                    }
+                }
+                //console.log(JSON.stringify(nav))
+                var link = nav;
+                _this.$set(_this, 'navigations', link);
+            },
+            removeLastSlash: function (val) {
+                var lastChar = val.slice(-1);
+                if (lastChar == '/') {
+                    val = val.slice(0, -1);
+                }
+                return val;
+            },
+            checkArray: function(count, text, textLink){
+                var _this = this;
+                var fsDir = textLink.split('/');
+                var textarray = "";
+                for(var i = 0; i < count; i++){
+                    if(fsDir[i]==""){
+                        textarray = "";
+                    }
+                    else{
+                        textarray += "/"+fsDir[i];
+                    }
+                }
+                return textarray;
+            },
+            setBackButton: function (curDir, dir) {
+                var _this = this;
+                if(curDir != ""){
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            },
+            getParentFolder: function (curDir, dir) {
+                var _this = this;
+                var resdir = curDir.substr(0, curDir.lastIndexOf("/"));
+                var cresdir = _this.removeLastSlash(resdir);
+                var lastSlash = cresdir.lastIndexOf("/");
+                var currentFolder = resdir.substr(0, resdir.lastIndexOf("/"));
+                var lastSlash = resdir.lastIndexOf("/");
+                var targetFolder = resdir.substring(lastSlash+1);
+
+                _this.$set(_this, 'cdir', currentFolder);
+                _this.$set(_this, 'bdir', targetFolder);
+            },
+            redirectBrowser: function (val) {
+                var _this = this;
+                _this.LoadFolder(val.link, val.title);
+            },
+            BackBrowser: function (curDir, dir) {
+                var _this = this;
+                if(curDir == "" && dir == ""){
+                    _this.loadServer();
+                }
+                else {
+                    _this.LoadFolder(curDir, dir);
+                }
+            },
+            loadMainAttribute: function (curDir) {
+                var attr;
+                attr = {
+                    'data-name' : '',
+                    'data-dir': curDir
+                };
+                return attr;
+            },
+            loadAttribute: function(val, curDir){
+                var attr;
+                attr = {
+                    'data-name' : val,
+                    'data-dir': curDir
+                };
+                return attr;
+            },
+            getThumbFile: function(data){
+                var value = "";
+                if(data == "image/jpeg" || data == "image/png" || data == "image/gif" || data == "image/svg"){
+                    value = 'https://' + browserService.origin + '/img/ico/jpeg.jpg';
+                }
+                return value;
+            },
+            getFileType: function(data){
+                switch (data) {
+                    case "text/html":
+                        return true;
+                    case "application/x-msdos-program":
+                        return true;
+                    case "application/javascript":
+                        return true;
+                    default:
+                        return false;
+                }
+            },
+            getFolderType: function(data){
+                var imgSrc = "";
+                if(data.hasOwnProperty('_id')){
+                    var imgSrc = 'https://' + browserService.origin + '/img/ico/folder.png';
+                }
+                else{
+                    var imgSrc = 'https://' + browserService.origin + '/img/ico/dmg.jpg';
+                }
+                return imgSrc;
+            },
+            ChangeBrowserView: function () {
+
             }
         }
     });
