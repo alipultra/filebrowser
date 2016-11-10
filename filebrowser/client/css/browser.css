@@ -2369,19 +2369,15 @@ table.table thead .sorting_desc_disabled {
     background-size: 19px 19px
 }
 .table thead .sorting {
-    background-image: url(../img/jquery.datatables/sort_both.png)
+
 }
 .table thead .sorting_asc {
-    background-image: url(../img/jquery.datatables/sort_asc.png)
 }
 .table thead .sorting_desc {
-    background-image: url(../img/jquery.datatables/sort_desc.png)
 }
 .table thead .sorting_asc_disabled {
-    background-image: url(../img/jquery.datatables/sort_asc_disabled.png)
 }
 .table thead .sorting_desc_disabled {
-    background-image: url(../img/jquery.datatables/sort_desc_disabled.png)
 }
 .dataTable {
     clear: both;
