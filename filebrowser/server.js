@@ -162,15 +162,3 @@ httpServer.listen(config.port, function () {
         }
     });
 });
-
-
-if (websocketServer) {
-    websocketServer.on('connection', function (socket) {
-        console.log('someone connected');
-
-        socket.on('getSikpl', function (callback) {
-            console.log('getSikpl called');
-            api.db.getKeyList(callback);
-        });
-    });
-}
