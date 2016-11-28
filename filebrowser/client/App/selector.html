@@ -317,6 +317,109 @@
                                                     </figure>
                                                 </li>
 
+                                                <li v-if="doc.info.type == 'application/msword'" v-for="doc in files" class="ff-item-type-1 file">
+                                                    <figure v-bind="loadAttribute(doc.info.name, curDir)" data-type="file">
+                                                        <a href="#" @click="LoadFile(curDir, doc.info.name)" class="link" data-function="apply_none">
+                                                            <div class="img-precontainer">
+                                                                <div class="filetype">doc</div>
+                                                                <div class="img-container">
+                                                                    <span></span>
+                                                                    <img class="icon lazy-loaded" :src="docxPng">
+                                                                </div>
+                                                            </div>
+                                                            <div class="img-precontainer-mini">
+                                                                <div class="filetype doc">doc</div>
+                                                                <div class="img-container-mini">
+                                                                    <span></span>
+                                                                    <img class="icon lazy-loaded" :src="docxPng">
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                        <a href="javascript:void('')" class="link" data-function="apply_none">
+                                                            <div class="box">
+                                                                <h4 class="ellipsis">{{doc.info.name}}</h4>
+                                                            </div>
+                                                        </a>
+                                                        <div class='file-extension'>{{doc.info.type}}></div>
+                                                        <figcaption>
+                                                            <form action="#" method="post" class="download-form">
+                                                                <a title="Download" class="tip-right" href="javascript:void('')" onclick=""><i class="icon-download"></i></a>
+                                                                <a class="tip-right preview" title="Preview" data-url="#" data-toggle="lightbox" href="#previewLightbox"><i class=" icon-eye-open"></i></a>
+                                                                <a href="javascript:void('')" class="tip-left edit-button rename-file-paths rename-file" title="Rename" data-path=""><i class="icon-pencil"></i></a>
+                                                                <a href="javascript:void('')" class="tip-left erase-button delete-file" title="Erase" data-confirm="" data-path=""><i class="icon-trash"></i></a>
+                                                            </form>
+                                                        </figcaption>
+                                                    </figure>
+                                                </li>
+                                                <li v-if="xls.info.type == 'application/vnd.ms-excel'" v-for="xls in files" class="ff-item-type-1 file">
+                                                    <figure v-bind="loadAttribute(xls.info.name, curDir)" data-type="file">
+                                                        <a href="#" @click="LoadFile(curDir, xls.info.name)" class="link" data-function="apply_none">
+                                                            <div class="img-precontainer">
+                                                                <div class="filetype">xls</div>
+                                                                <div class="img-container">
+                                                                    <span></span>
+                                                                    <img class="icon lazy-loaded" :src="xlsxPng">
+                                                                </div>
+                                                            </div>
+                                                            <div class="img-precontainer-mini">
+                                                                <div class="filetype xls">xls</div>
+                                                                <div class="img-container-mini">
+                                                                    <span></span>
+                                                                    <img class="icon lazy-loaded" :src="xlsxPng">
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                        <a href="javascript:void('')" class="link" data-function="apply_none">
+                                                            <div class="box">
+                                                                <h4 class="ellipsis">{{xls.info.name}}</h4>
+                                                            </div>
+                                                        </a>
+                                                        <div class='file-extension'>{{xls.info.type}}></div>
+                                                        <figcaption>
+                                                            <form action="#" method="post" class="download-form">
+                                                                <a title="Download" class="tip-right" href="javascript:void('')" onclick=""><i class="icon-download"></i></a>
+                                                                <a class="tip-right preview" title="Preview" data-url="#" data-toggle="lightbox" href="#previewLightbox"><i class=" icon-eye-open"></i></a>
+                                                                <a href="javascript:void('')" class="tip-left edit-button rename-file-paths rename-file" title="Rename" data-path=""><i class="icon-pencil"></i></a>
+                                                                <a href="javascript:void('')" class="tip-left erase-button delete-file" title="Erase" data-confirm="" data-path=""><i class="icon-trash"></i></a>
+                                                            </form>
+                                                        </figcaption>
+                                                    </figure>
+                                                </li>
+                                                <li v-if="ppt.info.type == 'application/vnd.ms-powerpoint'" v-for="ppt in files" class="ff-item-type-1 file">
+                                                    <figure v-bind="loadAttribute(ppt.info.name, curDir)" data-type="file">
+                                                        <a href="#" @click="LoadFile(curDir, ppt.info.name)" class="link" data-function="apply_none">
+                                                            <div class="img-precontainer">
+                                                                <div class="filetype">ppt</div>
+                                                                <div class="img-container">
+                                                                    <span></span>
+                                                                    <img class="icon lazy-loaded" :src="pptxPng">
+                                                                </div>
+                                                            </div>
+                                                            <div class="img-precontainer-mini">
+                                                                <div class="filetype ppt">ppt</div>
+                                                                <div class="img-container-mini">
+                                                                    <span></span>
+                                                                    <img class="icon lazy-loaded" :src="pptxPng">
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                        <a href="javascript:void('')" class="link" data-function="apply_none">
+                                                            <div class="box">
+                                                                <h4 class="ellipsis">{{ppt.info.name}}</h4>
+                                                            </div>
+                                                        </a>
+                                                        <div class='file-extension'>{{ppt.info.type}}></div>
+                                                        <figcaption>
+                                                            <form action="#" method="post" class="download-form">
+                                                                <a title="Download" class="tip-right" href="javascript:void('')" onclick=""><i class="icon-download"></i></a>
+                                                                <a class="tip-right preview" title="Preview" data-url="#" data-toggle="lightbox" href="#previewLightbox"><i class=" icon-eye-open"></i></a>
+                                                                <a href="javascript:void('')" class="tip-left edit-button rename-file-paths rename-file" title="Rename" data-path=""><i class="icon-pencil"></i></a>
+                                                                <a href="javascript:void('')" class="tip-left erase-button delete-file" title="Erase" data-confirm="" data-path=""><i class="icon-trash"></i></a>
+                                                            </form>
+                                                        </figcaption>
+                                                    </figure>
+                                                </li>
+
                                                 <li v-if="docx.info.type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'" v-for="docx in files" class="ff-item-type-1 file">
                                                     <figure v-bind="loadAttribute(docx.info.name, curDir)" data-type="file">
                                                         <a href="#" @click="LoadFile(curDir, docx.info.name)" class="link" data-function="apply_none">
@@ -385,7 +488,6 @@
                                                         </figcaption>
                                                     </figure>
                                                 </li>
-
                                                 <li v-if="pptx.info.type == 'application/vnd.openxmlformats-officedocument.presentationml.presentation'" v-for="pptx in files" class="ff-item-type-1 file">
                                                     <figure v-bind="loadAttribute(pptx.info.name, curDir)" data-type="file">
                                                         <a href="#" @click="LoadFile(curDir, pptx.info.name)" class="link" data-function="apply_none">
