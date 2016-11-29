@@ -37,7 +37,7 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
         var html = "<img src=\"" + files.url + "\" height=\"100%\" width=\"100%\">";
         $('.content-data').html(html);
     }
-    else if (type == "application/msword") {
+    else if (files.type == "application/msword") {
 
         soyut.Services.getInstance().getService("browserServer").generateDocKey({}, function (err, data) {
             initDocEditor(data.key, data.vkey);
@@ -49,8 +49,8 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                         height: "800px",
                         documentType: "text",
                         document: {
-                            title: name,
-                            url: url,
+                            title: files.name,
+                            url: files.url,
                             key: docKey,
                             vkey: docVkey,
                             permissions: {
@@ -73,7 +73,7 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
         });
 
     }
-    else if (type == "application/vnd.ms-excel") {
+    else if (files.type == "application/vnd.ms-excel") {
 
         soyut.Services.getInstance().getService("browserServer").generateSheetKey({}, function (err, data) {
             initSheetEditor(data.key, data.vkey);
@@ -84,8 +84,8 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                         height: "800px",
                         documentType: "spreadsheet",
                         document: {
-                            title: name,
-                            url: url,
+                            title: files.name,
+                            url: files.url,
                             key: docKey,
                             vkey: docVkey,
                             permissions: {
@@ -108,7 +108,7 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
         });
 
     }
-    else if (type == "application/vnd.ms-powerpoint") {
+    else if (files.type == "application/vnd.ms-powerpoint") {
         soyut.Services.getInstance().getService("browserServer").generatePresentationKey({}, function (err, data) {
             initPresentationEditor(data.key, data.vkey);
             function initPresentationEditor(docKey, docVkey) {
@@ -118,8 +118,8 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                         height: "800px",
                         documentType: "presentation",
                         document: {
-                            title: name,
-                            url: url,
+                            title: files.name,
+                            url: files.url,
                             key: docKey,
                             vkey: docVkey,
                             permissions: {
