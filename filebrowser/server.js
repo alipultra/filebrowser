@@ -56,28 +56,54 @@ httpServer.listen(config.port, function () {
             resCallback(false, 'localhost:' + config.port)
         });
     };
-
     methods.generateDocKey = function  (authServerUrl, remoteSocket, reqMsg, resCallback) {
-        var key = randomString.generate(12);
-        var vKey = randomString.generate(24);
+        var key = "doc" + randomString.generate(12);
+        var vKey = "doc" + randomString.generate(24);
+        var docKey = {
+            key : key,
+            vkey: vKey
+        };
+        resCallback(false, docKey);
+    };
+    methods.generateSheetKey = function  (authServerUrl, remoteSocket, reqMsg, resCallback) {
+        var key = "xls" + randomString.generate(12);
+        var vKey = "xls" + randomString.generate(24);
+        var docKey = {
+            key : key,
+            vkey: vKey
+        };
+        resCallback(false, docKey);
+    };
+    methods.generatePresentationKey = function  (authServerUrl, remoteSocket, reqMsg, resCallback) {
+        var key = "ppt" + randomString.generate(12);
+        var vKey = "ppt" + randomString.generate(24);
+        var docKey = {
+            key : key,
+            vkey: vKey
+        };
+        resCallback(false, docKey);
+    };
+    methods.generateDocxKey = function  (authServerUrl, remoteSocket, reqMsg, resCallback) {
+        var key = "docx" + randomString.generate(12);
+        var vKey = "docx" + randomString.generate(24);
         var docKey = {
            key : key,
            vkey: vKey
         };
         resCallback(false, docKey);
     };
-    methods.generateSheetKey = function  (authServerUrl, remoteSocket, reqMsg, resCallback) {
-        var key = randomString.generate(12);
-        var vKey = randomString.generate(24);
+    methods.generateSheetxKey = function  (authServerUrl, remoteSocket, reqMsg, resCallback) {
+        var key = "xlsx" + randomString.generate(12);
+        var vKey = "xlsx" + randomString.generate(24);
         var docKey = {
           key : key,
           vkey: vKey
         };
         resCallback(false, docKey);
     };
-    methods.generatePresentationKey = function  (authServerUrl, remoteSocket, reqMsg, resCallback) {
-      var key = randomString.generate(12);
-      var vKey = randomString.generate(24);
+    methods.generatePresentationxKey = function  (authServerUrl, remoteSocket, reqMsg, resCallback) {
+      var key = "pptx" + randomString.generate(12);
+      var vKey = "pptx" + randomString.generate(24);
       var docKey = {
         key : key,
         vkey: vKey
