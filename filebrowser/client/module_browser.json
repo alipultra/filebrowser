@@ -3,6 +3,7 @@
   "appName":"Browser",
   "version":"1.0.0",
   "isMultiInstance":true,
+  "icon":"icon.png",
   "startup" : false,
   "isWidget" : false,
   "requiredPolicies":["browser-admin"],
