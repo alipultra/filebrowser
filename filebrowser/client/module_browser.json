@@ -1,6 +1,6 @@
 {
   "appId":"soyut.module.browser",
-  "appName":"Browser",
+  "appName":"File Browser",
   "version":"1.0.0",
   "isMultiInstance":true,
   "icon":"icon.png",
@@ -10,7 +10,7 @@
   "activities":[
     {
       "class":"soyut.module.browser.main",
-      "title":"Browser",
+      "title":"File Browser",
       "requiredPolicies":["browser-admin"],
       "launcher" : true,
       "libraryScript":[
