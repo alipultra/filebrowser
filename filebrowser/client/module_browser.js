@@ -13,9 +13,11 @@ var browser_boot = function(browserService){
         if(!err)
             builder.build()
     });
+    soyut.Event.getInstance().invokeSystemEvent("activateModule", "browserServer");
   });
 };
 
+soyut.Event.getInstance().invokeSystemEvent("registerModule", "browserServer");
 soyut.Services.getInstance().subscribeOnAttachService("browserServer", function(browserService){
   browser_boot(browserService)
 });
