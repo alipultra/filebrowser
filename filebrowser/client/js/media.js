@@ -44,6 +44,16 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
         $(".breadcrumb").width() + c;
     }
     var contextActions = {
+        import: function (a) {
+            var sourcePath = a.dir + a.name;
+            var targetPath = getCDir + a.name;
+
+            fileSystem.mp_get(a.volume, sourcePath, targetPath, function(err, res){
+                //if(!err) {
+                    ReloadImportSelected();
+                //}
+            });
+        },
         copy: function (a) {
             var dir = '';
             if (a.dir == '') {
@@ -52,9 +62,9 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
             else {
                 dir = a.dir + '/';
             }
-            soyut.Services.getInstance().getService("browserServer").FileAction_searchCopy({session: soyut.Session.id, role: soyut.Session.role.id}, function (err, data) {
+            browserService.FileAction_searchCopy({session: soyut.Session.id, role: soyut.Session.role.id}, function (err, data) {
                 if(data.length > 0){
-                    soyut.Services.getInstance().getService("browserServer").FileAction_updateCopy({
+                    browserService.FileAction_updateCopy({
                         id: data[0].id,
                         path: dir+ a.name
                     }, function (err, msg) {
@@ -64,7 +74,7 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                     })
                 }
                 else {
-                    soyut.Services.getInstance().getService("browserServer").FileAction_copy({
+                    browserService.FileAction_copy({
                         session: soyut.Session.id,
                         role: soyut.Session.role.id,
                         path: dir+ a.name,
@@ -126,15 +136,26 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
         }
     }
 
-    function reloadFolder(dir, target) {
-        if(getFileExtension(target)){
-            console.log("file")
-            app.loadServer();
-        }
-        else {
-            console.log("folder")
-            app.loadServer();
-        }
+    function reloadFolder(dir) {
+        // var directory = {
+        //     "currentDir": currentDir,
+        //     "dir": dir
+        // };
+        //
+        // var activity = getActivityInstance();
+        // activity.context.invoke('folder_created', directory);
+        // activity.window.close();
+    }
+
+    function ReloadImportSelected() {
+        var directory = {
+            "currentDir": getCDir,
+            "dir": getDir
+        };
+
+        var activity = getActivityInstance();
+        activity.context.invoke('media_selected', directory);
+        activity.window.close();
     }
 
     function getFileExtension(fname) {
@@ -159,11 +180,16 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                     var m = "clicked: " + key + " value " + $(this).attr('data-name');
                     d = {
                         "name": $(this).attr('data-name'),
-                        "dir": $(this).attr('data-dir')
+                        "dir": $(this).attr('data-dir'),
+                        "volume": $(this).attr('data-volume')
                     };
                     contextActions[key](d);
                 },
                 items: {
+                    "import": {
+                        name: "Import",
+                        icon: "import"
+                    },
                     "cut": {
                         name: "Cut",
                         icon: "cut"
@@ -186,7 +212,7 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
         }
     }
 
-    function loadMainContextMenu(val) {
+    function loadDeviceContextMenu(val) {
         if(val != '') {
             $(".main-browser").contextMenu(true);
             $.contextMenu({
@@ -259,7 +285,7 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                 _this.$set(_this, 'dir', '');
                 _this.$set(_this, 'files', files);
 
-                loadMainContextMenu(menuPaste);
+                loadDeviceContextMenu(menuPaste);
                 $(getInstanceID('browser-loader')).fadeOut('fast');
             },
             LoadFolder: function (volume, currentDir, i) {
@@ -287,7 +313,7 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                     _this.$set(_this, 'curDir', curdir + dir);
 
                     _this.$set(_this, 'files', files);
-                    loadMainContextMenu(curdir + dir);
+                    loadDeviceContextMenu(curdir + dir);
 
                     $(getInstanceID('browser-loader')).fadeOut('fast');
                 });
@@ -468,7 +494,7 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
 
                 _this.LoadFolder(val.volume, parentDir, targetFolder);
             },
-            loadContextMenu: function(val){
+            getContextMenu: function(val){
                 deviceContextMenu(val)
             },
             loadMainAttribute: function (curDir) {
@@ -479,11 +505,12 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                 };
                 return attr;
             },
-            loadAttribute: function(val, curDir){
+            loadAttribute: function(val, curDir, volume){
                 var attr;
                 attr = {
                     'data-name' : val,
-                    'data-dir': curDir
+                    'data-dir': curDir,
+                    'data-volume': volume
                 };
                 return attr;
             },

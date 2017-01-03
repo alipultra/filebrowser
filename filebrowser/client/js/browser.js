@@ -40,7 +40,6 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
     }
     var contextActions = {
         copy: function (a) {
-            console.log("ttipe "+a.type);
             browserService.FileAction_searchCopy({session: soyut.Session.id, role: soyut.Session.role.id}, function (err, data) {
                 if(data.length > 0){
                     browserService.FileAction_updateCopy({
@@ -346,7 +345,16 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                         dir: dir
                     }, activity);
                     activity.on('media_selected', function (activity) {
-
+                        var resdir = activity.currentDir.substr(0, activity.currentDir.lastIndexOf("/"));
+                        var cresdir = resdir.substr(0, resdir.lastIndexOf("/"));
+                        var targetFolder = '';
+                        if(cresdir!=''){
+                            targetFolder = cresdir + '/';
+                        }
+                        else {
+                            targetFolder = cresdir;
+                        }
+                        _this.LoadFolder(targetFolder, activity.dir);
                     });
                 });
             },

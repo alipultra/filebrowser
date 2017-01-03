@@ -99,8 +99,8 @@
                                                     </figure>
                                                 </li>
 
-                                                <li v-if="loadFromDevice(folder.isDirectory, folder.name)" v-for="folder in files" class="dir" v-bind="loadContextMenu(folder)">
-                                                    <figure v-bind="loadAttribute(folder.name, curDir)" class="directory" data-type="dir">
+                                                <li v-if="loadFromDevice(folder.isDirectory, folder.name)" v-for="folder in files" class="dir" v-bind="getContextMenu(folder)">
+                                                    <figure v-bind="loadAttribute(folder.name, curDir, volumes)" class="directory" data-type="dir">
                                                         <input v-if="folder.name == '..'" type="hidden" class="path" value=""/>
                                                         <input v-if="folder.name == '..'" type="hidden" class="path_thumb" value=""/>
                                                         <a class="folder-link" href="#" @click="LoadFolder(volumes, curDir, folder.name)">
@@ -135,7 +135,7 @@
                                                 </li>
 
                                                 <li v-if="device.isDevice == true" v-for="device in files" class="dir">
-                                                    <figure v-bind="loadAttribute(device.name, curDir)" class="directory" data-type="dir">
+                                                    <figure v-bind="loadAttribute(device.name, curDir, volumes)" class="directory" data-type="dir">
                                                         <input v-if="device.name == '..'" type="hidden" class="path" value=""/>
                                                         <input v-if="device.name == '..'" type="hidden" class="path_thumb" value=""/>
                                                         <a class="folder-link" href="#" @click="LoadFolder(device.path, curDir, '')">
@@ -170,8 +170,8 @@
                                                 </li>
 
 
-                                                <li v-if="loadFromDevice(file.isFile, file.name)" v-for="file in files" v-bind="loadContextMenu(file)" class="ff-item-type-1 file">
-                                                    <figure v-bind="loadAttribute(file.name, curDir)" data-type="file">
+                                                <li v-if="loadFromDevice(file.isFile, file.name)" v-for="file in files" v-bind="getContextMenu(file)" class="ff-item-type-1 file">
+                                                    <figure v-bind="loadAttribute(file.name, curDir, volumes)" data-type="file">
                                                         <a href="#" @click="LoadFile(volumes, curDir, file.name)" class="link" data-function="apply_none">
                                                             <div class="img-precontainer">
                                                                 <div class="filetype">{{getFileType(file.type)}}</div>
