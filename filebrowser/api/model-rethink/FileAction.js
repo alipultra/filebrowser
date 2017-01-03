@@ -11,6 +11,9 @@ module.exports = {
         },
         actions: {
             enum:['copy', 'cut']
+        },
+        type: {
+            enum:['file', 'dir']
         }
     }
 };

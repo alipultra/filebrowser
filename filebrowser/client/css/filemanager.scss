@@ -1362,8 +1362,18 @@
 .context-menu-item.icon-edit {
   background-image: url(../img/file_edit.png)
 }
+.context-menu-icon-cut {
+  background-image: url(../img/cut.png);
+  background-repeat: no-repeat;
+  background-position: left;
+}
 .context-menu-item.icon-cut {
   background-image: url(../img/cut.png)
+}
+.context-menu-icon-copy {
+  background-image: url(../img/copy.png);
+  background-repeat: no-repeat;
+  background-position: left;
 }
 .context-menu-item.icon-copy {
   background-image: url(../img/copy.png)
@@ -1392,11 +1402,19 @@
 .context-menu-item.icon-paste {
   background-image: url(../img/page_white_paste.png)
 }
+.context-menu-icon-paste {
+
+}
 .context-menu-item.icon-clipboard-apply {
   background-image: url(../img/clipboard_apply.png)
 }
 .context-menu-item.icon-delete {
-  background-image: url(../img/page_white_delete.png)
+  background-image: url(../img/delete.png)
+}
+.context-menu-icon-delete {
+  background-image: url(../img/delete.png);
+  background-repeat: no-repeat;
+  background-position: left;
 }
 .context-menu-item.icon-add {
   background-image: url(../img/page_white_add.png)
@@ -1406,6 +1424,11 @@
 }
 .context-menu-item.icon-info {
   background-image: url(../img/info.png)
+}
+.context-menu-icon-info {
+  background-image: url(../img/info.png);
+  background-repeat: no-repeat;
+  background-position: left;
 }
 .context-menu-item.icon-extract {
   background-image: url(../img/zip.png)

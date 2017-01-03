@@ -1,3 +1,8 @@
+var getCDir = getParam('currentDir');
+var getDir = getParam('dir');
+
+console.log("cur "+getCDir+" dir "+getDir);
+
 var browserService = soyut.Services.getInstance().getService("browserServer");
 soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, function (err, data) {
 
@@ -40,14 +45,18 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
     }
     var contextActions = {
         copy: function (a) {
-            console.log("ttipe "+a.type);
-            browserService.FileAction_searchCopy({session: soyut.Session.id, role: soyut.Session.role.id}, function (err, data) {
+            var dir = '';
+            if (a.dir == '') {
+                dir = '/';
+            }
+            else {
+                dir = a.dir + '/';
+            }
+            soyut.Services.getInstance().getService("browserServer").FileAction_searchCopy({session: soyut.Session.id, role: soyut.Session.role.id}, function (err, data) {
                 if(data.length > 0){
-                    browserService.FileAction_updateCopy({
+                    soyut.Services.getInstance().getService("browserServer").FileAction_updateCopy({
                         id: data[0].id,
-                        path: a.dir+ a.name,
-                        actions: 'copy',
-                        type: a.type
+                        path: dir+ a.name
                     }, function (err, msg) {
                         console.log(msg);
                         if (!err) {
@@ -55,12 +64,12 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                     })
                 }
                 else {
-                    browserService.FileAction_copy({
+                    soyut.Services.getInstance().getService("browserServer").FileAction_copy({
                         session: soyut.Session.id,
                         role: soyut.Session.role.id,
-                        path: a.dir + a.name,
-                        actions: 'copy',
-                        type: a.type
+                        path: dir+ a.name,
+                        actions: 'copy'
+
                     },function(err, msg) {
                         console.log(msg);
                         if (!err) {
@@ -70,73 +79,34 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
             })
         },
         cut: function (a) {
-            browserService.FileAction_searchCopy({session: soyut.Session.id, role: soyut.Session.role.id}, function (err, data) {
-                if(data.length > 0){
-                    browserService.FileAction_updateCopy({
-                        id: data[0].id,
-                        path: a.dir+ a.name,
-                        actions: 'cut',
-                        type: a.type
-                    }, function (err, msg) {
-                        console.log(msg);
-                        if (!err) {
-                        }
-                    })
-                }
-                else {
-                    browserService.FileAction_copy({
-                        session: soyut.Session.id,
-                        role: soyut.Session.role.id,
-                        path: a.dir + a.name,
-                        actions: 'cut',
-                        type: a.type
-                    },function(err, msg) {
-                        console.log(msg);
-                        if (!err) {
-                        }
-                    })
-                }
-            })
+            //l(a, "cut");
+            console.log(a);
         },
         paste: function (a) {
-            browserService.FileAction_searchCopy({session: soyut.Session.id, role: soyut.Session.role.id}, function (err, data) {
+            var dir = '';
+            if (a.dir == '') {
+                dir = '/';
+            }
+            else {
+                dir = a.dir + '/';
+            }
+            soyut.Services.getInstance().getService("browserServer").FileAction_searchCopy({session: soyut.Session.id, role: soyut.Session.role.id}, function (err, data) {
                 if (data.length > 0) {
-                    if(data[0].type == 'file'){
-                        var srcPath = data[0].path;
-                        var n = srcPath.lastIndexOf('/');
-                        var cpath = srcPath.substring(n + 1);
-                        var tgtPath = a.dir + cpath;
-
-                        if(data[0].actions == 'copy') {
-                            fileSystem.cp(srcPath, tgtPath, function (err, result) {
-                                if (!err) {
-                                    browserService.FileAction_deleteAction({id: data[0].id}, function (err, del) {
-                                        reloadFolder(a.dir);
-                                    })
-                                }
-                            });
-                        }
-                        else {
-                            fileSystem.mv(srcPath, tgtPath, function (err, result) {
-                                if (!err) {
-                                    browserService.FileAction_deleteAction({id: data[0].id}, function (err, del) {
-                                        reloadFolder(a.dir);
-                                    })
-                                }
-                            });
-                        }
-                    }
-                    else {
-                        console.log("copi folder ");
-                    }
+                    fileSystem.cp(data[0].path, dir + a.name);
+                    app.loadServer();
                 }
             });
         },
         delete: function (a) {
-            var path = a.dir + a.name;
-            fileSystem.rm(path, function (err, result) {
-                reloadFolder(a.dir);
-            });
+            var dir = '';
+            if (a.dir == '') {
+                dir = '/';
+            }
+            else {
+                dir = a.dir + '/';
+            }
+            fileSystem.rm(dir + a.name);
+            reloadFolder(dir, a.name);
         },
         rename: function (a) {
             var app = getAppInstance();
@@ -156,21 +126,15 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
         }
     }
 
-    function reloadFolder(dir) {
-        var resdir = dir.substr(0, dir.lastIndexOf("/"));
-        var cresdir = resdir.substr(0, resdir.lastIndexOf("/"));
-        var curFolder = '';
-        if(cresdir!=''){
-            curFolder = cresdir + '/';
+    function reloadFolder(dir, target) {
+        if(getFileExtension(target)){
+            console.log("file")
+            app.loadServer();
         }
         else {
-            curFolder = cresdir;
+            console.log("folder")
+            app.loadServer();
         }
-
-        var n = resdir.lastIndexOf('/');
-        var tgtFolder = resdir.substring(n + 1)+'/';
-
-        app.LoadFolder(curFolder, tgtFolder);
     }
 
     function getFileExtension(fname) {
@@ -186,7 +150,7 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
         return extension;
     }
 
-    function contextMenu(val){
+    function deviceContextMenu(val){
         if(val.hasOwnProperty('isDirectory') || val.hasOwnProperty('isFile')){
             $.contextMenu({
                 selector: "figure[data-name='" + val.name + "']",
@@ -195,17 +159,11 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                     var m = "clicked: " + key + " value " + $(this).attr('data-name');
                     d = {
                         "name": $(this).attr('data-name'),
-                        "dir": $(this).attr('data-dir'),
-                        "type" : $(this).attr('data-type')
+                        "dir": $(this).attr('data-dir')
                     };
                     contextActions[key](d);
                 },
                 items: {
-                    "new": {
-                        name: "New File",
-                        icon: "new"
-                    },
-                    "sep1": "---------",
                     "cut": {
                         name: "Cut",
                         icon: "cut"
@@ -260,23 +218,15 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
         props:['navigations']
     });
     var app = new Vue({
-        el: '#main-content',
+        el: '#media-content',
         data: {
             files: '',
             curDir: '',
             dir: '',
+            volumes: '',
             navigations: '',
             folderPng: 'https://' + browserService.origin + '/img/ico/folder.png',
             backPng: 'https://' + browserService.origin + '/img/ico/folder_back.png',
-            txtPng: 'https://' + browserService.origin + '/img/ico/txt.jpg',
-            pdfPng: 'https://' + browserService.origin + '/img/ico/pdf.jpg',
-            mp4Png: 'https://' + browserService.origin + '/img/ico/mp4.jpg',
-            mp3Png: 'https://' + browserService.origin + '/img/ico/mp3.jpg',
-            docxPng: 'https://' + browserService.origin + '/img/ico/docx.jpg',
-            xlsxPng: 'https://' + browserService.origin + '/img/ico/xlsx.jpg',
-            pptxPng: 'https://' + browserService.origin + '/img/ico/pptx.jpg',
-            devicePng: 'https://' + browserService.origin + '/img/ico/dmg.jpg',
-            etcPng: 'https://' + browserService.origin + '/img/ico/default.jpg',
             cdir:'',
             bdir:''
         },
@@ -286,16 +236,33 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                 var _this = this;
                 var menuPaste = '';
 
-                fileSystem.ls('/', function (err, files) {
-                    _this.$set(_this, 'curDir', '');
-                    _this.$set(_this, 'dir', '');
-                    _this.$set(_this, 'files', files);
+                var files = [];
+                var volumes = fileSystem.mp_list;
+                volumes.forEach(function (ls) {
+                    var n = ls.lastIndexOf('/');
+                    var name = ls.substring(n + 1);
 
-                    loadMainContextMenu(menuPaste);
-                    $(getInstanceID('browser-loader')).fadeOut('fast');
+                    var dir = {
+                        isDirectory: false,
+                        isFile: false,
+                        isDevice: true,
+                        name: name,
+                        path: ls,
+                        size:0,
+                        type: "device"
+                    };
+                    files.push(dir);
                 });
+
+                _this.$set(_this, 'curDir', '');
+                _this.$set(_this, 'navigations', '');
+                _this.$set(_this, 'dir', '');
+                _this.$set(_this, 'files', files);
+
+                loadMainContextMenu(menuPaste);
+                $(getInstanceID('browser-loader')).fadeOut('fast');
             },
-            LoadFolder: function (currentDir, i) {
+            LoadFolder: function (volume, currentDir, i) {
                 $(getInstanceID('browser-loader')).fadeIn('fast');
                 var _this = this;
                 var curdir = '';
@@ -305,15 +272,22 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                 else {
                     curdir = currentDir;
                 }
+                var dir = '';
+                if(i!= ''){
+                    dir = i + '/';
+                }
+                else {
+                    dir = i;
+                }
 
-                //console.log("load server "+curdir+i);
-                _this.LoadNavigation(curdir, curdir+i);
-                fileSystem.ls(curdir + i, function (err, files) {
-                    _this.$set(_this, 'dir', i);
-                    _this.$set(_this, 'curDir', curdir + i);
+                _this.LoadNavigation(volume, curdir, curdir+dir);
+                fileSystem.mp_ls(volume, curdir + dir, function (err, files) {
+                    _this.$set(_this, 'volumes', volume);
+                    _this.$set(_this, 'dir', dir);
+                    _this.$set(_this, 'curDir', curdir + dir);
 
                     _this.$set(_this, 'files', files);
-                    loadMainContextMenu(curdir + i);
+                    loadMainContextMenu(curdir + dir);
 
                     $(getInstanceID('browser-loader')).fadeOut('fast');
                 });
@@ -355,11 +329,8 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
 
                 var resdir = currentDir.substr(0, currentDir.lastIndexOf("/"));
                 var cresdir = resdir.substr(0, resdir.lastIndexOf("/"));
-                //var lastSlash = cresdir.lastIndexOf("/");
 
                 var currentFolder = cresdir.substr(0, cresdir.lastIndexOf("/"));
-
-                console.log("cur "+ currentFolder +" target "+ dir);
 
                 var app = getAppInstance();
                 var activitylistener = getActivityInstanceAsync();
@@ -375,56 +346,55 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                         else {
                             targetFolder = cresdir;
                         }
-                        console.log("cur "+targetFolder+" tgt "+activity.dir);
                         _this.LoadFolder(targetFolder, activity.dir);
                     })
                 });
             },
             getParentFolder: function (curDir) {
                 var _this = this;
+
                 var resdir = curDir.substr(0, curDir.lastIndexOf("/"));
-                var cresdir = resdir.substr(0, resdir.lastIndexOf("/"));
-                var lastSlash = cresdir.lastIndexOf("/");
+                var cdir = resdir.substr(0, resdir.lastIndexOf("/"));
+                var msum = cdir.substr(0, cdir.lastIndexOf("/")+1);
 
-                var currentFolder = cresdir.substr(0, cresdir.lastIndexOf("/"));
-                var targetFolder = cresdir.substring(lastSlash+1);
-                var destFolder = '';
-                if(targetFolder != ''){
-                    destFolder = targetFolder + '/';
+                var n = cdir.lastIndexOf('/');
+                var targetFolder = cdir.substring(n + 1);
+
+                var parentFolder = '';
+                if(n < 0){
+                    if(resdir == ''){
+                        parentFolder = '';
+                    }
+                    else{
+                        parentFolder = '/'
+                    }
                 }
-                else {
-                    destFolder = targetFolder;
-                }
-                var sourceFolder = '';
-                if(currentFolder != ''){
-                    sourceFolder = currentFolder + '/';
-                }
-                else {
-                    sourceFolder = currentFolder;
+                else{
+                    parentFolder = msum;
                 }
 
-                _this.$set(_this, 'cdir', sourceFolder);
-                _this.$set(_this, 'bdir', destFolder);
+                _this.$set(_this, 'cdir', parentFolder);
+                _this.$set(_this, 'bdir', targetFolder);
             },
             setBackButton: function (curDir, dir) {
                 var _this = this;
-                if(curDir == "" || curDir =="/"){
+                if(curDir == ""){
                     return false;
                 }
                 else {
                     return true;
                 }
             },
-            BackBrowser: function (curDir, dir) {
+            BackBrowser: function (volumes, curDir, dir) {
                 var _this = this;
                 if(curDir == "" && dir == ""){
                     _this.loadServer();
                 }
                 else {
-                    _this.LoadFolder(curDir, dir);
+                    _this.LoadFolder(volumes, curDir, dir);
                 }
             },
-            LoadNavigation: function (dir, curDir) {
+            LoadNavigation: function (volume, dir, curDir) {
                 //console.log(dir+" cur "+curDir);
                 var _this = this;
                 var titleLink = _this.removeLastSlash(curDir);
@@ -432,17 +402,25 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                 var lsDir = titleLink.split('/');
                 var fsDir = textLink.split('/');
                 var nav = [];
-                var mnav = [];
+
+                var n = volume.lastIndexOf('/');
+                var medianame = volume.substring(n + 1);
+                nav.push({
+                    volume: volume,
+                    title: medianame,
+                    link: ''
+                });
+
                 for(var x = 0; x < lsDir.length; x++){
                     if(x>0){
                         var a = _this.checkArray(x, fsDir[x], titleLink);
                         nav.push({
+                            volume: volume,
                             title:lsDir[x],
                             link:a
                         });
                     }
                 }
-                //console.log(JSON.stringify(nav))
                 var link = nav;
                 _this.$set(_this, 'navigations', link);
             },
@@ -469,6 +447,10 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
             },
             redirectBrowser: function (val) {
                 var _this = this;
+
+                var n = val.volume.lastIndexOf('/');
+                var medianame = val.volume.substring(n + 1);
+
                 var parentDir = '';
                 if(val.link == ''){
                     parentDir = '/';
@@ -476,12 +458,18 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                 else {
                     parentDir = val.link+'/';
                 }
-                var targetFolder = val.title + '/';
+                var targetFolder = '';
+                if(medianame == val.title) {
+                    targetFolder = '';
+                }
+                else {
+                    targetFolder = val.title;
+                }
 
-                _this.LoadFolder(parentDir, targetFolder);
+                _this.LoadFolder(val.volume, parentDir, targetFolder);
             },
             loadContextMenu: function(val){
-                contextMenu(val)
+                deviceContextMenu(val)
             },
             loadMainAttribute: function (curDir) {
                 var attr;
@@ -499,11 +487,7 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                 };
                 return attr;
             },
-            getFolderType: function(){
-                var imgSrc = 'https://' + browserService.origin + '/img/ico/folder.png';
-                return imgSrc;
-            },
-            loadFromServer: function (type, name) {
+            loadFromDevice: function (type, name) {
                 if(type){
                     var devChar = name.substring(0,1);
                     if(devChar != ".") {
@@ -514,8 +498,13 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                     return false;
                 }
             },
-            getFileName: function (name) {
-                return name.substring(0, name.length-1);
+            getFolderType: function(){
+                var imgSrc = 'https://' + browserService.origin + '/img/ico/folder.png';
+                return imgSrc;
+            },
+            getDeviceType: function(){
+                var imgSrc = 'https://' + browserService.origin + '/img/ico/dmg.jpg';
+                return imgSrc;
             },
             getFileType: function (type) {
                 switch (type) {
@@ -526,8 +515,6 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                     case "video/mp4":
                         return 'mp4';
                     case "audio/mp3":
-                        return 'mp3';
-                    case "audio/mpeg":
                         return 'mp3';
                     case "application/msword":
                         return 'doc';
@@ -541,10 +528,6 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                         return 'xlsx';
                     case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
                         return 'pptx';
-                    case "image/jpeg":
-                        return 'jpg';
-                    case "image/png":
-                        return 'png';
                     default:
                         return 'file';
                 }

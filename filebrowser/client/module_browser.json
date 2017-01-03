@@ -9,6 +9,21 @@
   "requiredPolicies":["browser-admin"],
   "activities":[
     {
+      "class":"soyut.module.app.browser.api",
+      "title":"Browser api",
+      "requiredPolicies":["browser-admin"],
+      "launcher" : false,
+      "libraryScript":[
+        {"name": "browser-api", "url":"/js/browser-api.js"}
+      ],
+      "instanceScript":[
+      ],
+      "styles":[
+      ],
+      "contents":[
+      ]
+    },
+    {
       "class":"soyut.module.browser.main",
       "title":"File Browser",
       "requiredPolicies":["browser-admin"],
@@ -105,6 +120,26 @@
       ],
       "contents":[
         {"name":"fviewer","url":"/App/fileviewer.html"}
+      ]
+    },
+    {
+      "class":"soyut.module.browser.media",
+      "title":"Media Browser",
+      "requiredPolicies":["browser-admin"],
+      "launcher" : false,
+      "externalUse": true,
+      "libraryScript":[
+        {"name":"mediacm","url":"/libs/contextMenu.min.js"}
+      ],
+      "instanceScript":[
+        {"name":"mediajs","url":"/js/media.js"}
+      ],
+      "styles":[
+        {"name":"mediacss","url":"/css/browser.css"},
+        {"name":"filemanagercss","url":"/css/filemanager.css"}
+      ],
+      "contents":[
+        {"name":"media","url":"/media.html"}
       ]
     }
   ]

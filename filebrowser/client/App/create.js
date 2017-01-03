@@ -1,6 +1,5 @@
 var currentDir = getParam('currentDir');
 var dir = getParam('dir');
-//$(getInstanceID('page-title')).html(a);
 
 $(getInstanceID("button-save")).click(function(event) {
     var name = $(getInstanceID("name-input")).val();
@@ -15,15 +14,18 @@ $(getInstanceID("button-save")).click(function(event) {
     }
     else {
         var targetdir = currentDir+"/"+name;
-        fileSystem.mkdir(targetdir);
-        var directory = {
-            "currentDir" : currentDir,
-            "dir": dir
-        }
+        //fileSystem.mkdir(targetdir);
+        fileSystem.mkdir(targetdir, function(err, res) {
+            console.log(err, res);
+            var directory = {
+                "currentDir": currentDir,
+                "dir": dir
+            };
 
-        var activity =  getActivityInstance();
-        activity.context.invoke('folder_created',directory);
-        activity.window.close();
+            var activity = getActivityInstance();
+            activity.context.invoke('folder_created', directory);
+            activity.window.close();
+        })
     }
 
 });
