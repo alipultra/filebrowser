@@ -25,9 +25,8 @@
                                                 <button class="tip btn clear-clipboard-btn" title="Clear Clipboard"><i class="rficon-clipboard-clear"></i></button>
                                             </div>
                                             <div class="span2 half view-controller">
-                                                <button class="btn tip" id="view0" @click="ChangeBrowserView()" data-value="0" title="Box View"><i class="ricon-th"></i></button>
-                                                <button class="btn tip btn-inverse" @click="ChangeBrowserView()" id="view1" data-value="1" title="List View"><i class="ricon-align-justify icon-white"></i></button>
-                                                <button class="btn tip" id="view2" @click="ChangeBrowserView()" data-value="2" title="Column List View"><i class="ricon-fire"></i></button>
+                                                <button class="btn tip" id="view0" @click="ChangeBrowserView('view0', 0)" data-name="view0" data-value="0" title="Box View"><i class="ricon-th"></i></button>
+                                                <button class="btn tip btn-inverse" @click="ChangeBrowserView('view1', 1)" data-name="view1" id="view1" data-value="1" title="List View"><i class="ricon-align-justify icon-white"></i></button>
                                             </div>
                                             <div class="span6 entire types">
                                                 <span>Filters:</span>

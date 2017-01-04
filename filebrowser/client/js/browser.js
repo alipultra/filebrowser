@@ -5,36 +5,6 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
 
     $.getScript(documentServerUrl + '/web-apps/apps/api/documents/api.js');
 
-    $(".view-controller button").on("click", function () {
-        console.log("aaa")
-        var b = $(this);
-
-        $(".view-controller button").removeClass('btn-inverse');
-        $(".view-controller i").removeClass("icon-white");
-        b.addClass("btn-inverse");
-        b.find("i").addClass("icon-white");
-
-        var val = b.attr("data-value");
-        ChangeView(val);
-
-    });
-
-    function ChangeView(a) {
-        var viewStatus = $(getInstanceID('view-status')).val();
-        $("ul.grid").removeClass('list-view' + viewStatus);
-        var c = a;
-        $(getInstanceID('view-status')).val(a);
-        $("ul.grid").addClass("list-view" + c);
-        console.log(a + " - " + viewStatus);
-        /*
-         $(".sorter-container").addClass("list-view" + c);
-         if(a >= 1) {
-         $("ul.grid li").css("width", 126);
-         $("ul.grid figure").css("width", 122);
-         }
-         */
-    }
-
     function p(c) {
         $(".breadcrumb").width() + c;
     }
@@ -649,9 +619,26 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                         return 'https://' + browserService.origin + '/img/ico/default.jpg';
                 }
             },
-            ChangeBrowserView: function () {
+            ChangeBrowserView: function(attr, val){
+                var _this = this;
+                $(".view-controller button").removeClass('btn-inverse');
+                $(".view-controller i").removeClass("icon-white");
+                // //
+                // var b = $(getInstanceID(attr));
+                // b.addClass("btn-inverse");
+                // b.find("i").addClass("icon-white");
+                // var dataval = b.attr("data-value");
 
-            }
+                _this.ChangeView(val);
+            },
+            ChangeView: function(a) {
+                var _this = this;
+                var viewStatus = $(getInstanceID('view-status')).val();
+                $("ul.grid").removeClass('list-view' + viewStatus);
+                var c = a;
+                $(getInstanceID('view-status')).val(a);
+                $("ul.grid").addClass("list-view" + c);
+            },
         }
     });
 
