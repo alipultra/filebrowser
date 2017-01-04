@@ -1,6 +1,8 @@
-var name = getParam('name');
+var currentDir = getParam('currentDir');
 var dir = getParam('dir');
-$(getInstanceID('name-input')).val(name);
+var datatype = getParam('type');
+
+$(getInstanceID('name-input')).val(dir);
 
 $(getInstanceID("button-save")).click(function(event) {
     var name = $(getInstanceID("name-input")).val();
@@ -14,12 +16,22 @@ $(getInstanceID("button-save")).click(function(event) {
         return false;
     }
     else {
-        var targetdir = currentDir+"/"+name;
-        fileSystem.mv(targetdir);
+        var srcdir = currentDir + dir;
+        var targetdir = currentDir + name;
 
-        var activity =  getActivityInstance();
-        activity.context.invoke('browser_renamed',directory);
-        activity.window.close();
+        //console.log("type "+datatype+" src "+srcdir+" tgt "+targetdir)
+
+        fileSystem.mv(srcdir, targetdir, function(err, res) {
+            console.log(err);
+            var directory = {
+                "currentDir": currentDir,
+                "dir": dir
+            };
+
+            var activity = getActivityInstance();
+            activity.context.invoke('browser_renamed', directory);
+            activity.window.close();
+        });
     }
 
 });

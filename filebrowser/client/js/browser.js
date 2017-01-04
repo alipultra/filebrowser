@@ -141,11 +141,11 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
             var app = getAppInstance();
             var activitylistener = getActivityInstanceAsync();
             activitylistener.then(function (activity) {
-                app.launchActivity("soyut.module.browser.rename.", {dir: a.dir, name: a.name}, activity);
+                app.launchActivity("soyut.module.browser.rename", {currentDir: a.dir, dir: a.name, type: a.type}, activity);
                 activity.on('browser_renamed', function (activity) {
-                    app.loadServer();
+                    reloadFolder(activity.currentDir);
                 })
-            })
+            });
         },
         chmod: function (a) {
             h(a);
@@ -216,6 +216,10 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                     "delete": {
                         name: "Delete",
                         icon: "delete"
+                    },
+                    "rename": {
+                        name: "Rename",
+                        icon: "rename"
                     },
                     "sep1": "---------",
                     "info": {
@@ -361,14 +365,6 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
             LoadFolderForm: function (currentDir, dir) {
                 var _this = this;
 
-                var resdir = currentDir.substr(0, currentDir.lastIndexOf("/"));
-                var cresdir = resdir.substr(0, resdir.lastIndexOf("/"));
-                //var lastSlash = cresdir.lastIndexOf("/");
-
-                var currentFolder = cresdir.substr(0, cresdir.lastIndexOf("/"));
-
-                console.log("cur "+ currentFolder +" target "+ dir);
-
                 var app = getAppInstance();
                 var activitylistener = getActivityInstanceAsync();
                 activitylistener.then(function (activity) {
@@ -387,6 +383,79 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                         _this.LoadFolder(targetFolder, activity.dir);
                     })
                 });
+            },
+            LoadFileForm: function (currentDir, dir) {
+                var _this = this;
+
+                var app = getAppInstance();
+                var activitylistener = getActivityInstanceAsync();
+                activitylistener.then(function (activity) {
+                    app.launchActivity("soyut.module.browser.create.file", {currentDir: currentDir, dir: dir}, activity);
+                    activity.on('file_created', function (activity) {
+                        var resdir = activity.currentDir.substr(0, activity.currentDir.lastIndexOf("/"));
+                        var cresdir = resdir.substr(0, resdir.lastIndexOf("/"));
+                        var targetFolder = '';
+                        if(cresdir!=''){
+                            targetFolder = cresdir + '/';
+                        }
+                        else {
+                            targetFolder = cresdir;
+                        }
+                        console.log("cur "+targetFolder+" tgt "+activity.dir);
+                        _this.LoadFolder(targetFolder, activity.dir);
+
+                    })
+                });
+
+                // function getFile(url, callback) {
+                //     var xhr = new XMLHttpRequest();
+                //     xhr.open('GET', url, true);
+                //     xhr.responseType = 'blob';
+                //     xhr.onload = function(e) {
+                //         if (this.status == 200) {
+                //             // get binary data as a response
+                //             callback(false, this.response);
+                //         }
+                //     };
+                //     xhr.onerror = function (e) {
+                //         callback(true, e);
+                //     };
+                //     xhr.send();
+                // }
+                //
+                // var name = 'msfile.docx';
+                // var dataurl = 'https://localhost:50710/files/new.docx';
+                //
+                // soyut.storage.getStorageKeyAsync({userId: fileSystem.userid}).then(function(storageKey) {
+                //     var storagePath = "coba/"+name;
+                //     var fileUrl = 'https://localhost:5454/storage/' + storageKey + '/' + storagePath;
+                //
+                //     function getPosition(str, m, i) { return str.split(m, i).join(m).length; }
+                //
+                //     var safeUrl = dataurl.substring(0, 8) + "localhost" + dataurl.substring(getPosition(dataurl, ':', 2));
+                //
+                //     console.log(safeUrl);
+                //
+                //     // debugger;
+                //     getFile(safeUrl, function(err, dataBuffer) {
+                //         if (err) return;
+                //         soyut.storage.putAsync({
+                //             storageKey: storageKey,
+                //             path: storagePath,
+                //             dataBuffer: dataBuffer
+                //         }).then(function() {
+                //
+                //             console.log("sukse path "+fileUrl+" - "+safeUrl);
+                //             document.addEventListener('fileSystem.structureChange', function() {
+                //                 console.log("change")
+                //
+                //             }, false);
+                //
+                //
+                //         });
+                //     });
+                //
+                // });
             },
             getParentFolder: function (curDir) {
                 var _this = this;

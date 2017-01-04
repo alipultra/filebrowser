@@ -16,7 +16,6 @@ $(getInstanceID("button-save")).click(function(event) {
         var targetdir = currentDir+"/"+name;
         //fileSystem.mkdir(targetdir);
         fileSystem.mkdir(targetdir, function(err, res) {
-            console.log(err, res);
             var directory = {
                 "currentDir": currentDir,
                 "dir": dir
