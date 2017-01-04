@@ -1381,8 +1381,18 @@
 .context-menu-item.icon-rename {
   background-image: url(../img/rename.png)
 }
+.context-menu-icon-rename {
+  background-image: url(../img/rename.png);
+  background-repeat: no-repeat;
+  background-position: left;
+}
 .context-menu-item.icon-preview {
   background-image: url(../img/preview.png)
+}
+.context-menu-icon-preview {
+  background-image: url(../img/preview.png);
+  background-repeat: no-repeat;
+  background-position: left;
 }
 .context-menu-item.icon-dimension {
   background-image: url(../img/dimension.png)
@@ -1393,8 +1403,18 @@
 .context-menu-item.icon-label {
   background-image: url(../img/label.png)
 }
+.context-menu-icon-label {
+  background-image: url(../img/label.png);
+  background-repeat: no-repeat;
+  background-position: left;
+}
 .context-menu-item.icon-size {
   background-image: url(../img/size.png)
+}
+.context-menu-icon-size {
+  background-image: url(../img/size.png);
+  background-repeat: no-repeat;
+  background-position: left;
 }
 .context-menu-item.icon-download {
   background-image: url(../img/download.png)

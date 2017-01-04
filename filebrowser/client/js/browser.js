@@ -153,6 +153,39 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
         edit_text_file: function (a) {
             f(a);
         }
+    };
+
+    function loadFiletype(type) {
+        switch (type) {
+            case "text/plain":
+                return 'txt';
+            case "application/pdf":
+                return 'pdf';
+            case "video/mp4":
+                return 'mp4';
+            case "audio/mp3":
+                return 'mp3';
+            case "audio/mpeg":
+                return 'mp3';
+            case "application/msword":
+                return 'doc';
+            case "application/vnd.ms-excel":
+                return 'xls';
+            case "application/vnd.ms-powerpoint":
+                return 'ppt';
+            case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+                return 'docx';
+            case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+                return 'xlsx';
+            case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+                return 'pptx';
+            case "image/jpeg":
+                return 'jpg';
+            case "image/png":
+                return 'png';
+            default:
+                return 'file';
+        }
     }
 
     function reloadFolder(dir) {
@@ -200,11 +233,6 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                     contextActions[key](d);
                 },
                 items: {
-                    "new": {
-                        name: "New File",
-                        icon: "new"
-                    },
-                    "sep1": "---------",
                     "cut": {
                         name: "Cut",
                         icon: "cut"
@@ -225,6 +253,18 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                     "info": {
                         name: "Informasi",
                         icon: "info"
+                    },
+                    "name": {
+                        name: val.name,
+                        icon: "label"
+                    },
+                    "size": {
+                        name: val.size,
+                        icon: "size"
+                    },
+                    "type": {
+                        name: loadFiletype(val.type),
+                        icon: "preview"
                     }
                 }
             });
@@ -407,55 +447,6 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                     })
                 });
 
-                // function getFile(url, callback) {
-                //     var xhr = new XMLHttpRequest();
-                //     xhr.open('GET', url, true);
-                //     xhr.responseType = 'blob';
-                //     xhr.onload = function(e) {
-                //         if (this.status == 200) {
-                //             // get binary data as a response
-                //             callback(false, this.response);
-                //         }
-                //     };
-                //     xhr.onerror = function (e) {
-                //         callback(true, e);
-                //     };
-                //     xhr.send();
-                // }
-                //
-                // var name = 'msfile.docx';
-                // var dataurl = 'https://localhost:50710/files/new.docx';
-                //
-                // soyut.storage.getStorageKeyAsync({userId: fileSystem.userid}).then(function(storageKey) {
-                //     var storagePath = "coba/"+name;
-                //     var fileUrl = 'https://localhost:5454/storage/' + storageKey + '/' + storagePath;
-                //
-                //     function getPosition(str, m, i) { return str.split(m, i).join(m).length; }
-                //
-                //     var safeUrl = dataurl.substring(0, 8) + "localhost" + dataurl.substring(getPosition(dataurl, ':', 2));
-                //
-                //     console.log(safeUrl);
-                //
-                //     // debugger;
-                //     getFile(safeUrl, function(err, dataBuffer) {
-                //         if (err) return;
-                //         soyut.storage.putAsync({
-                //             storageKey: storageKey,
-                //             path: storagePath,
-                //             dataBuffer: dataBuffer
-                //         }).then(function() {
-                //
-                //             console.log("sukse path "+fileUrl+" - "+safeUrl);
-                //             document.addEventListener('fileSystem.structureChange', function() {
-                //                 console.log("change")
-                //
-                //             }, false);
-                //
-                //
-                //         });
-                //     });
-                //
-                // });
             },
             getParentFolder: function (curDir) {
                 var _this = this;
