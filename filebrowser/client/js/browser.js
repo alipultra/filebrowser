@@ -552,6 +552,54 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                     return false;
                 }
             },
+            LoadFilter: function (currentDir, i) {
+                var _this = this;
+                var resdir = currentDir.substr(0, currentDir.lastIndexOf("/"));
+                var cresdir = resdir.substr(0, resdir.lastIndexOf("/"));
+                var targetFolder = '';
+                if(cresdir!=''){
+                    targetFolder = cresdir + '/';
+                }
+                else {
+                    targetFolder = cresdir;
+                }
+
+                var curdir = '';
+                if (targetFolder == '') {
+                    curdir = '/';
+                }
+                else {
+                    curdir = targetFolder;
+                }
+
+                console.log("load server "+curdir+i);
+                _this.LoadNavigation(curdir, curdir+i);
+                var arrFiles = [];
+                fileSystem.ls(curdir + i, function (err, files) {
+                    console.log(files.length);
+                    for(var x in files){
+                        // var file = {
+                        //
+                        // };
+                        console.log("nama "+files[x].name);
+                    }
+
+                    // isDirectory: false,
+                    // isFile:true,
+                    // name: "xmb.pptx",
+                    // path: "coba/xmb.pptx",
+                    // size: 8463,
+                    // type: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                    // url: "https://localhost:5454/storage/6706ab67-81b5-405d-91fb-a0d215d12de9/coba/xmb.pptx",
+                    // _this.$set(_this, 'dir', i);
+                    // _this.$set(_this, 'curDir', curdir + i);
+                    //
+                    // _this.$set(_this, 'files', files);
+                    // loadMainContextMenu(curdir + i);
+                    //
+                    // $(getInstanceID('browser-loader')).fadeOut('fast');
+                });
+            },
             getFileName: function (name) {
                 return name.substring(0, name.length-1);
             },

@@ -31,7 +31,7 @@
                                             <div class="span6 entire types">
                                                 <span>Filters:</span>
                                                 <input id="select-type-1" name="radio-sort" type="radio" data-item="ff-item-type-1" checked="checked"  class="hide"  />
-                                                <label id="ff-item-type-1" title="Files" for="select-type-1" class="tip btn ff-label-type-1"><i class="ricon-file"></i></label>
+                                                <label id="ff-item-type-1" title="Files" for="select-type-1" class="tip btn ff-label-type-1" @click="LoadFilter(curDir, dir, 'file')"><i class="ricon-file"></i></label>
                                                 <input id="select-type-2" name="radio-sort" type="radio" data-item="ff-item-type-2" class="hide"  />
                                                 <label id="ff-item-type-2" title="Images" for="select-type-2" class="tip btn ff-label-type-2"><i class="ricon-picture"></i></label>
                                                 <input id="select-type-3" name="radio-sort" type="radio" data-item="ff-item-type-3" class="hide"  />
