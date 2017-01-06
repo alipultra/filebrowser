@@ -8,7 +8,7 @@ module.exports = {
     sslKey  : "./keys/private-localhost.key",
     sslCert : "./keys/cert-localhost.crt",
     sslCA   : "./keys/tesynergy-root-ca.crt",
-    docServerUrl : 'https://10.241.36.64',
+    docServerUrl : 'https://doceditor.soyut',
     rethink:{
         host:'172.16.1.2',
         port:28015,
