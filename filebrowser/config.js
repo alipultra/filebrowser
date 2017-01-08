@@ -10,7 +10,7 @@ module.exports = {
     sslCA   : "./keys/tesynergy-root-ca.crt",
     docServerUrl : 'https://doceditor.soyut',
     rethink:{
-        host:'172.16.1.2',
+        host:'db.soyut',
         port:28015,
         database:'SOYUT'
     },
@@ -22,7 +22,7 @@ module.exports = {
         connections: {
             local: {
                 adapter: 'mongo',
-                host: '172.16.1.2',
+                host: 'db.soyut',
                 port: 27017,
 
                 database: 'SOYUT'
