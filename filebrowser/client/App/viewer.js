@@ -8,8 +8,6 @@ var browserService = soyut.Services.getInstance().getService("browserServer");
     $(getInstanceID('tes')).html(path);
 
     fileSystem.stat(path, function (err, files) {
-        console.log("load file "+files.name)
-
         if (files.type == "application/pdf") {
 
             var html = "<iframe title=\"PDF\" src=\"" + files.url + "\" frameborder=\"1\" scrolling=\"auto\" height=\"800\" width=\"850\" ></iframe>";
