@@ -338,7 +338,10 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                     dir = '/';
                 }
                 else {
-                    dir = currentDir + '/';
+                    dir = currentDir;
+                    if (dir[dir.length-1] != '/') {
+                        dir += '/';
+                    }
                 }
 
                 var path = dir + i;
