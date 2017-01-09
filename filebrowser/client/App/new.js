@@ -31,7 +31,16 @@ $(getInstanceID("button-save")).click(function(event) {
             xhr.send();
         }
 
-        var dataurl = 'https://localhost:50710/files/new.docx';
+        var dataurl = '';
+        if(filetype == "docx") {
+            dataurl = 'https://localhost:50710/files/new.docx';
+        }
+        else if(filetype == "xlsx"){
+            dataurl = 'https://localhost:50710/files/new.xlsx';
+        }
+        else if(filetype == "pptx"){
+            dataurl = 'https://localhost:50710/files/new.pptx';
+        }
 
         soyut.storage.getStorageKeyAsync({userId: fileSystem.userid}).then(function(storageKey) {
             var storagePath = targetdir;
@@ -41,7 +50,7 @@ $(getInstanceID("button-save")).click(function(event) {
 
             var safeUrl = dataurl.substring(0, 8) + "localhost" + dataurl.substring(getPosition(dataurl, ':', 2));
 
-            console.log(safeUrl);
+            console.log(safeUrl+" data "+dataurl);
 
             // debugger;
             getFile(safeUrl, function(err, dataBuffer) {

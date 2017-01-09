@@ -114,6 +114,12 @@ httpServer.listen(config.port, function () {
       resCallback(false, config.docServerUrl);
     };
 
+    methods.getLocalIP = function(authServerUrl, remoteSocket, reqMsg, resCallback){
+        var ip_address = ip.address();
+        console.log("add "+ip_address);
+        resCallback(false, ip_address);
+    };
+
     service.identify("browserServer", null, config.authServerUrl, function (isIdentifySuccess, identifyResp) {
         if (isIdentifySuccess === true) {
             console.log("authserver identifed, publicKey :");
