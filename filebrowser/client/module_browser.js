@@ -1,3 +1,6 @@
+(function () {
+  $.getScript('https://doceditor.soyut/web-apps/apps/api/documents/api.js')
+})();
 
 var browser_boot = function(browserService){
 

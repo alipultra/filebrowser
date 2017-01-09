@@ -51,7 +51,7 @@ var browserService = soyut.Services.getInstance().getService("browserServer");
 
                 function initDocEditor(docKey, docVkey) {
                     browserService.getDocServerUrl({}, function (err, server) {
-                        $.getScript(server + '/web-apps/apps/api/documents/api.js');
+                        //$.getScript(server + '/web-apps/apps/api/documents/api.js');
 
                         var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
                             {
@@ -101,7 +101,7 @@ var browserService = soyut.Services.getInstance().getService("browserServer");
                 initSheetEditor(data.key, data.vkey);
                 function initSheetEditor(docKey, docVkey) {
                     browserService.getDocServerUrl({}, function (err, server) {
-                        $.getScript(server + '/web-apps/apps/api/documents/api.js');
+                        //$.getScript(server + '/web-apps/apps/api/documents/api.js');
 
                         var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
                             {
@@ -151,7 +151,7 @@ var browserService = soyut.Services.getInstance().getService("browserServer");
                 initPresentationEditor(data.key, data.vkey);
                 function initPresentationEditor(docKey, docVkey) {
                     browserService.getDocServerUrl({}, function (err, server) {
-                        $.getScript(server + '/web-apps/apps/api/documents/api.js');
+                        //$.getScript(server + '/web-apps/apps/api/documents/api.js');
 
                         var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
                             {
@@ -200,7 +200,7 @@ var browserService = soyut.Services.getInstance().getService("browserServer");
 
                 function initDocxEditor(docKey, docVkey) {
                     browserService.getDocServerUrl({}, function (err, server) {
-                        $.getScript(server + '/web-apps/apps/api/documents/api.js');
+                        //$.getScript(server + '/web-apps/apps/api/documents/api.js');
 
                         var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
                             {
@@ -249,7 +249,8 @@ var browserService = soyut.Services.getInstance().getService("browserServer");
                 initSheetxEditor(data.key, data.vkey);
                 function initSheetxEditor(docKey, docVkey) {
                     browserService.getDocServerUrl({}, function (err, server) {
-                        $.getScript(server + '/web-apps/apps/api/documents/api.js');
+                       // $.getScript(server + '/web-apps/apps/api/documents/api.js');
+
                         var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
                             {
                                 width: "800px",
@@ -297,7 +298,7 @@ var browserService = soyut.Services.getInstance().getService("browserServer");
                 initPresentationxEditor(data.key, data.vkey);
                 function initPresentationxEditor(docKey, docVkey) {
                     browserService.getDocServerUrl({}, function (err, server) {
-                        $.getScript(server + '/web-apps/apps/api/documents/api.js');
+                        //$.getScript(server + '/web-apps/apps/api/documents/api.js');
 
                         var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
                             {
