@@ -12,12 +12,13 @@ var fs = require('fs');
 
 var ip = require('ip');
 rethinkdb = require('rethinkdb');
-var config = require('./config');
 var compression = require('compression');
 var ping = require('ping');
 var randomString = require('randomstring')
 mongoDb = {}
 remote_service = null
+
+var config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 //require('./waterlineHook')(mongoDb, config.waterline);
 r = require('./rethinkHook')(config.rethink, websocket);
 
@@ -31,9 +32,9 @@ app.use(compression());
 app.use('/', express.static('client'));
 
 var httpsOptions = {
-    key : fs.readFileSync(config.sslKey),
-    cert: fs.readFileSync(config.sslCert),
-    ca: fs.readFileSync(config.sslCA),
+    key : fs.readFileSync(config.ssl.key),
+    cert: fs.readFileSync(config.ssl.cert),
+    ca: fs.readFileSync(config.ssl.ca),
     requestCert: false,
     rejectUnauthorized : false
 };
@@ -49,12 +50,7 @@ httpServer.listen(config.port, function () {
     var methods = api.public;
     var restrictedMethods = api.restricted;
     methods.getOrigin = function (authServerUrl, remoteSocket, reqMsg, resCallback) {
-        //creating clock service and just return it service uuid
-        var dns = require('dns');
-        dns.lookupService(ip.address(),config.port, function (err, hostname, service) {
-            // resCallback(false, hostname+ ':' + config.port)
-            resCallback(false, 'localhost:' + config.port)
-        });
+        resCallback(false, config.hostname + ':' + config.port);
     };
     methods.generateDocKey = function  (authServerUrl, remoteSocket, reqMsg, resCallback) {
         var key = "doc" + randomString.generate(12);

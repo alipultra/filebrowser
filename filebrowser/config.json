@@ -1,0 +1,17 @@
+{
+    "hostname": "localhost",
+    "port" : 50710,
+    "terminalCheckInterval" : 10,
+    "authServerUrl" : "https://localhost:3000",
+    "ssl" : {
+        "key"  : "./keys/private-localhost.key",
+        "cert" : "./keys/cert-localhost.crt",
+        "ca"   : "./keys/tesynergy-root-ca.crt"
+    },
+    "docServerUrl" : "https://doceditor.soyut",
+    "rethink":{
+        "host":"db.soyut",
+        "port":28015,
+        "database":"SOYUT"
+    }
+}
