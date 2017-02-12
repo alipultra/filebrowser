@@ -7,7 +7,7 @@ module.exports = {
         connections: {
             local: {
                 adapter: 'mongo',
-                host: 'db.soyut',
+                host: 'mongomain.db.soyut',
                 port: 27017,
 
                 database: 'SOYUT'

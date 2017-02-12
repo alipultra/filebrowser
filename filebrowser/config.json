@@ -10,7 +10,7 @@
     },
     "docServerUrl" : "https://doceditor.soyut",
     "rethink":{
-        "host":"db.soyut",
+        "host":"rmain.db.soyut",
         "port":28015,
         "database":"SOYUT"
     }
