@@ -132,7 +132,7 @@ httpServer.listen(config.port, function () {
                     remoteService.subscribeOnApiAdded('webserver', 'attachscript', function () {
                         remoteService.api.webserver.attachscript([
                                 {
-                                    src: 'https://localhost:' + config.port + '/module_browser.js',
+                                    src: 'https://'+ config.hostname + ':' + config.port + '/module_browser.js',
                                     url: '/scripts/module/radiogram/module_browser.js'
                                 }
                             ],

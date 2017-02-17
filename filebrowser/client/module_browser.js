@@ -12,6 +12,7 @@ var browser_boot = function(browserService){
     var builder = new soyut.Platform.AppBuilder();
     builder.setOrigin('https://' + origin);
 
+
     builder.setConfigURL('https://' + origin + '/module_browser.json', function(err, builder){
         if(!err)
             builder.build()

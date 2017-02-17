@@ -10,10 +10,29 @@ var browserService = soyut.Services.getInstance().getService("browserServer");
     console.log(name+" - "+type+" - "+url)
 
     if (type == "application/pdf") {
+        function getFile(url, callback) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', url, true);
+            xhr.responseType = 'blob';
+            xhr.onload = function(e) {
+                if (this.status == 200) {
+                    // get binary data as a response
+                    callback(false, this.response);
+                }
+            };
+            xhr.onerror = function (e) {
+                callback(true, e);
+            };
+            xhr.send();
+        }
+        getFile(url, function(err, dataBuffer) {
+            var blob = new Blob([dataBuffer],{type: 'application/pdf'});
+            //var fileURL = URL.createObjectURL(blob);
+            var geturl = URL.createObjectURL(blob);
 
-        var html = "<iframe title=\"PDF\" src=\"" + url + "\" frameborder=\"1\" scrolling=\"auto\" height=\"800\" width=\"850\" ></iframe>";
-
-        $('.content-data').html(html);
+            var html = "<iframe title=\"PDF\" type=\"application/pdf\" src=\""+ geturl +"\" frameborder=\"1\" scrolling=\"auto\" height=\"800\" width=\"850\" ></iframe>";
+            $('.content-data').append(html)
+        });
     }
     else if (type == "text/plain") {
         $.ajax({
