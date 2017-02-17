@@ -13,10 +13,10 @@ var curUrl = browserService.origin.split(':');
     if (type == "application/pdf") {
         function getPosition(str, m, i) { return str.split(m, i).join(m).length; }
         var safeUrl = url.substring(0, 8) + curUrl[0] + url.substring(getPosition(url, ':', 2));
-        console.log(safeUrl)
-        function getFile(safeUrl, callback) {
+        console.log(safeUrl);
+        function getFile(url, callback) {
             var xhr = new XMLHttpRequest();
-            xhr.open('GET', safeUrl, true);
+            xhr.open('GET', url, true);
             xhr.responseType = 'blob';
             xhr.onload = function(e) {
                 if (this.status == 200) {
@@ -29,7 +29,7 @@ var curUrl = browserService.origin.split(':');
             };
             xhr.send();
         }
-        getFile(url, function(err, dataBuffer) {
+        getFile(safeUrl, function(err, dataBuffer) {
             var blob = new Blob([dataBuffer],{type: 'application/pdf'});
             //var fileURL = URL.createObjectURL(blob);
             var geturl = URL.createObjectURL(blob);
