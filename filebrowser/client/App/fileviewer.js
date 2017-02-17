@@ -12,7 +12,7 @@ var curUrl = browserService.origin.split(':');
 
     if (type == "application/pdf") {
         function getPosition(str, m, i) { return str.split(m, i).join(m).length; }
-        var safeUrl = url.substring(0, 8) + curUrl[0] + url.substring(getPosition(url, ':', 2));
+        var safeUrl = url.substring(0, 8) + 'pivot.soyut' + url.substring(getPosition(url, ':', 2));
         console.log(safeUrl)
         function getFile(safeUrl, callback) {
             var xhr = new XMLHttpRequest();
