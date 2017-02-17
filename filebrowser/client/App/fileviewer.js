@@ -8,15 +8,15 @@ var curUrl = browserService.origin.split(':');
     var url = getParam('url');
     var type = getParam('type');
 
-    console.log(name+" - "+type+" - "+url)
+    //console.log(name+" - "+type+" - "+url)
 
     if (type == "application/pdf") {
         function getPosition(str, m, i) { return str.split(m, i).join(m).length; }
-        var safeUrl = url.substring(0, 8) + 'pivot.soyut' + url.substring(getPosition(url, ':', 2));
+        var safeUrl = url.substring(0, 8) + curUrl[0] + url.substring(getPosition(url, ':', 2));
         console.log(safeUrl)
         function getFile(safeUrl, callback) {
             var xhr = new XMLHttpRequest();
-            xhr.open('GET', url, true);
+            xhr.open('GET', safeUrl, true);
             xhr.responseType = 'blob';
             xhr.onload = function(e) {
                 if (this.status == 200) {
