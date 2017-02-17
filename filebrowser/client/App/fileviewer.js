@@ -1,4 +1,5 @@
 var browserService = soyut.Services.getInstance().getService("browserServer");
+var curUrl = browserService.origin.split(':');
 
     var frameEditor = $(getInstanceID("iframeEditor"));
     var frameEditorId = frameEditor.selector.split("#");
@@ -10,7 +11,10 @@ var browserService = soyut.Services.getInstance().getService("browserServer");
     console.log(name+" - "+type+" - "+url)
 
     if (type == "application/pdf") {
-        function getFile(url, callback) {
+        function getPosition(str, m, i) { return str.split(m, i).join(m).length; }
+        var safeUrl = url.substring(0, 8) + curUrl[0] + url.substring(getPosition(url, ':', 2));
+        console.log(safeUrl)
+        function getFile(safeUrl, callback) {
             var xhr = new XMLHttpRequest();
             xhr.open('GET', url, true);
             xhr.responseType = 'blob';
