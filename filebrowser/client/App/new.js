@@ -1,3 +1,5 @@
+var browserService = soyut.Services.getInstance().getService("browserServer");
+var curUrl = browserService.origin.split(':');
 var currentDir = getParam('currentDir');
 var dir = getParam('dir');
 
@@ -33,18 +35,18 @@ $(getInstanceID("button-save")).click(function(event) {
 
         var dataurl = '';
         if(filetype == "docx") {
-            dataurl = 'https://localhost:50710/files/new.docx';
+            dataurl = 'https://'+ browserService.origin +'/files/new.docx';
         }
         else if(filetype == "xlsx"){
-            dataurl = 'https://localhost:50710/files/new.xlsx';
+            dataurl = 'https://'+ browserService.origin +'/files/new.xlsx';
         }
         else if(filetype == "pptx"){
-            dataurl = 'https://localhost:50710/files/new.pptx';
+            dataurl = 'https://'+ browserService.origin +'/files/new.pptx';
         }
 
         soyut.storage.getStorageKeyAsync({userId: fileSystem.userid}).then(function(storageKey) {
             var storagePath = targetdir;
-            var fileUrl = 'https://localhost:5454/storage/' + storageKey + '/' + storagePath;
+            var fileUrl = 'https://'+ curUrl[0] +':5454/storage/' + storageKey + '/' + storagePath;
 
             function getPosition(str, m, i) { return str.split(m, i).join(m).length; }
 
