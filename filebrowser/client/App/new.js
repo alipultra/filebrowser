@@ -50,7 +50,7 @@ $(getInstanceID("button-save")).click(function(event) {
 
             function getPosition(str, m, i) { return str.split(m, i).join(m).length; }
 
-            var safeUrl = dataurl.substring(0, 8) + "localhost" + dataurl.substring(getPosition(dataurl, ':', 2));
+            var safeUrl = dataurl.substring(0, 8) + curUrl[0] + dataurl.substring(getPosition(dataurl, ':', 2));
 
             console.log(safeUrl+" data "+dataurl);
 
