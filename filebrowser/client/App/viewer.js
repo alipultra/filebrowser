@@ -53,7 +53,7 @@ var browserService = soyut.Services.getInstance().getService("browserServer");
                             var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
                                 {
                                     width: "100%",
-                                    height: "1000px",
+                                    height: "100%",
                                     documentType: "text",
                                     document: {
                                         title: files.name,
@@ -102,7 +102,7 @@ var browserService = soyut.Services.getInstance().getService("browserServer");
                             var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
                                 {
                                     width: "100%",
-                                    height: "1000px",
+                                    height: "100%",
                                     documentType: "spreadsheet",
                                     document: {
                                         title: files.name,
@@ -150,7 +150,7 @@ var browserService = soyut.Services.getInstance().getService("browserServer");
                             var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
                                 {
                                     width: "100%",
-                                    height: "1000px",
+                                    height: "100%",
                                     documentType: "presentation",
                                     document: {
                                         title: files.name,
@@ -191,13 +191,28 @@ var browserService = soyut.Services.getInstance().getService("browserServer");
                 soyut.Services.getInstance().getService("browserServer").generateDocxKey({}, function (err, data) {
                     initDocxEditor(data.key, data.vkey);
 
+                        var onDocumentStateChange = function (event) {
+
+                            $.ajax({
+                                url: 'https://'+ browserService.origin + '/track?useraddress=tes&filename='+ fileUrl,
+                                type: 'POST',
+                                success: function(d) {
+                                    console.log(d);
+                                    generateExcel(d);
+                                },
+                                error: function() {console.log("error")},
+                                cache: false,
+                                contentType: false,
+                                processData: false
+                            });
+                        };
 
                         function initDocxEditor(docKey, docVkey) {
                             browserService.getDocServerUrl({}, function (err, server) {
                                 var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
                                     {
                                         width: "100%",
-                                        height: "1000px",
+                                        height: "100%",
                                         documentType: "text",
                                         document: {
                                             title: files.name,
@@ -218,6 +233,9 @@ var browserService = soyut.Services.getInstance().getService("browserServer");
                                                     image: 'https://' + browserService.origin + '/img/soyut.png'
                                                 }
                                             }
+                                        },
+                                        events: {
+                                            "onDocumentStateChange": onDocumentStateChange
                                         }
                                     });
                             });
@@ -248,7 +266,7 @@ var browserService = soyut.Services.getInstance().getService("browserServer");
                                 var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
                                     {
                                         width: "100%",
-                                        height: "1000px",
+                                        height: "100%",
                                         documentType: "spreadsheet",
                                         document: {
                                             title: files.name,
@@ -297,7 +315,7 @@ var browserService = soyut.Services.getInstance().getService("browserServer");
                         var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
                             {
                                 width: "100%",
-                                height: "1000px",
+                                height: "100%",
                                 documentType: "presentation",
                                 document: {
                                     title: files.name,

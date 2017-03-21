@@ -79,7 +79,7 @@ var curUrl = browserService.origin.split(':');
                         var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
                             {
                                 width: "100%",
-                                height: "1000px",
+                                height: "100%",
                                 documentType: "text",
                                 document: {
                                     title: name,
@@ -128,8 +128,8 @@ var curUrl = browserService.origin.split(':');
 
                         var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
                             {
-                                width: "800px",
-                                height: "800px",
+                                width: "100%",
+                                height: "100%",
                                 documentType: "spreadsheet",
                                 document: {
                                     title: name,
@@ -178,8 +178,8 @@ var curUrl = browserService.origin.split(':');
 
                         var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
                             {
-                                width: "800px",
-                                height: "800px",
+                                width: "100%",
+                                height: "100%",
                                 documentType: "presentation",
                                 document: {
                                     title: name,
@@ -227,8 +227,8 @@ var curUrl = browserService.origin.split(':');
 
                         var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
                             {
-                                width: "800px",
-                                height: "800px",
+                                width: "100%",
+                                height: "100%",
                                 documentType: "text",
                                 document: {
                                     title: name,
@@ -276,8 +276,8 @@ var curUrl = browserService.origin.split(':');
 
                         var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
                             {
-                                width: "800px",
-                                height: "800px",
+                                width: "100%",
+                                height: "100%",
                                 documentType: "spreadsheet",
                                 document: {
                                     title: name,
@@ -325,8 +325,8 @@ var curUrl = browserService.origin.split(':');
 
                         var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
                             {
-                                width: "800px",
-                                height: "800px",
+                                width: "100%",
+                                height: "100%",
                                 documentType: "presentation",
                                 document: {
                                     title: name,

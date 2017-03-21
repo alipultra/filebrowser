@@ -43,6 +43,15 @@ var httpServer = https.createServer(httpsOptions,app);
 
 var websocketServer = websocket(httpServer);
 
+app.post('/track', function (req, res){
+    var userAddress = req.query.useraddress;
+    var fileName = req.query.filename;
+    var version = 0;
+
+    console.log(req.body);
+    console.log("xxx "+fileName.body);
+});
+
 httpServer.listen(config.port, function () {
     console.log('listening on *:' + config.port);
     var service = require('./serviceauth');
