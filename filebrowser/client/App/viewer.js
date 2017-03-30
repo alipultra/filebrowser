@@ -1,4 +1,5 @@
 var browserService = soyut.Services.getInstance().getService("browserServer");
+var curUrl = browserService.origin.split(':');
 
     var frameEditor = $(getInstanceID("iframeEditor"));
     var frameEditorId = frameEditor.selector.split("#");
@@ -9,10 +10,32 @@ var browserService = soyut.Services.getInstance().getService("browserServer");
 
     fileSystem.stat(path, function (err, files) {
         if (files.type == "application/pdf") {
+            function getPosition(str, m, i) { return str.split(m, i).join(m).length; }
+            var safeUrl = files.url.substring(0, 8) + curUrl[0] + files.url.substring(getPosition(files.url, ':', 2));
+            console.log(safeUrl);
+            function getFile(url, callback) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', files.url, true);
+                xhr.responseType = 'blob';
+                xhr.onload = function(e) {
+                    if (this.status == 200) {
+                        // get binary data as a response
+                        callback(false, this.response);
+                    }
+                };
+                xhr.onerror = function (e) {
+                    callback(true, e);
+                };
+                xhr.send();
+            }
+            getFile(safeUrl, function(err, dataBuffer) {
+                var blob = new Blob([dataBuffer],{type: 'application/pdf'});
+                //var fileURL = URL.createObjectURL(blob);
+                var geturl = URL.createObjectURL(blob);
 
-            var html = "<iframe title=\"PDF\" src=\"" + files.url + "\" frameborder=\"1\" scrolling=\"auto\" height=\"800\" width=\"850\" ></iframe>";
-
-            $('.content-data').html(html);
+                var html = "<iframe title=\"PDF\" type=\"application/pdf\" src=\""+ geturl +"\" frameborder=\"1\" scrolling=\"auto\" height=\"1000\" width=\"1000\" ></iframe>";
+                $('.content-data').append(html)
+            });
         }
         else if (files.type == "text/plain") {
             $.ajax({
