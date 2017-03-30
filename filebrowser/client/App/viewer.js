@@ -181,68 +181,53 @@ var browserService = soyut.Services.getInstance().getService("browserServer");
         }
         else if (files.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
 
-            browserService.getLocalIP({}, function (err, ip){
+            browserService.getLocalIP({}, function (err, ip) {
 
                 var xd = files.url;
-                function getPosition(str, m, i) { return str.split(m, i).join(m).length; }
+
+                function getPosition(str, m, i) {
+                    return str.split(m, i).join(m).length;
+                }
 
                 var fileUrl = xd.substring(0, 8) + ip + xd.substring(getPosition(xd, ':', 2));
-                console.log("file url "+fileUrl);
+                console.log("file url " + fileUrl);
                 soyut.Services.getInstance().getService("browserServer").generateDocxKey({}, function (err, data) {
                     initDocxEditor(data.key, data.vkey);
 
-                        var onDocumentStateChange = function (event) {
+                    function initDocxEditor(docKey, docVkey) {
+                        browserService.getDocServerUrl({}, function (err, server) {
+                            //$.getScript(server + '/web-apps/apps/api/documents/api.js');
 
-                            $.ajax({
-                                url: 'https://'+ browserService.origin + '/track?useraddress=tes&filename='+ fileUrl,
-                                type: 'POST',
-                                success: function(d) {
-                                    console.log(d);
-                                    generateExcel(d);
-                                },
-                                error: function() {console.log("error")},
-                                cache: false,
-                                contentType: false,
-                                processData: false
-                            });
-                        };
-
-                        function initDocxEditor(docKey, docVkey) {
-                            browserService.getDocServerUrl({}, function (err, server) {
-                                var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
-                                    {
-                                        width: "100%",
-                                        height: "100%",
-                                        documentType: "text",
-                                        document: {
-                                            title: files.name,
-                                            url: fileUrl,
-                                            key: docKey,
-                                            vkey: docVkey,
-                                            permissions: {
-                                                download: false,
-                                                print: false,
-                                            }
-                                        },
-                                        editorConfig: {
-                                            lang: "en",
-                                            location: server + "/web-apps/",
-                                            customization: {
-                                                about: false,
-                                                logo: {
-                                                    image: 'https://' + browserService.origin + '/img/soyut.png'
-                                                }
-                                            }
-                                        },
-                                        events: {
-                                            "onDocumentStateChange": onDocumentStateChange
+                            var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
+                                {
+                                    width: "100%",
+                                    height: "100%",
+                                    documentType: "text",
+                                    document: {
+                                        title: files.name,
+                                        url: fileUrl,
+                                        key: docKey,
+                                        vkey: docVkey,
+                                        permissions: {
+                                            download: false,
+                                            print: false,
                                         }
-                                    });
-                            });
-                        }
+                                    },
+                                    editorConfig: {
+                                        lang: "en",
+                                        location: server + "/web-apps/",
+                                        customization: {
+                                            about: false,
+                                            logo: {
+                                                image: 'https://' + browserService.origin + '/img/soyut.png'
+                                            }
+                                        }
+                                    }
+                                });
+                        });
+                    }
                 });
             });
-
         }
         else if (files.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
             browserService.getLocalIP({}, function (err, ip){
