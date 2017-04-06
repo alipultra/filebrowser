@@ -33,7 +33,7 @@ var curUrl = browserService.origin.split(':');
                 //var fileURL = URL.createObjectURL(blob);
                 var geturl = URL.createObjectURL(blob);
 
-                var html = "<iframe title=\"PDF\" type=\"application/pdf\" src=\""+ geturl +"\" frameborder=\"1\" scrolling=\"auto\" height=\"1000\" width=\"1000\" ></iframe>";
+                var html = "<iframe title=\"PDF\" type=\"application/pdf\" src=\""+ geturl +"\" frameborder=\"1\" scrolling=\"auto\" style=\"width:100vw; height:100vw\"></iframe>";
                 $('.content-data').append(html)
             });
         }
