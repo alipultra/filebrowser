@@ -9,6 +9,32 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
         $(".breadcrumb").width() + c;
     }
     var contextActions = {
+        export: function (a) {
+            var tgtMedia = fileSystem.mp_list[0];
+            var curdir = '';
+            if (a.dir == '') {
+                curdir = '/';
+            }
+            else {
+                curdir = a.dir;
+            }
+            var tgtFolder = "/";
+            var sourcePath = curdir + a.name;
+            var targetPath = "/"+ a.name;
+
+            if(tgtMedia != undefined){
+                fileSystem.mp_ls(tgtMedia, tgtFolder, function(err, result){
+                    fileSystem.mp_put(sourcePath, tgtMedia, targetPath, function(err, res){
+                    
+                        reloadFolder(a.dir);
+
+                    });
+                });
+            }
+            else{
+                alert("Media belum terhubung dengan benar!");
+            }
+        },
         copy: function (a) {
             browserService.FileAction_searchCopy({session: soyut.Session.id, role: soyut.Session.role.id}, function (err, data) {
                 if(data.length > 0){
@@ -203,6 +229,10 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                     contextActions[key](d);
                 },
                 items: {
+                    "export": {
+                        name: "Export",
+                        icon: "copy"
+                    },
                     "cut": {
                         name: "Cut",
                         icon: "cut"

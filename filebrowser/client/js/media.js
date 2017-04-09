@@ -43,7 +43,7 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
     function p(c) {
         $(".breadcrumb").width() + c;
     }
-    var contextActions = {
+    var contextDeviceActions = {
         import: function (a) {
             var sourcePath = a.dir + a.name;
             var targetPath = getCDir + a.name;
@@ -183,7 +183,7 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                         "dir": $(this).attr('data-dir'),
                         "volume": $(this).attr('data-volume')
                     };
-                    contextActions[key](d);
+                    contextDeviceActions[key](d);
                 },
                 items: {
                     "import": {
@@ -214,9 +214,9 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
 
     function loadDeviceContextMenu(val) {
         if(val != '') {
-            $(".main-browser").contextMenu(true);
+            $(".media-browser").contextMenu(true);
             $.contextMenu({
-                selector: ".main-browser",
+                selector: ".media-browser",
                 callback: function (key, options) {
                     var d = {};
                     var m = "clicked: " + key + " value " + $(this).attr('data-dir');
@@ -224,7 +224,7 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                         "name" : $(this).attr('data-name'),
                         "dir" : $(this).attr('data-dir')
                     };
-                    contextActions[key](d);
+                    contextDeviceActions[key](d);
                 },
                 items: {
                     "paste": {
@@ -235,7 +235,7 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
             });
         }
         else {
-            $(".main-browser").contextMenu(false);
+            $(".media-browser").contextMenu(false);
         }
     }
 
@@ -332,7 +332,7 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                 var app = getAppInstance();
                 var activitylistener = getActivityInstanceAsync();
                 activitylistener.then(function (activity) {
-                    app.launchActivity("soyut.module.browser.viewer", {path: dir + i}, activity);
+                    //app.launchActivity("soyut.module.browser.viewer", {path: dir + i}, activity);
                 })
             },
             BrowseMedia: function (currentDir, dir) {
@@ -494,7 +494,7 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
 
                 _this.LoadFolder(val.volume, parentDir, targetFolder);
             },
-            getContextMenu: function(val){
+            getDeviceContextMenu: function(val){
                 deviceContextMenu(val)
             },
             loadMainAttribute: function (curDir) {

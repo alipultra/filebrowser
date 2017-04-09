@@ -69,7 +69,7 @@
                                     <div class="load-browser" id="browser-loader">
                                         <div class="load-browserloader"></div>
                                     </div>
-                                    <div class="main-browser" v-bind="loadMainAttribute(curDir)">
+                                    <div class="media-browser" v-bind="loadMainAttribute(curDir)">
                                         <div class="col-md-12 col-main-browser">
                                             <input type="hidden" name="view-status" id="view-status" value="0">
                                             <input type="hidden" id="lang_edit_image" value="" />
@@ -99,7 +99,7 @@
                                                     </figure>
                                                 </li>
 
-                                                <li v-if="loadFromDevice(folder.isDirectory, folder.name)" v-for="folder in files" class="dir" v-bind="getContextMenu(folder)">
+                                                <li v-if="loadFromDevice(folder.isDirectory, folder.name)" v-for="folder in files" class="dir" v-bind="getDeviceContextMenu(folder)">
                                                     <figure v-bind="loadAttribute(folder.name, curDir, volumes)" class="directory" data-type="dir">
                                                         <input v-if="folder.name == '..'" type="hidden" class="path" value=""/>
                                                         <input v-if="folder.name == '..'" type="hidden" class="path_thumb" value=""/>
@@ -170,7 +170,7 @@
                                                 </li>
 
 
-                                                <li v-if="loadFromDevice(file.isFile, file.name)" v-for="file in files" v-bind="getContextMenu(file)" class="ff-item-type-1 file">
+                                                <li v-if="loadFromDevice(file.isFile, file.name)" v-for="file in files" v-bind="getDeviceContextMenu(file)" class="ff-item-type-1 file">
                                                     <figure v-bind="loadAttribute(file.name, curDir, volumes)" data-type="file">
                                                         <a href="#" @click="LoadFile(volumes, curDir, file.name)" class="link" data-function="apply_none">
                                                             <div class="img-precontainer">
