@@ -138,9 +138,11 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
             var activitylistener = getActivityInstanceAsync();
             activitylistener.then(function (activity) {
                 app.launchActivity("soyut.module.browser.rename", {currentDir: a.dir, dir: a.name, type: a.type}, activity);
-                activity.on('browser_renamed', function (activity) {
-                    reloadFolder(activity.currentDir);
-                })
+                function browserRenamed(evtData) {
+                    activity.unbind('browser_renamed', browserRenamed);
+                    reloadFolder(evtData.currentDir);
+                }
+                activity.on('browser_renamed', browserRenamed);
             });
         },
         chmod: function (a) {
@@ -388,8 +390,9 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                         currentDir: currentDir,
                         dir: dir
                     }, activity);
-                    activity.on('media_selected', function (activity) {
-                        var resdir = activity.currentDir.substr(0, activity.currentDir.lastIndexOf("/"));
+                    function mediaSelected(evtData) {
+                        activity.unbind('media_selected', mediaSelected);
+                        var resdir = evtData.currentDir.substr(0, evtData.currentDir.lastIndexOf("/"));
                         var cresdir = resdir.substr(0, resdir.lastIndexOf("/"));
                         var targetFolder = '';
                         if(cresdir!=''){
@@ -398,8 +401,9 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                         else {
                             targetFolder = cresdir;
                         }
-                        _this.LoadFolder(targetFolder, activity.dir);
-                    });
+                        _this.LoadFolder(targetFolder, evtData.dir);
+                    }
+                    activity.on('media_selected', mediaSelected);
                 });
             },
             LoadFolderForm: function (currentDir, dir) {
@@ -409,8 +413,9 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                 var activitylistener = getActivityInstanceAsync();
                 activitylistener.then(function (activity) {
                     app.launchActivity("soyut.module.browser.create.folder", {currentDir: currentDir, dir: dir}, activity);
-                    activity.on('folder_created', function (activity) {
-                        var resdir = activity.currentDir.substr(0, activity.currentDir.lastIndexOf("/"));
+                    function folderCreated(evtData) {
+                        activity.unbind('folder_created', folderCreated);
+                        var resdir = evtData.currentDir.substr(0, evtData.currentDir.lastIndexOf("/"));
                         var cresdir = resdir.substr(0, resdir.lastIndexOf("/"));
                         var targetFolder = '';
                         if(cresdir!=''){
@@ -419,9 +424,10 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                         else {
                             targetFolder = cresdir;
                         }
-                        console.log("cur "+targetFolder+" tgt "+activity.dir);
-                        _this.LoadFolder(targetFolder, activity.dir);
-                    })
+                        console.log("cur "+targetFolder+" tgt "+evtData.dir);
+                        _this.LoadFolder(targetFolder, evtData.dir);
+                    }
+                    activity.on('folder_created', folderCreated);
                 });
             },
             LoadFileForm: function (currentDir, dir) {
@@ -431,8 +437,9 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                 var activitylistener = getActivityInstanceAsync();
                 activitylistener.then(function (activity) {
                     app.launchActivity("soyut.module.browser.create.file", {currentDir: currentDir, dir: dir}, activity);
-                    activity.on('file_created', function (activity) {
-                        var resdir = activity.currentDir.substr(0, activity.currentDir.lastIndexOf("/"));
+                    function fileCreated(evtData) {
+                        activity.unbind('file_created', fileCreated);
+                        var resdir = evtData.currentDir.substr(0, evtData.currentDir.lastIndexOf("/"));
                         var cresdir = resdir.substr(0, resdir.lastIndexOf("/"));
                         var targetFolder = '';
                         if(cresdir!=''){
@@ -441,10 +448,11 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                         else {
                             targetFolder = cresdir;
                         }
-                        console.log("cur "+targetFolder+" tgt "+activity.dir);
-                        _this.LoadFolder(targetFolder, activity.dir);
+                        console.log("cur "+targetFolder+" tgt "+evtData.dir);
+                        _this.LoadFolder(targetFolder, evtData.dir);
 
-                    })
+                    }
+                    activity.on('file_created', fileCreated);
                 });
 
             },
