@@ -90,7 +90,7 @@ var curUrl = browserService.origin.split(':');
                                     },
                                     editorConfig: {
                                         lang: "en",
-                                        location: documentServerUrl + "/web-apps/",
+                                        location: server + "/web-apps/",
                                         customization: {
                                             about: false,
                                             logo: {
