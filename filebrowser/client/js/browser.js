@@ -705,6 +705,9 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                         return 'https://' + browserService.origin + '/img/ico/default.jpg';
                 }
             },
+            RefreshServer: function(){
+                app.loadServer();
+            },
             ChangeBrowserView: function(attr, val){
                 var _this = this;
                 $(".view-controller button").removeClass('btn-inverse');
