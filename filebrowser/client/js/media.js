@@ -175,8 +175,10 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
 
     function deviceContextMenu(val){
         if(val.hasOwnProperty('isDirectory') || val.hasOwnProperty('isFile')){
+            var curVal = val.name.replace("'","&nbps;");
+            console.log(curVal)
             $.contextMenu({
-                selector: "figure[data-name='" + val.name + "']",
+                selector: "figure[data-name='" + curVal + "']",
                 callback: function (key, options) {
                     var d = {};
                     var m = "clicked: " + key + " value " + $(this).attr('data-name');
@@ -507,9 +509,11 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                 return attr;
             },
             loadAttribute: function(val, curDir, volume){
+                var curVal = val.replace("'",'&nbsp;');
+
                 var attr;
                 attr = {
-                    'data-name' : val,
+                    'data-name' : curVal,
                     'data-dir': curDir,
                     'data-volume': volume
                 };
@@ -592,9 +596,26 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                         return 'https://' + browserService.origin + '/img/ico/default.jpg';
                 }
             },
-            ChangeBrowserView: function () {
+            ChangeBrowserView: function(attr, val){
+                var _this = this;
+                $(".view-controller button").removeClass('btn-inverse');
+                $(".view-controller i").removeClass("icon-white");
+                // //
+                // var b = $(getInstanceID(attr));
+                // b.addClass("btn-inverse");
+                // b.find("i").addClass("icon-white");
+                // var dataval = b.attr("data-value");
 
-            }
+                _this.ChangeView(val);
+            },
+            ChangeView: function(a) {
+                var _this = this;
+                var viewStatus = $(getInstanceID('view-status')).val();
+                $("ul.grid").removeClass('list-view' + viewStatus);
+                var c = a;
+                $(getInstanceID('view-status')).val(a);
+                $("ul.grid").addClass("list-view" + c);
+            },
         }
     });
 
