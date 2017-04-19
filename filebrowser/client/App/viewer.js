@@ -58,227 +58,31 @@ var curUrl = browserService.origin.split(':');
         }
         else if (files.type == "application/msword") {
 
-            browserService.getLocalIP({}, function (err, ip) {
+            browserService.downloadFile({url: files.url, name: files.name}, function (err, result) {
+                
+                browserService.getLocalIP({}, function (err, ip) {
+                    var currentUrl = "https://" + ip + ":" + curUrl[1] + "/data/"+ files.name;
+                    soyut.Services.getInstance().getService("browserServer").generateDocKey({}, function (err, data) {
+                        initDocEditor(data.key, data.vkey);
 
-                var xd = files.url;
-
-                function getPosition(str, m, i) {
-                    return str.split(m, i).join(m).length;
-                }
-
-                var fileUrl = xd.substring(0, 8) + ip + xd.substring(getPosition(xd, ':', 2));
-                console.log("file url "+fileUrl);
-                soyut.Services.getInstance().getService("browserServer").generateDocKey({}, function (err, data) {
-                    initDocEditor(data.key, data.vkey);
-
-                    function initDocEditor(docKey, docVkey) {
-                        browserService.getDocServerUrl({}, function (err, server) {
-                            var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
-                                {
-                                    width: "100%",
-                                    height: "100%",
-                                    documentType: "text",
-                                    document: {
-                                        title: files.name,
-                                        url: fileUrl,
-                                        key: docKey,
-                                        vkey: docVkey,
-                                        permissions: {
-                                            download: false,
-                                            print: false,
-                                        }
-                                    },
-                                    editorConfig: {
-                                        lang: "en",
-                                        location: server + "/web-apps/",
-                                        customization: {
-                                            about: false,
-                                            logo: {
-                                                image: 'https://' + browserService.origin + '/img/soyut.png'
-                                            }
-                                        }
-                                    }
-                                });
-                        });
-                    }
-                });
-
-            });
-
-        }
-        else if (files.type == "application/vnd.ms-excel") {
-
-            browserService.getLocalIP({}, function (err, ip) {
-
-                var xd = files.url;
-
-                function getPosition(str, m, i) {
-                    return str.split(m, i).join(m).length;
-                }
-
-                var fileUrl = xd.substring(0, 8) + ip + xd.substring(getPosition(xd, ':', 2));
-                console.log("file url "+fileUrl);
-                soyut.Services.getInstance().getService("browserServer").generateSheetKey({}, function (err, data) {
-                    initSheetEditor(data.key, data.vkey);
-                    function initSheetEditor(docKey, docVkey) {
-                        browserService.getDocServerUrl({}, function (err, server) {
-                            var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
-                                {
-                                    width: "100%",
-                                    height: "100%",
-                                    documentType: "spreadsheet",
-                                    document: {
-                                        title: files.name,
-                                        url: fileUrl,
-                                        key: docKey,
-                                        vkey: docVkey,
-                                        permissions: {
-                                            download: false,
-                                            print: false,
-                                        }
-                                    },
-                                    editorConfig: {
-                                        lang: "en",
-                                        location: server + "/web-apps/",
-                                        customization: {
-                                            about: false,
-                                            logo: {
-                                                image: 'https://' + browserService.origin + '/img/soyut.png'
-                                            }
-                                        }
-                                    }
-                                });
-                        });
-                    }
-                });
-
-            });
-
-        }
-        else if (files.type == "application/vnd.ms-powerpoint") {
-            browserService.getLocalIP({}, function (err, ip) {
-
-                var xd = files.url;
-
-                function getPosition(str, m, i) {
-                    return str.split(m, i).join(m).length;
-                }
-
-                var fileUrl = xd.substring(0, 8) + ip + xd.substring(getPosition(xd, ':', 2));
-                console.log("file url "+fileUrl);
-                soyut.Services.getInstance().getService("browserServer").generatePresentationKey({}, function (err, data) {
-                    initPresentationEditor(data.key, data.vkey);
-                    function initPresentationEditor(docKey, docVkey) {
-                        browserService.getDocServerUrl({}, function (err, server) {
-                            var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
-                                {
-                                    width: "100%",
-                                    height: "100%",
-                                    documentType: "presentation",
-                                    document: {
-                                        title: files.name,
-                                        url: fileUrl,
-                                        key: docKey,
-                                        vkey: docVkey,
-                                        permissions: {
-                                            download: false,
-                                            print: false,
-                                        }
-                                    },
-                                    editorConfig: {
-                                        lang: "en",
-                                        location: server + "/web-apps/",
-                                        customization: {
-                                            about: false,
-                                            logo: {
-                                                image: 'https://' + browserService.origin + '/img/soyut.png'
-                                            }
-                                        }
-                                    }
-                                });
-                        });
-                    }
-                });
-
-            });
-        }
-        else if (files.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
-
-            browserService.getLocalIP({}, function (err, ip) {
-
-                var xd = files.url;
-
-                function getPosition(str, m, i) {
-                    return str.split(m, i).join(m).length;
-                }
-
-                var fileUrl = xd.substring(0, 8) + ip + xd.substring(getPosition(xd, ':', 2));
-                console.log("file url " + fileUrl);
-                soyut.Services.getInstance().getService("browserServer").generateDocxKey({}, function (err, data) {
-                    initDocxEditor(data.key, data.vkey);
-
-                    function initDocxEditor(docKey, docVkey) {
-                        browserService.getDocServerUrl({}, function (err, server) {
-                            //$.getScript(server + '/web-apps/apps/api/documents/api.js');
-
-                            var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
-                                {
-                                    width: "100%",
-                                    height: "100%",
-                                    documentType: "text",
-                                    document: {
-                                        title: files.name,
-                                        url: fileUrl,
-                                        key: docKey,
-                                        vkey: docVkey,
-                                        permissions: {
-                                            download: false,
-                                            print: false,
-                                        }
-                                    },
-                                    editorConfig: {
-                                        lang: "en",
-                                        location: server + "/web-apps/",
-                                        customization: {
-                                            about: false,
-                                            logo: {
-                                                image: 'https://' + browserService.origin + '/img/soyut.png'
-                                            }
-                                        }
-                                    }
-                                });
-                        });
-                    }
-                });
-            });
-        }
-        else if (files.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
-            browserService.getLocalIP({}, function (err, ip){
-
-                var xd = files.url;
-
-                function getPosition(str, m, i) {
-                    return str.split(m, i).join(m).length;
-                }
-
-                var fileUrl = xd.substring(0, 8) + ip + xd.substring(getPosition(xd, ':', 2));
-                console.log("file url "+fileUrl);
-                soyut.Services.getInstance().getService("browserServer").generateSheetxKey({}, function (err, data) {
-                    initSheetxEditor(data.key, data.vkey);
-
-
-                        function initSheetxEditor(docKey, docVkey) {
-                            //debugger;
+                        function initDocEditor(docKey, docVkey) {
                             browserService.getDocServerUrl({}, function (err, server) {
-                                //debugger;
+                                //save 
+                                var onDocumentStateChange = function (event) {
+                                    
+                                };
+
+                                var filesave = encodeURIComponent(files.name);
+                                var dirName = path.substr(0, path.lastIndexOf("/"));
+
                                 var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
                                     {
                                         width: "100%",
                                         height: "100%",
-                                        documentType: "spreadsheet",
+                                        documentType: "text",
                                         document: {
                                             title: files.name,
-                                            url: fileUrl,
+                                            url: currentUrl,
                                             key: docKey,
                                             vkey: docVkey,
                                             permissions: {
@@ -289,6 +93,60 @@ var curUrl = browserService.origin.split(':');
                                         editorConfig: {
                                             lang: "en",
                                             location: server + "/web-apps/",
+                                            callbackUrl: 'https://'+ ip + ":" + curUrl[1] + '/track?useraddress='+ dirName +'&filename='+filesave,
+                                            customization: {
+                                                about: false,
+                                                logo: {
+                                                    image: 'https://' + browserService.origin + '/img/soyut.png'
+                                                }
+                                            }
+                                        },
+                                        events: {
+                                            "onDocumentStateChange": onDocumentStateChange
+                                        }
+                                    });
+                            });
+                        }
+                    });
+
+                });
+
+            });
+
+        }
+        else if (files.type == "application/vnd.ms-excel") {
+            browserService.downloadFile({url: files.url, name: files.name}, function (err, result) {
+                
+                browserService.getLocalIP({}, function (err, ip) {
+                    var currentUrl = "https://" + ip + ":" + curUrl[1] + "/data/"+ files.name;
+                    soyut.Services.getInstance().getService("browserServer").generateSheetKey({}, function (err, data) {
+                        initSheetEditor(data.key, data.vkey);
+
+                        function initSheetEditor(docKey, docVkey) {
+                            browserService.getDocServerUrl({}, function (err, server) {
+                                
+                                var filesave = encodeURIComponent(files.name);
+                                var dirName = path.substr(0, path.lastIndexOf("/"));
+
+                                var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
+                                    {
+                                        width: "100%",
+                                        height: "100%",
+                                        documentType: "spreadsheet",
+                                        document: {
+                                            title: files.name,
+                                            url: currentUrl,
+                                            key: docKey,
+                                            vkey: docVkey,
+                                            permissions: {
+                                                download: false,
+                                                print: false,
+                                            }
+                                        },
+                                        editorConfig: {
+                                            lang: "en",
+                                            location: server + "/web-apps/",
+                                            callbackUrl: 'https://'+ ip + ":" + curUrl[1] + '/track?useraddress='+ dirName +'&filename='+filesave,
                                             customization: {
                                                 about: false,
                                                 logo: {
@@ -299,57 +157,203 @@ var curUrl = browserService.origin.split(':');
                                     });
                             });
                         }
+                    });
+
+                });
+
+            });
+        }
+        else if (files.type == "application/vnd.ms-powerpoint") {
+            browserService.downloadFile({url: files.url, name: files.name}, function (err, result) {
+
+                browserService.getLocalIP({}, function (err, ip) {
+                    var currentUrl = "https://" + ip + ":" + curUrl[1] + "/data/"+ files.name;
+                    soyut.Services.getInstance().getService("browserServer").generatePresentationKey({}, function (err, data) {
+                        initPresentationEditor(data.key, data.vkey);
+
+                        function initPresentationEditor(docKey, docVkey) {
+                            browserService.getDocServerUrl({}, function (err, server) {
+                                var filesave = encodeURIComponent(files.name);
+                                var dirName = path.substr(0, path.lastIndexOf("/"));
+
+                                var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
+                                    {
+                                        width: "100%",
+                                        height: "100%",
+                                        documentType: "presentation",
+                                        document: {
+                                            title: files.name,
+                                            url: currentUrl,
+                                            key: docKey,
+                                            vkey: docVkey,
+                                            permissions: {
+                                                download: false,
+                                                print: false,
+                                            }
+                                        },
+                                        editorConfig: {
+                                            lang: "en",
+                                            location: server + "/web-apps/",
+                                            callbackUrl: 'https://'+ ip + ":" + curUrl[1] + '/track?useraddress='+ dirName +'&filename='+filesave,
+                                            customization: {
+                                                about: false,
+                                                logo: {
+                                                    image: 'https://' + browserService.origin + '/img/soyut.png'
+                                                }
+                                            }
+                                        }
+                                    });
+                            });
+                        }
+                    });
+
                 });
             });
+        }
+        else if (files.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+            browserService.downloadFile({url: files.url, name: files.name}, function (err, result) {
+                
+                browserService.getLocalIP({}, function (err, ip) {
+                    var currentUrl = "https://" + ip + ":" + curUrl[1] + "/data/"+ files.name;
+                    soyut.Services.getInstance().getService("browserServer").generateDocxKey({}, function (err, data) {
+                        initDocxEditor(data.key, data.vkey);
 
+                        function initDocxEditor(docKey, docVkey) {
+                            browserService.getDocServerUrl({}, function (err, server) {
+                                var filesave = encodeURIComponent(files.name);
+                                var dirName = path.substr(0, path.lastIndexOf("/"));
+
+                                var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
+                                    {
+                                        width: "100%",
+                                        height: "100%",
+                                        documentType: "text",
+                                        document: {
+                                            title: files.name,
+                                            url: currentUrl,
+                                            key: docKey,
+                                            vkey: docVkey,
+                                            permissions: {
+                                                download: false,
+                                                print: false,
+                                            }
+                                        },
+                                        editorConfig: {
+                                            lang: "en",
+                                            location: server + "/web-apps/",
+                                            callbackUrl: 'https://'+ ip + ":" + curUrl[1] + '/track?useraddress='+ dirName +'&filename='+filesave,
+                                            customization: {
+                                                about: false,
+                                                logo: {
+                                                    image: 'https://' + browserService.origin + '/img/soyut.png'
+                                                }
+                                            }
+                                        }
+                                    });
+                            });
+                        }
+                    });
+                });
+
+            });
+        }
+        else if (files.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+            browserService.downloadFile({url: files.url, name: files.name}, function (err, result) {
+
+                browserService.getLocalIP({}, function (err, ip){
+                    var currentUrl = "https://" + ip + ":" + curUrl[1] + "/data/"+ files.name;
+                    soyut.Services.getInstance().getService("browserServer").generateSheetxKey({}, function (err, data) {
+                        initSheetxEditor(data.key, data.vkey);
+
+
+                            function initSheetxEditor(docKey, docVkey) {
+                                browserService.getDocServerUrl({}, function (err, server) {
+                                    var filesave = encodeURIComponent(files.name);
+                                    var dirName = path.substr(0, path.lastIndexOf("/"));
+
+                                    var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
+                                        {
+                                            width: "100%",
+                                            height: "100%",
+                                            documentType: "spreadsheet",
+                                            document: {
+                                                title: files.name,
+                                                url: currentUrl,
+                                                key: docKey,
+                                                vkey: docVkey,
+                                                permissions: {
+                                                    download: false,
+                                                    print: false,
+                                                }
+                                            },
+                                            editorConfig: {
+                                                lang: "en",
+                                                location: server + "/web-apps/",
+                                                callbackUrl: 'https://'+ ip + ":" + curUrl[1] + '/track?useraddress='+ dirName +'&filename='+filesave,
+                                                customization: {
+                                                    about: false,
+                                                    logo: {
+                                                        image: 'https://' + browserService.origin + '/img/soyut.png'
+                                                    }
+                                                }
+                                            }
+                                        });
+                                });
+                            }
+                    });
+                });
+
+            });
         }
         else if (files.type == "application/vnd.openxmlformats-officedocument.presentationml.presentation") {
-            browserService.getLocalIP({}, function (err, ip){
+            browserService.downloadFile({url: files.url, name: files.name}, function (err, result) {
 
-                var xd = files.url;
+                browserService.getLocalIP({}, function (err, ip){
+                    var currentUrl = "https://" + ip + ":" + curUrl[1] + "/data/"+ files.name;
+                    soyut.Services.getInstance().getService("browserServer").generatePresentationxKey({}, function (err, data) {
+                        initPresentationxEditor(data.key, data.vkey);
 
-                function getPosition(str, m, i) {
-                    return str.split(m, i).join(m).length;
-                }
+                        function initPresentationxEditor(docKey, docVkey) {
+                            browserService.getDocServerUrl({}, function (err, server) {
+                                var filesave = encodeURIComponent(files.name);
+                                var dirName = path.substr(0, path.lastIndexOf("/"));
 
-                var fileUrl = xd.substring(0, 8) + ip + xd.substring(getPosition(xd, ':', 2));
-                console.log("file url "+fileUrl);
-                soyut.Services.getInstance().getService("browserServer").generatePresentationxKey({}, function (err, data) {
-                    initPresentationxEditor(data.key, data.vkey);
-
-
-                    function initPresentationxEditor(docKey, docVkey) {
-                        browserService.getDocServerUrl({}, function (err, server) {
-                        var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
-                            {
-                                width: "100%",
-                                height: "100%",
-                                documentType: "presentation",
-                                document: {
-                                    title: files.name,
-                                    url: fileUrl,
-                                    key: docKey,
-                                    vkey: docVkey,
-                                    permissions: {
-                                        download: false,
-                                        print: false,
-                                    }
-                                },
-                                editorConfig: {
-                                    lang: "en",
-                                    location: server + "/web-apps/",
-                                    customization: {
-                                        about: false,
-                                        logo: {
-                                            image: 'https://' + browserService.origin + '/img/soyut.png'
+                                var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
+                                    {
+                                        width: "100%",
+                                        height: "100%",
+                                        documentType: "presentation",
+                                        document: {
+                                            title: files.name,
+                                            url: currentUrl,
+                                            key: docKey,
+                                            vkey: docVkey,
+                                            permissions: {
+                                                download: false,
+                                                print: false,
+                                            }
+                                        },
+                                        editorConfig: {
+                                            lang: "en",
+                                            location: server + "/web-apps/",
+                                            callbackUrl: 'https://'+ ip + ":" + curUrl[1] + '/track?useraddress='+ dirName +'&filename='+filesave,
+                                            customization: {
+                                                about: false,
+                                                logo: {
+                                                    image: 'https://' + browserService.origin + '/img/soyut.png'
+                                                }
+                                            }
                                         }
-                                    }
-                                }
-                            });
-                        });
-                    }
+                                    });
+                                });
+                        }
 
+                    });
                 });
+
             });
         }
+
+        
     });
+

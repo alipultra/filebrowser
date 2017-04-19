@@ -9,12 +9,15 @@ var app = require('express')();
 var websocket = require('socket.io');
 var https = require('https');
 var fs = require('fs');
-
+var download = require('download-file');
 var ip = require('ip');
 rethinkdb = require('rethinkdb');
 var compression = require('compression');
 var ping = require('ping');
-var randomString = require('randomstring')
+var randomString = require('randomstring');
+var syncRequest = require("sync-request");
+var path = require('path');
+
 mongoDb = {}
 remote_service = null
 
@@ -48,8 +51,39 @@ app.post('/track', function (req, res){
     var fileName = req.query.filename;
     var version = 0;
 
-    console.log(req.body);
-    console.log("xxx "+fileName.body);
+    var pathForSave = "./client/data/"+fileName;
+
+    var updateFile = function (response, body, path) {
+        if (body.status == 2)
+        {
+            var file = syncRequest("GET", body.url);
+            fs.writeFileSync(path, file.getBody());
+            console.log("load file")
+            //emit change
+            var Obj = {
+                useraddress: userAddress,
+                filename: fileName
+            }
+            websocketServer.emit('edit_document', Obj);
+        }
+
+        response.write("{\"error\":0}");
+        response.end();
+    }
+
+    var readbody = function (request, response, path) {
+        var content = "";
+        request.on("data", function (data) {
+            content += data;
+        });
+        request.on("end", function () {
+            var body = JSON.parse(content);
+            console.log(body)
+            updateFile(response, body, path);
+        });
+    }
+
+    readbody(req, res, pathForSave);
 });
 
 httpServer.listen(config.port, function () {
@@ -121,8 +155,43 @@ httpServer.listen(config.port, function () {
 
     methods.getLocalIP = function(authServerUrl, remoteSocket, reqMsg, resCallback){
         var ip_address = ip.address();
-        console.log("add "+ip_address);
         resCallback(false, ip_address);
+    };
+
+    methods.downloadFile = function(authServerUrl, remoteSocket, reqMsg, resCallback){
+        var fileUrl = reqMsg.data.params.url;
+        var fileName = reqMsg.data.params.name;
+        var destFile = "./client/data/";
+
+        fs.readdir(destFile, (err, files) => {
+            if (err) throw error;
+
+            for (const file of files) {
+                fs.unlink(path.join(destFile, file), err => {
+                if (err) throw error;
+                });
+            }
+        });
+
+        var options = {
+            directory: destFile,
+            filename: fileName
+        }
+
+        download(fileUrl, options, function(err){
+            if (err) throw err
+            var result = "success";
+            resCallback(result)
+        });
+    };
+
+    methods.deleteFile = function(authServerUrl, remoteSocket, reqMsg, resCallback){
+        var file = reqMsg.data.params.file;
+        var destFile = "./client/data/";
+        var deletePath = destFile + file;
+        fs.unlink(deletePath);
+        var result = "success";
+        resCallback(result);
     };
 
     service.identify("browserServer", null, config.authServerUrl, function (isIdentifySuccess, identifyResp) {

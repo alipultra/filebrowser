@@ -78,7 +78,7 @@
                                             <ul class="grid cs-style-2 list-view0" id="main-item-container">
 
                                                 <li v-if="setBackButton(curDir) == true" data-name=".." class="back ui-droppable">
-                                                    <figure data-name=".." class="back-directory" data-type="" v-bind="getParentFolder(curDir)">
+                                                    <figure data-name=".." data-path=".." class="back-directory" data-type="" v-bind="getParentFolder(curDir)">
                                                         <a class="folder-link" href="#" @click="BackBrowser(volumes, cdir, bdir)">
                                                             <div class="img-precontainer">
                                                                 <div class="img-container directory"><span></span>
