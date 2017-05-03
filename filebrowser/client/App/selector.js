@@ -2,6 +2,8 @@ var browserService = soyut.Services.getInstance().getService("browserServer");
 soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, function (err, data) {
 
     var documentServerUrl = data;
+    var p1 = getParam('p1');
+    var p2 = getParam('p2');
 
     $.getScript(documentServerUrl + '/web-apps/apps/api/documents/api.js');
 
@@ -349,7 +351,12 @@ soyut.Services.getInstance().getService("browserServer").getDocServerUrl({}, fun
                 var path = dir + i;
                 fileSystem.stat(path, function (err, files) {
                     var activity =  getActivityInstance();
-                    activity.context.invoke('loadfile_selected',files);
+                    var Obj = {
+                        files: files,
+                        p1: p1,
+                        p2: p2
+                    }
+                    activity.context.invoke('loadfile_selected',Obj);
                     activity.window.close();
                 });
             },
