@@ -2,7 +2,7 @@
   "appId":"soyut.module.browser",
   "appName":"File Browser",
   "version":"1.0.0",
-  "isMultiInstance":true,
+  "isMultiInstance":false,
   "icon":"icon.png",
   "startup" : false,
   "isWidget" : false,
@@ -150,8 +150,7 @@
         {"name":"mediajs","url":"/js/media.js"}
       ],
       "styles":[
-        {"name":"mediacss","url":"/css/browser.css"},
-        {"name":"filemanagercss","url":"/css/filemanager.css"}
+        {"name":"mediacss","url":"/css/browser.css"}
       ],
       "contents":[
         {"name":"media","url":"/media.html"}

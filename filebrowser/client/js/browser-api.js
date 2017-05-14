@@ -1,43 +1,78 @@
 soyut.browser = soyut.browser || soyut.Services.getInstance().getService("browserServer");
-var tmplTes = '<h1 class="text-center">\
-                <small>Add Folder</small>\
-                </h1>';
+var socket = io.connect('https://'+ soyut.browser.origin);
 
+soyut.browser.getDocServerUrl({}, function (err, docserver) {
+    socket.on('edit_document', function (data) {
 
-Vue.component('list-inbox', {
-    props: [],
-    template: tmplTes,
-    methods: {
-    }
+    });
+
+    $.getScript(docserver + '/web-apps/apps/api/documents/api.js');
 });
 
-soyut.browser.renderBrowser = function(elSelector, uuid) {
-    console.log('asdasdasd')
-    var $el = $(elSelector);
-    $el.html('');
-    $el.append('<list-inbox></list-inbox>');
-
-    var vminbox = new Vue({
-        el: elSelector,
-        data: {
-            inboxdata: ''
-        },
-        methods: {
-
-        }
+soyut.browser.initFiles = function (req) {
+    return new Promise (function(resolve,reject) {
+        soyut.browser.file_ls({path: req}, function (e, data) {
+            if (e) {
+                reject(e);
+            } else {
+                var dataObj = {};
+                dataObj = data;
+                resolve(dataObj);
+            }
+        });
     });
 };
+
+soyut.browser.file_ls = function (req, callback) {
+    fileSystem.ls(req.path, function (err, files) {
+        callback(false, files);
+    });
+};
+
+soyut.browser.mp_ls = function (req, callback) {
+    fileSystem.mp_ls(req.volume, req.path, function (err, files) {
+        callback(false, files);
+    });
+};
+
+soyut.browser.mountPointChange = function (volumes) {
+    $(".device-list").html('');
+    var curVol = $('.volume-browser').val();
+    var fsSel = '';
+    if(curVol == "0"){
+        fsSel = 'selected';
+    }
+    var html = '<option value="0" '+ fsSel +'>File Sistem</option>';
+    if(volumes.length > 0){
+        volumes.forEach(function (i) {
+            var mdSel = '';
+            if(curVol == i){
+                mdSel = 'selected';
+            }
+            var n = i.lastIndexOf('/');
+            var nmp = i.substring(n + 1);
+
+            html += '<option value="'+ i +'" '+ mdSel +'>'+ nmp +'</option>';
+        });
+    }
+    $(".device-list").append(html);
+};
+
+document.addEventListener('fileSystem.mountPointChange', function() {
+    /* do something */
+    console.log("mountpoint change");
+    var volumes = fileSystem.mp_list;
+    soyut.browser.mountPointChange(volumes);
+    soyut.browser.refreshBrowser();
+}, false);
+
+// document.addEventListener('fileSystem.structureChange', function() {
+//     /* do something */
+//     console.log("fileSystem change");
+//     soyut.browser.refreshBrowser();
+// }, false);
 //
-// soyut.browser.uuid = null;
-//
-// soyut.forum.init = function(callback) {
-//     var app =  getAppInstance();
-//     var activitylistener = getActivityInstanceAsync();
-//     activitylistener.then(function(activity) {
-//         console.log(activity+" tes fdulu");
-//     });
-// };
-//
-// soyut.forum.init(function() {
-//     console.info('browser module load');
-// });
+// document.removeEventListener('fileSystem.structureChange', function() {
+//     /* do something */
+//     console.log("remove");
+// }, false);
