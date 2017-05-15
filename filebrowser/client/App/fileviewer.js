@@ -57,6 +57,10 @@ var curUrl = browserService.origin.split(':');
         var html = "<img src=\"" + url + "\" height=\"100%\" width=\"100%\">";
         $('.content-data').html(html);
     }
+    else if (files.type == "image/png") {
+        var html = "<img src=\"" + files.url + "\" height=\"100%\" width=\"100%\">";
+        $('.content-data').html(html);
+    }
     else if (type == "application/msword") {
 
         browserService.getLocalIP({}, function (err, ip) {
