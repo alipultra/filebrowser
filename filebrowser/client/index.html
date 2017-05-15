@@ -103,9 +103,9 @@
                 </a>
             </figure>
         </li>
-        <li v-if="getFirstChar(file.name) != '.'" v-for="file in files" v-bind="loadAttr(getFileName(file.name), file.isFile, file.isDirectory, file.type, file.size)">
-            <figure v-bind="loadFigureAttr(getFileName(file.name), file.name, file.isFile, file.isDirectory, file.type)">
-                <a v-bind="loadLinkAttr(getFileName(file.name), file.isFile, file.isDirectory)" href="#" @dblclick="OpenFile(file.isFile, file.isDirectory, file.name, file.type, file.url)">
+        <li v-if="getFirstChar(file.name) != '.'" v-for="file in files" v-bind="loadAttr(getFileName(file.name, file.isDirectory), file.isFile, file.isDirectory, file.type, file.size)">
+            <figure v-bind="loadFigureAttr(getFileName(file.name, file.isDirectory), file.name, file.isFile, file.isDirectory, file.type)">
+                <a v-bind="loadLinkAttr(getFileName(file.name, file.isDirectory), file.isFile, file.isDirectory)" href="#" @dblclick="OpenFile(file.isFile, file.isDirectory, file.name, file.type, file.url)">
                     <div class="img-precontainer">
                         <div v-bind="loadFileType(file.isFile, file.isDirectory, file.type)">{{getFileType(file.type)}}</div>
                         <div v-bind="loadImgContainer(file.isFile, file.isDirectory)">
@@ -121,9 +121,9 @@
                     <div v-bind="loadCover(file.isFile, file.type)"></div>
                 </a>
                 <div class="box">
-                    <h4 class="ellipsis">{{getFileName(file.name)}}</h4>
+                    <h4 class="ellipsis">{{getFileName(file.name, file.isDirectory)}}</h4>
                 </div>
-                <input type="hidden" class="name" v-model="getFileName(file.name)">
+                <input type="hidden" class="name" v-model="getFileName(file.name, file.isDirectory)">
                 <input type="hidden" class="size" v-model="file.size">
                 <input type="hidden" class="extension" v-model="getFileType(file.type)">
                 <div class="file-extension">{{getFileType(file.type)}}</div>

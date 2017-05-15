@@ -728,7 +728,7 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                 }
 
             },
-            getFileName: function (name) {
+            getFileName: function (name, isDirectory) {
                 var volume = $('.volume-browser').val();
                 var curVal = '';
                 if(volume == '0') {
