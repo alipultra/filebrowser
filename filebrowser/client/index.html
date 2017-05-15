@@ -105,7 +105,7 @@
         </li>
         <li v-if="getFirstChar(file.name) != '.'" v-for="file in files" v-bind="loadAttr(getFileName(file.name, file.isDirectory), file.isFile, file.isDirectory, file.type, file.size)">
             <figure v-bind="loadFigureAttr(getFileName(file.name, file.isDirectory), file.name, file.isFile, file.isDirectory, file.type)">
-                <a v-bind="loadLinkAttr(getFileName(file.name, file.isDirectory), file.isFile, file.isDirectory)" href="#" @dblclick="OpenFile(file.isFile, file.isDirectory, file.name, file.type, file.url)">
+                <a v-bind="loadLinkAttr(getFileName(file.name, file.isDirectory), file.isFile, file.isDirectory)" href="#" @dblclick="OpenFile(file.isFile, file.isDirectory, file.name, file.type, file.url, file.path)">
                     <div class="img-precontainer">
                         <div v-bind="loadFileType(file.isFile, file.isDirectory, file.type)">{{getFileType(file.type)}}</div>
                         <div v-bind="loadImgContainer(file.isFile, file.isDirectory)">

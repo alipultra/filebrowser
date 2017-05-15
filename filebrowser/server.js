@@ -52,18 +52,17 @@ app.post('/track', function (req, res){
     var version = 0;
 
     var pathForSave = "./client/data/"+fileName;
-
     var updateFile = function (response, body, path) {
         if (body.status == 2)
         {
             var file = syncRequest("GET", body.url);
             fs.writeFileSync(path, file.getBody());
-            console.log("load file")
+            console.log("load file");
             //emit change
             var Obj = {
                 useraddress: userAddress,
                 filename: fileName
-            }
+            };
             websocketServer.emit('edit_document', Obj);
         }
 
@@ -176,10 +175,10 @@ httpServer.listen(config.port, function () {
         var options = {
             directory: destFile,
             filename: fileName
-        }
+        };
 
         download(fileUrl, options, function(err){
-            if (err) throw err
+            if (err) throw err;
             var result = "success";
             resCallback(result)
         });

@@ -5,7 +5,7 @@ var curUrl = browserService.origin.split(':');
     var frameEditorId = frameEditor.selector.split("#");
 
     var path = getParam('path');
-
+    console.log(path)
     $(getInstanceID('tes')).html(path);
 
     fileSystem.stat(path, function (err, files) {

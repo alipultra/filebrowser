@@ -1,58 +1,8 @@
+var curUrl = soyut.browser.origin.split(':');
 soyut.browser.getDocServerUrl({}, function (err, docserver) {
     var documentServerUrl = docserver;
     var vm;
     var app = getAppInstance();
-    /* sample drive */
-    var defaultData = [
-        {
-            text: ' File System',
-            icon: "glyphicon glyphicon-folder-close",
-            href: '#parent2',
-            tags: ['0']
-        },
-        {
-            text: ' Drive',
-            icon: "glyphicon glyphicon-hdd",
-            href: '#parent3',
-            tags: ['0']
-        }
-    ];
-
-    $(getInstanceID('treeview1')).treeview({
-        data: defaultData
-    });
-    /* end sample drive */
-
-    // Vue.component('filter-component', {
-    //     props: ['contents'],
-    //     template: '#filter-component',
-    //     methods: {
-    //         ChangeView: function (id, val) {
-    //             this.$root.ChangeView(id, val);
-    //         }
-    //     }
-    // });
-    //
-    // soyut.browser.initFilterComponent = function (elSelector) {
-    //     var $el = $(elSelector);
-    //     $el.html('');
-    //     $el.append('<filter-component :contents="contents"></filter-component>');
-    //
-    //     var vmcompose = new Vue({
-    //         el: elSelector,
-    //         data: {
-    //             contents: {}
-    //         },
-    //         methods:{
-    //         }
-    //     });
-    // };
-
-    soyut.browser.fileData = {
-        files: '',
-        curDir: '',
-        dir: ''
-    };
 
     soyut.browser.initFilterComponent = function () {
         function p(c) {
@@ -146,7 +96,7 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
     soyut.browser.createFiles = function () {
         var name = $(".browser-create-file-name").val();
         var filetype = $(".browser-create-file-type").val();
-        var curdir = $('.curdir-browser').val();
+        var curdir = $(getInstanceID('curdir-browser')).val();
 
         var targetdir = curdir + name +"."+filetype;
         function getFile(url, callback) {
@@ -167,13 +117,13 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
 
         var dataurl = '';
         if(filetype == "docx") {
-            dataurl = 'https://'+ browserService.origin +'/files/new.docx';
+            dataurl = 'https://'+ soyut.browser.origin +'/files/new.docx';
         }
         else if(filetype == "xlsx"){
-            dataurl = 'https://'+ browserService.origin +'/files/new.xlsx';
+            dataurl = 'https://'+ soyut.browser.origin +'/files/new.xlsx';
         }
         else if(filetype == "pptx"){
-            dataurl = 'https://'+ browserService.origin +'/files/new.pptx';
+            dataurl = 'https://'+ soyut.browser.origin +'/files/new.pptx';
         }
 
         soyut.storage.getStorageKeyAsync({userId: fileSystem.userid}).then(function(storageKey) {
@@ -723,7 +673,7 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                         soyut.browser.initFileList('.file-browser', volume, curdir, filename);
                     }
                     else {
-                        soyut.browser.ViewFile(name, type, url);
+                        soyut.browser.ViewFile(name, type, url, path);
                     }
                 }
 
@@ -1465,10 +1415,10 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
         }
     };
 
-    soyut.browser.ViewFile = function (name, type, url) {
+    soyut.browser.ViewFile = function (name, type, url, path) {
         var activitylistener = getActivityInstanceAsync();
         activitylistener.then(function (activity) {
-            app.launchExternalActivity("soyut.module.browser.fileviewer", {name: name, type: type, url: url}, activity);
+            app.launchExternalActivity("soyut.module.browser.fileviewer", {name: name, type: type, url: url, path: path}, activity);
         });
     };
 
