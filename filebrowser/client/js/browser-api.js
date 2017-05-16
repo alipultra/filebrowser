@@ -5,6 +5,9 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
     socket.on('edit_document', function (data) {
         soyut.browser.updateOfficeDocument(data)
     });
+    socket.on('view_document', function (data) {
+        soyut.browser.viewOfficeDocument(data)
+    });
 
     $.getScript(docserver + '/web-apps/apps/api/documents/api.js');
 });
@@ -32,6 +35,12 @@ soyut.browser.file_ls = function (req, callback) {
 soyut.browser.mp_ls = function (req, callback) {
     fileSystem.mp_ls(req.volume, req.path, function (err, files) {
         callback(false, files);
+    });
+};
+
+soyut.browser.viewOfficeDocument = function (file) {
+    soyut.browser.deleteFile({file: file.filename}, function (err, resfile) {
+        soyut.browser.hideLoader();
     });
 };
 
@@ -72,7 +81,8 @@ soyut.browser.updateOfficeDocument = function (file) {
                     dataBuffer: dataBuffer
                 }).then(function() {
                     soyut.browser.deleteFile({file: file.filename}, function (err, resfile) {
-                        console.log("File telah di update!")
+                        soyut.browser.hideLoader();
+                        console.log("File telah di update!");
                     });
                 });
             });
@@ -113,13 +123,13 @@ document.addEventListener('fileSystem.mountPointChange', function() {
     //soyut.browser.refreshBrowser();
 }, false);
 
-document.addEventListener('fileSystem.structureChange', function() {
-    /* do something */
-    console.log("fileSystem change");
-    soyut.browser.refreshBrowser();
-}, false);
+soyut.browser.listenFileChanges = function() {
+    console.log("file system changes!");
+    document.removeEventListener('fileSystem.structureChange', soyut.browser.listenFileChanges);
+    //soyut.browser.refreshBrowser();
+};
 
-document.removeEventListener('fileSystem.structureChange', function() {
-    /* do something */
-    console.log("remove");
-}, false);
+document.addEventListener('fileSystem.structureChange', soyut.browser.listenFileChanges);
+
+
+

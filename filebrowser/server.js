@@ -65,6 +65,13 @@ app.post('/track', function (req, res){
             };
             websocketServer.emit('edit_document', Obj);
         }
+        else if(body.status == 4){
+            var Obj = {
+                useraddress: userAddress,
+                filename: fileName
+            };
+            websocketServer.emit('view_document', Obj);
+        }
 
         response.write("{\"error\":0}");
         response.end();

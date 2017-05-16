@@ -134,8 +134,6 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
 
             var safeUrl = dataurl.substring(0, 8) + curUrl[0] + dataurl.substring(getPosition(dataurl, ':', 2));
 
-            console.log(safeUrl+" data "+dataurl);
-
             // debugger;
             getFile(safeUrl, function(err, dataBuffer) {
                 if (err) return;
@@ -146,6 +144,7 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                 }).then(function() {
 
                     soyut.browser.closeModalWindow();
+                    soyut.browser.refreshBrowser();
 
                 });
             });
@@ -194,7 +193,7 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
 
     soyut.browser.createFolder = function () {
         var name = $(".browser-create-folder-name").val();
-        var curdir = $('.curdir-browser').val();
+        var curdir = $(getInstanceID('curdir-browser')).val();
 
         var targetdir = curdir + name
 
@@ -396,6 +395,15 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
         return bytes.toFixed(1)+' '+units[u];
     };
 
+    soyut.browser.clearActionMenu = function () {
+        $(getInstanceID("cm-file")).val('');
+        $(getInstanceID("cm-dir")).val('');
+        $(getInstanceID("cm-type")).val('');
+        $(getInstanceID("cm-drive")).val('');
+        $(getInstanceID("cm-action")).val('');
+        soyut.browser.loadActionContextMenu('');
+    };
+
     var contextActions = {
         cut: function (a) {
             var file = a.file;
@@ -425,7 +433,7 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
             $(getInstanceID("cm-action")).val(action);
 
             soyut.browser.loadActionContextMenu(action);
-            console.log(a)
+            console.log(action+" file: "+file);
         },
         delete: function (a) {
             $(getInstanceID("media-container")).show(500);
@@ -443,6 +451,49 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
             var cmtype = $(getInstanceID("cm-type")).val();
             var cmdrive = $(getInstanceID("cm-drive")).val();
             var cmaction = $(getInstanceID("cm-action")).val();
+
+            var srcPath = cmdir + cmfile;
+            var tgtPath = curdir + cmfile;
+            if(cmdrive == 0) {
+                if(cmtype == 'file') {
+                    if (cmaction == 'copy') {
+                        fileSystem.cp(srcPath, tgtPath, function (err, result) {
+                            if (!err) {
+                                console.log("copy file");
+                                soyut.browser.clearActionMenu();
+                            }
+                        });
+                    }
+                    else {
+                        fileSystem.mv(srcPath, tgtPath, function (err, result) {
+                            if (!err) {
+                                console.log("move file");
+                                soyut.browser.clearActionMenu();
+                            }
+                        });
+                    }
+                }
+                else {
+                    if (cmaction == 'copy') {
+                        fileSystem.cpdir(srcPath, tgtPath, function (err, result) {
+                            if (!err) {
+                                console.log("copy folder");
+                                console.log(result);
+                                soyut.browser.clearActionMenu();
+                            }
+                        });
+                    }
+                    else {
+                        fileSystem.mvdir(srcPath, tgtPath, function (err, result) {
+                            if (!err) {
+                                console.log("move folder");
+                                console.log(result);
+                                soyut.browser.clearActionMenu();
+                            }
+                        });
+                    }
+                }
+            }
         },
         newfile: function (a) {
             $(getInstanceID("media-container")).show(500);
@@ -452,7 +503,7 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
 
     soyut.browser.showRenameDialog = function (data){
         var html = '<div class="modal-header">' +
-            '<h3 class="modal-title">Ubah</h3>' +
+            '<h3 class="modal-title">Ubah  '+ data.file +'?</h3>' +
             '</div>' +
             '<div class="modal-body">' +
             '<form>' +
@@ -483,18 +534,19 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
 
     soyut.browser.renameFiles = function (data) {
         var changeName = $(".browser-file-name").val();
+        var ext = data.file.split('.').pop();
         var sourcedir = data.dir + data.file;
-        var targetdir = data.dir + changeName;
+        var targetdir = data.dir + changeName+"."+ext;
         if(data.type == 'file') {
-            // fileSystem.mv(srcdir, targetdir, function (err, res) {
-            //
-            // });
+            fileSystem.mv(sourcedir, targetdir, function (err, res) {
+
+            });
             console.log("file: "+ sourcedir+" to "+targetdir);
         }
         else {
-            // fileSystem.mvdir(srcdir, targetdir, function (err, res) {
-            //
-            // });
+            fileSystem.mvdir(sourcedir, targetdir, function (err, res) {
+
+            });
             console.log("dir: "+ sourcedir+" to "+targetdir);
         }
         soyut.browser.closeModalWindow();
@@ -1373,6 +1425,7 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
     };
 
     soyut.browser.initFileList = function (elSelector, volume, curdir, dir) {
+        soyut.browser.showLoader();
         var $el = $(elSelector);
 
         $el.html('');
@@ -1401,6 +1454,7 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                         files: files
                     }
                 });
+                soyut.browser.hideLoader();
             });
         }
         else {
@@ -1411,15 +1465,25 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                         files: files
                     }
                 });
+                soyut.browser.hideLoader();
             });
         }
     };
 
     soyut.browser.ViewFile = function (name, type, url, path) {
+        soyut.browser.showLoader();
         var activitylistener = getActivityInstanceAsync();
         activitylistener.then(function (activity) {
             app.launchExternalActivity("soyut.module.browser.fileviewer", {name: name, type: type, url: url, path: path}, activity);
         });
+    };
+
+    soyut.browser.showLoader = function () {
+        $(getInstanceID("browser-loader")).show();
+    };
+
+    soyut.browser.hideLoader = function () {
+        $(getInstanceID("browser-loader")).hide(500);
     };
 
     soyut.browser.initFolderDraggable = function () {

@@ -5048,6 +5048,19 @@
     opacity: 0.5;
     position: absolute;
     z-index: 9998; }
+  .browser-content .browser-loader {
+    position: absolute;
+    top: 130px;
+    left: 30%;
+    right: 30%;
+    height: 90px;
+    margin: auto;
+    z-index: 9999;
+    overflow: hidden;
+    background: url(../img/storing_animation.gif) no-repeat top center;
+    text-align: center;
+    padding-top: 65px;
+    color: #fff; }
   .browser-content .uploader {
     position: absolute;
     top: 50px;

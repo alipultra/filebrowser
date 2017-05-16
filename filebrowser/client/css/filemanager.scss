@@ -918,8 +918,8 @@
   .list-view2.grid li figure.directory {
     background: #efefef
   }
-  .list-view1.grid li figure.directory box,
-  .list-view2.grid li figure.directory box {
+  .list-view1.grid li figure.directory .box,
+  .list-view2.grid li figure.directory .box {
     padding: 0;
     min-height: 10px
   }
@@ -1267,7 +1267,10 @@
   cursor: pointer
 }
 .context-menu-item.disabled {
-  color: #666
+  color: #dcdcdc;
+}
+.context-menu-disabled {
+  color: #dcdcdc;
 }
 .context-menu-submenu:after {
   content: ">";
@@ -1333,7 +1336,6 @@
   height: auto;
   word-wrap: break-word;
   -webkit-user-select: none;
-  -moz-user-select: 0;
   -ms-user-select: none;
   user-select: none;
   padding: 5px 5px 5px 30px;
@@ -1438,12 +1440,6 @@
   background-image: url(../img/delete.png);
   background-repeat: no-repeat;
   background-position: left;
-}
-.context-menu-item.icon-add {
-  background-image: url(../img/page_white_add.png)
-}
-.context-menu-item.icon-quit {
-  background-image: url(../img/door.png)
 }
 .context-menu-item.icon-info {
   background-image: url(../img/info.png)
