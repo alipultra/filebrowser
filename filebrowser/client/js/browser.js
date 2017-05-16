@@ -496,10 +496,29 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
             }
             else {
                 if(volume == 0){
-                    console.log("get from media");
+                    if(cmtype == 'file') {
+                        console.log("get : "+cmdrive+", "+srcPath+", "+tgtPath);
+                        fileSystem.mp_get(cmdrive, srcPath, tgtPath, function(err, result){
+                            if (!err) {
+                                console.log("save file from media");
+                                console.log(result);
+                                soyut.browser.clearActionMenu();
+                            }
+                        });
+                    }
+                    else {
+                        fileSystem.mp_getdir(cmdrive, srcPath, tgtPath, function(err, result){
+                            if (!err) {
+                                console.log("save file from media");
+                                console.log(result);
+                                soyut.browser.clearActionMenu();
+                            }
+                        });
+                    }
                 }
                 else {
                     if(cmtype == 'file') {
+                        console.log("put : "+srcPath+", "+volume+", "+tgtPath);
                         fileSystem.mp_put(srcPath, volume, tgtPath, function (err, result) {
                             if (!err) {
                                 console.log("save file to media");
@@ -518,24 +537,6 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                         });
                     }
                 }
-                // if(cmtype == 'file') {
-                //     fileSystem.mp_get(volume, srcPath, tgtPath, function(err, result){
-                //         if (!err) {
-                //             console.log("media copy folder");
-                //             console.log(result);
-                //             soyut.browser.clearActionMenu();
-                //         }
-                //     });
-                // }
-                // else {
-                //     fileSystem.mp_get(volume, srcPath, tgtPath, function(err, result){
-                //         if (!err) {
-                //             console.log("media copy folder");
-                //             console.log(result);
-                //             soyut.browser.clearActionMenu();
-                //         }
-                //     });
-                // }
             }
         },
         newfile: function (a) {
@@ -1156,20 +1157,40 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                             };
                             return attr;
                         case "image/jpeg":
-                            attr = {
-                                'class': 'icon lazy-loaded',
-                                'src': url,
-                                'data-original': url,
-                                'style': 'display: inline;'
-                            };
+                            if(url == undefined){
+                                attr = {
+                                    'class': 'icon lazy-loaded',
+                                    'src': 'https://' + soyut.browser.origin + '/img/ico/jpeg.jpg',
+                                    'data-original': 'https://' + soyut.browser.origin + '/img/ico/jpeg.jpg',
+                                    'style': 'display: inline;'
+                                };
+                            }
+                            else {
+                                attr = {
+                                    'class': 'icon lazy-loaded',
+                                    'src': url,
+                                    'data-original': url,
+                                    'style': 'display: inline;'
+                                };
+                            }
                             return attr;
                         case "image/png":
-                            attr = {
-                                'class': 'icon lazy-loaded',
-                                'src': url,
-                                'data-original': url,
-                                'style': 'display: inline;'
-                            };
+                            if(url == undefined){
+                                attr = {
+                                    'class': 'icon lazy-loaded',
+                                    'src': 'https://' + soyut.browser.origin + '/img/ico/png.jpg',
+                                    'data-original': 'https://' + soyut.browser.origin + '/img/ico/png.jpg',
+                                    'style': 'display: inline;'
+                                };
+                            }
+                            else {
+                                attr = {
+                                    'class': 'icon lazy-loaded',
+                                    'src': url,
+                                    'data-original': url,
+                                    'style': 'display: inline;'
+                                };
+                            }
                             return attr;
                         default:
                             attr = {
@@ -1514,14 +1535,6 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
         activitylistener.then(function (activity) {
             app.launchExternalActivity("soyut.module.browser.fileviewer", {name: name, type: type, url: url, path: path}, activity);
         });
-    };
-
-    soyut.browser.showLoader = function () {
-        $(getInstanceID("browser-loader")).show();
-    };
-
-    soyut.browser.hideLoader = function () {
-        $(getInstanceID("browser-loader")).hide(500);
     };
 
     soyut.browser.initFolderDraggable = function () {

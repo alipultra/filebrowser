@@ -67,13 +67,13 @@ soyut.browser.openFilePDF = function () {
     }
     getFile(safeUrl, function(err, dataBuffer) {
         var blob = new Blob([dataBuffer],{type: 'application/pdf'});
-        //var fileURL = URL.createObjectURL(blob);
         var geturl = URL.createObjectURL(blob);
 
-        var html = "<iframe title=\"PDF\" type=\"application/pdf\" src=\""+ geturl +"\" frameborder=\"1\" scrolling=\"auto\" style=\"width:100%; height:100vw\" ></iframe>";
-        $('.content-data').append(html)
+        var html = '<iframe title="PDF" type="application/pdf" src="'+ geturl+'#page=1&zoom=100' +'" frameborder="1" scrolling="auto" style="width:100%; height: 95vh;"></iframe>';
+        $('.content-data').append(html);
     });
 };
+
 soyut.browser.openFileText = function () {
     $.ajax({
         url: url,

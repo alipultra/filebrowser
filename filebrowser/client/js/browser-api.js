@@ -44,6 +44,14 @@ soyut.browser.viewOfficeDocument = function (file) {
     });
 };
 
+soyut.browser.showLoader = function () {
+    $(".loader-container").show();
+};
+
+soyut.browser.hideLoader = function () {
+    $(".loader-container").hide(500);
+};
+
 soyut.browser.updateOfficeDocument = function (file) {
     var dataurl = "https://"+ soyut.browser.origin +"/data/"+file.filename;
     var curUrl = soyut.browser.origin.split(':');
