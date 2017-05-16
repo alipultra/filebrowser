@@ -8,30 +8,40 @@ var url = getParam('url');
 var type = getParam('type');
 
 soyut.browser.initFileViewer = function () {
-    switch (type) {
-        case "application/pdf":
-            soyut.browser.openFilePDF();
-        case "text/plain":
-            soyut.browser.openFileText();
-        case "video/mp4":
-            soyut.browser.openFileVideo();
-        case "audio/mp3":
-            soyut.browser.openFileAudio();
-        case "image/jpeg":
-            soyut.browser.openFileImage();
-        case "image/png":
-            soyut.browser.openFileImage();
-        case "application/msword":
-            soyut.browser.openFileDocument();
-        case "application/vnd.ms-excel":
-            soyut.browser.openFileSheet();
-        case "application/vnd.ms-powerpoint":
-            soyut.browser.openFilePresentation();
-        case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-            soyut.browser.openFileDocumentx();
-        case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-            soyut.browser.openFileSheetx();
-        case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+    if(type == "application/pdf") {
+        soyut.browser.openFilePDF();
+    }
+    else if(type == "text/plain") {
+        soyut.browser.openFileText();
+    }
+    else if(type == "video/mp4") {
+        soyut.browser.openFileVideo();
+    }
+    else if(type == "audio/mp3") {
+        soyut.browser.openFileAudio();
+    }
+    else if(type == "image/jpeg") {
+        soyut.browser.openFileImage();
+    }
+    else if(type == "image/png") {
+        soyut.browser.openFileImage();
+    }
+    else if(type == "application/msword") {
+        soyut.browser.openFileDocument();
+    }
+    else if(type == "application/vnd.ms-excel") {
+        soyut.browser.openFileSheet();
+    }
+    else if(type == "application/vnd.ms-powerpoint") {
+        soyut.browser.openFilePresentation();
+    }
+    else if(type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+        soyut.browser.openFileDocumentx();
+    }
+    else if(type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+        soyut.browser.openFileSheetx();
+    }
+    else if(type == "application/vnd.openxmlformats-officedocument.presentationml.presentation"){
             soyut.browser.openFilePresentationx();
     }
 };
@@ -90,6 +100,7 @@ soyut.browser.openFileImage = function () {
     $('.content-data').html(html);
 };
 soyut.browser.openFileDocument = function () {
+    soyut.browser.showLoader();
     soyut.browser.downloadFile({url: url, name: name}, function (err, result) {
 
         soyut.browser.getLocalIP({}, function (err, ip) {
@@ -151,6 +162,7 @@ soyut.browser.openFileDocument = function () {
 };
 
 soyut.browser.openFileSheet = function () {
+    soyut.browser.showLoader();
     soyut.browser.downloadFile({url: url, name: name}, function (err, result) {
 
         soyut.browser.getLocalIP({}, function (err, ip) {
@@ -211,6 +223,7 @@ soyut.browser.openFileSheet = function () {
     });
 };
 soyut.browser.openFilePresentation = function () {
+    soyut.browser.showLoader();
     soyut.browser.downloadFile({url: url, name: name}, function (err, result) {
 
         soyut.browser.getLocalIP({}, function (err, ip) {
@@ -272,6 +285,7 @@ soyut.browser.openFilePresentation = function () {
 };
 
 soyut.browser.openFileDocumentx = function () {
+    soyut.browser.showLoader();
     soyut.browser.downloadFile({url: url, name: name}, function (err, result) {
 
         soyut.browser.getLocalIP({}, function (err, ip) {
@@ -333,6 +347,7 @@ soyut.browser.openFileDocumentx = function () {
 };
 
 soyut.browser.openFileSheetx = function () {
+    soyut.browser.showLoader();
     soyut.browser.downloadFile({url: url, name: name}, function (err, result) {
 
         soyut.browser.getLocalIP({}, function (err, ip) {
@@ -393,6 +408,7 @@ soyut.browser.openFileSheetx = function () {
     });
 };
 soyut.browser.openFilePresentationx = function () {
+    soyut.browser.showLoader();
     soyut.browser.downloadFile({url: url, name: name}, function (err, result) {
 
         soyut.browser.getLocalIP({}, function (err, ip) {

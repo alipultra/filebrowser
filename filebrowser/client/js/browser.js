@@ -418,7 +418,7 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
             $(getInstanceID("cm-action")).val(action);
 
             soyut.browser.loadActionContextMenu(action);
-
+            console.log(action+" file: "+file);
         },
         copy: function (a) {
             var file = a.file;
@@ -454,7 +454,7 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
 
             var srcPath = cmdir + cmfile;
             var tgtPath = curdir + cmfile;
-            if(cmdrive == 0) {
+            if(cmdrive == 0 && volume == 0) {
                 if(cmtype == 'file') {
                     if (cmaction == 'copy') {
                         fileSystem.cp(srcPath, tgtPath, function (err, result) {
@@ -493,6 +493,49 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                         });
                     }
                 }
+            }
+            else {
+                if(volume == 0){
+                    console.log("get from media");
+                }
+                else {
+                    if(cmtype == 'file') {
+                        fileSystem.mp_put(srcPath, volume, tgtPath, function (err, result) {
+                            if (!err) {
+                                console.log("save file to media");
+                                console.log(result);
+                                soyut.browser.clearActionMenu();
+                            }
+                        });
+                    }
+                    else {
+                        fileSystem.mp_putdir(srcPath, volume, tgtPath, function (err, result) {
+                            if (!err) {
+                                console.log("save folder to media");
+                                console.log(result);
+                                soyut.browser.clearActionMenu();
+                            }
+                        });
+                    }
+                }
+                // if(cmtype == 'file') {
+                //     fileSystem.mp_get(volume, srcPath, tgtPath, function(err, result){
+                //         if (!err) {
+                //             console.log("media copy folder");
+                //             console.log(result);
+                //             soyut.browser.clearActionMenu();
+                //         }
+                //     });
+                // }
+                // else {
+                //     fileSystem.mp_get(volume, srcPath, tgtPath, function(err, result){
+                //         if (!err) {
+                //             console.log("media copy folder");
+                //             console.log(result);
+                //             soyut.browser.clearActionMenu();
+                //         }
+                //     });
+                // }
             }
         },
         newfile: function (a) {
@@ -634,10 +677,6 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                 "copy": {
                     name: "Copy",
                     icon: "copy"
-                },
-                "rename": {
-                    name: "Rename",
-                    icon: "rename"
                 },
                 "sep1": "---------",
                 "info": {
@@ -1471,7 +1510,6 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
     };
 
     soyut.browser.ViewFile = function (name, type, url, path) {
-        soyut.browser.showLoader();
         var activitylistener = getActivityInstanceAsync();
         activitylistener.then(function (activity) {
             app.launchExternalActivity("soyut.module.browser.fileviewer", {name: name, type: type, url: url, path: path}, activity);
