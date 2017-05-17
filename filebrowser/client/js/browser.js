@@ -4,22 +4,13 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
     var vm;
     var app = getAppInstance();
 
+    // soyut.browser.changeHandler = function() {
+    //     alert("CHANGED xxxx");
+    // };
+
+
+
     soyut.browser.initFilterComponent = function () {
-        function p(c) {
-            var d = $(".breadcrumb").width() + c;
-            var e = $("#view");
-            var f = $("#help");
-
-            if ($(".uploader").css("width", d), e.val() > 0) {
-                if (1 == e.val()) $("ul.grid li, ul.grid figure").css("width", "100%"); else {
-                    var g = Math.floor(d / 380);
-                    0 == g && (g = 1, $("h4").css("font-size", 12)), d = Math.floor(d / g - 3), $("ul.grid li, ul.grid figure").css("width", d);
-                }
-                f.hide();
-            } else
-                f.show();
-        }
-
         $(".view-controller button").on("click", function() {
             var current = $(this);
             $(".view-controller button").removeClass("btn-inverse");
@@ -48,6 +39,32 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
             $(getInstanceID("media-container")).show(500);
             soyut.browser.showCreateFolder();
         });
+
+        $(".device-list").on("change", function() {
+            var devices = $('.device-list').val();
+            soyut.browser.selectDevices(devices);
+        });
+    };
+
+    soyut.browser.devicesChanges = function () {
+        var devices = $('.device-list').val();
+        if(devices == 0){
+            $('.volume-browser').val('0');
+            soyut.browser.clearActionMenu();
+            soyut.browser.returnHome();
+        }
+    };
+
+    soyut.browser.initDevices = function () {
+        $(".device-list").html('');
+        var curVol = $('.volume-browser').val();
+        var fsSel = '';
+        if(curVol == "0"){
+            fsSel = 'selected';
+        }
+
+        var html = '<option value="0" '+ fsSel +'>File Sistem</option>';
+        $(".device-list").append(html);
     };
 
     soyut.browser.showCreateFile = function () {
@@ -77,6 +94,11 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                 '</div>';
             $('.modal-browser').html(html);
 
+            $('.browser-create-file-name').on('input', function() {
+                console.log("on input")
+                $(this).val($(this).val().replace(/[^a-z0-9]/gi, ''));
+            });
+
             $(".btn-create-file-cancel").on('click').click(function () {
                 soyut.browser.closeModalWindow();
             });
@@ -97,6 +119,9 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
         var name = $(".browser-create-file-name").val();
         var filetype = $(".browser-create-file-type").val();
         var curdir = $(getInstanceID('curdir-browser')).val();
+
+        soyut.browser.showLoader();
+        document.addEventListener('fileSystem.structureChange', soyut.browser.listenFileChanges);
 
         var targetdir = curdir + name +"."+filetype;
         function getFile(url, callback) {
@@ -142,15 +167,14 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                     path: storagePath,
                     dataBuffer: dataBuffer
                 }).then(function() {
-
-                    soyut.browser.closeModalWindow();
+                    console.log("make file");
+                    soyut.browser.hideLoader();
                     soyut.browser.refreshBrowser();
-
                 });
             });
 
         });
-
+        soyut.browser.closeModalWindow();
 
     };
 
@@ -175,6 +199,11 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                 '</div>';
             $('.modal-browser').html(html);
 
+            $('.browser-create-folder-name').on('input', function() {
+                console.log("on input")
+                $(this).val($(this).val().replace(/[^a-z0-9]/gi, ''));
+            });
+
             $(".btn-create-folder-cancel").on('click').click(function () {
                 soyut.browser.closeModalWindow();
             });
@@ -195,16 +224,21 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
         var name = $(".browser-create-folder-name").val();
         var curdir = $(getInstanceID('curdir-browser')).val();
 
-        var targetdir = curdir + name
+        var targetdir = curdir + name;
+
+        soyut.browser.showLoader();
+        document.addEventListener('fileSystem.structureChange', soyut.browser.listenFileChanges);
 
         fileSystem.mkdir(targetdir, function (err, res) {
-
+            console.log("make dir");
+            soyut.browser.hideLoader();
+            soyut.browser.refreshBrowser();
         });
         soyut.browser.closeModalWindow();
     };
 
     soyut.browser.selectDevices = function (val) {
-        console.log("Load File: "+ val);
+        console.log("Load devices: "+ val);
         $('.volume-browser').val(val);
         soyut.browser.initFileList('.file-browser', val, '', '');
     };
@@ -454,13 +488,19 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
 
             var srcPath = cmdir + cmfile;
             var tgtPath = curdir + cmfile;
+
+            soyut.browser.showLoader();
+            document.addEventListener('fileSystem.structureChange', soyut.browser.listenFileChanges);
+
             if(cmdrive == 0 && volume == 0) {
                 if(cmtype == 'file') {
                     if (cmaction == 'copy') {
                         fileSystem.cp(srcPath, tgtPath, function (err, result) {
                             if (!err) {
                                 console.log("copy file");
+                                soyut.browser.hideLoader();
                                 soyut.browser.clearActionMenu();
+                                soyut.browser.refreshBrowser();
                             }
                         });
                     }
@@ -468,7 +508,9 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                         fileSystem.mv(srcPath, tgtPath, function (err, result) {
                             if (!err) {
                                 console.log("move file");
+                                soyut.browser.hideLoader();
                                 soyut.browser.clearActionMenu();
+                                soyut.browser.refreshBrowser();
                             }
                         });
                     }
@@ -477,9 +519,10 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                     if (cmaction == 'copy') {
                         fileSystem.cpdir(srcPath, tgtPath, function (err, result) {
                             if (!err) {
-                                console.log("copy folder");
-                                console.log(result);
+                                console.log("copy folder "+ srcPath +" to: "+tgtPath);
+                                soyut.browser.hideLoader();
                                 soyut.browser.clearActionMenu();
+                                soyut.browser.refreshBrowser();
                             }
                         });
                     }
@@ -487,8 +530,9 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                         fileSystem.mvdir(srcPath, tgtPath, function (err, result) {
                             if (!err) {
                                 console.log("move folder");
-                                console.log(result);
+                                soyut.browser.hideLoader();
                                 soyut.browser.clearActionMenu();
+                                soyut.browser.refreshBrowser();
                             }
                         });
                     }
@@ -501,8 +545,12 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                         fileSystem.mp_get(cmdrive, srcPath, tgtPath, function(err, result){
                             if (!err) {
                                 console.log("save file from media");
-                                console.log(result);
+                                soyut.browser.file_ls({path: '/'}, function (err, files) {
+                                    soyut.browser.refreshBrowser();
+                                });
+                                soyut.browser.hideLoader();
                                 soyut.browser.clearActionMenu();
+                                soyut.browser.refreshBrowser();
                             }
                         });
                     }
@@ -510,8 +558,9 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                         fileSystem.mp_getdir(cmdrive, srcPath, tgtPath, function(err, result){
                             if (!err) {
                                 console.log("save file from media");
-                                console.log(result);
+                                soyut.browser.hideLoader();
                                 soyut.browser.clearActionMenu();
+                                soyut.browser.refreshBrowser();
                             }
                         });
                     }
@@ -522,8 +571,9 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                         fileSystem.mp_put(srcPath, volume, tgtPath, function (err, result) {
                             if (!err) {
                                 console.log("save file to media");
-                                console.log(result);
+                                soyut.browser.hideLoader();
                                 soyut.browser.clearActionMenu();
+                                soyut.browser.refreshBrowser();
                             }
                         });
                     }
@@ -531,8 +581,9 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                         fileSystem.mp_putdir(srcPath, volume, tgtPath, function (err, result) {
                             if (!err) {
                                 console.log("save folder to media");
-                                console.log(result);
+                                soyut.browser.hideLoader();
                                 soyut.browser.clearActionMenu();
+                                soyut.browser.refreshBrowser();
                             }
                         });
                     }
@@ -561,6 +612,11 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
             '</div>';
         $('.modal-browser').html(html);
 
+        $('.browser-file-name').on('input', function() {
+            console.log("on input")
+            $(this).val($(this).val().replace(/[^a-z0-9]/gi, ''));
+        });
+
         $(".btn-rename-cancel").on('click').click(function () {
             soyut.browser.closeModalWindow();
         });
@@ -578,20 +634,29 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
 
     soyut.browser.renameFiles = function (data) {
         var changeName = $(".browser-file-name").val();
-        var ext = data.file.split('.').pop();
-        var sourcedir = data.dir + data.file;
-        var targetdir = data.dir + changeName+"."+ext;
-        if(data.type == 'file') {
-            fileSystem.mv(sourcedir, targetdir, function (err, res) {
 
+        soyut.browser.showLoader();
+        document.addEventListener('fileSystem.structureChange', soyut.browser.listenFileChanges);
+
+        if(data.type == 'file') {
+            var ext = data.file.split('.').pop();
+            var sourcedir = data.dir + data.file;
+            var targetdir = data.dir + changeName+"."+ext;
+
+            fileSystem.mv(sourcedir, targetdir, function (err, res) {
+                console.log("rename file");
+                soyut.browser.hideLoader();
+                soyut.browser.refreshBrowser();
             });
-            console.log("file: "+ sourcedir+" to "+targetdir);
         }
         else {
+            var sourcedir = data.dir + data.file;
+            var targetdir = data.dir + changeName;
             fileSystem.mvdir(sourcedir, targetdir, function (err, res) {
-
+                console.log("rename folder "+sourcedir+" - "+targetdir);
+                soyut.browser.hideLoader();
+                soyut.browser.refreshBrowser();
             });
-            console.log("dir: "+ sourcedir+" to "+targetdir);
         }
         soyut.browser.closeModalWindow();
     };
@@ -622,17 +687,24 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
 
     soyut.browser.deleteFiles = function (data) {
         var path = data.dir + data.file;
+        soyut.browser.showLoader();
+        document.addEventListener('fileSystem.structureChange', soyut.browser.listenFileChanges);
+
         if(data.type == 'file') {
             fileSystem.rm(path, function (err, result) {
-                //reloadFolder(a.dir);
+                if(!err){
+                    console.log("delete file");
+                    soyut.browser.hideLoader();
+                    soyut.browser.refreshBrowser();
+                }
             });
-            console.log("file: "+ path);
         }
         else {
             fileSystem.rmdir(path, function (err, result) {
-                //reloadFolder(a.dir);
+                console.log("delete folder "+ path);
+                soyut.browser.hideLoader();
+                soyut.browser.refreshBrowser();
             });
-            console.log("dir: "+ path);
         }
         soyut.browser.closeModalWindow();
     };
@@ -675,9 +747,24 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
         }
         else {
             menu = {
+                "cut": {
+                    name: "Cut",
+                    icon: "cut",
+                    disabled: true
+                },
                 "copy": {
                     name: "Copy",
                     icon: "copy"
+                },
+                "delete": {
+                    name: "Delete",
+                    icon: "delete",
+                    disabled: true
+                },
+                "rename": {
+                    name: "Rename",
+                    icon: "rename",
+                    disabled: true
                 },
                 "sep1": "---------",
                 "info": {
@@ -694,6 +781,7 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                 }
             }
         }
+        $.contextMenu( 'destroy', "figure[data-name='" + name + "']" );
         $.contextMenu({
             selector: "figure[data-name='" + name + "']",
             callback: function (key) {
@@ -711,27 +799,48 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
 
     soyut.browser.loadActionContextMenu = function (data) {
         if(data != '') {
+            var volume = $(".volume-browser").val();
+            var cmaction = $(getInstanceID("cm-action")).val();
+            var cmdrive = $(getInstanceID("cm-drive")).val();
+
+            var disablePaste = false;
+            var disableNew = false;
+            if(volume != 0 && cmaction != 'copy') {
+                disablePaste = true;
+            }
+            else if(volume != 0 && cmdrive != 0){
+                disablePaste = true;
+            }
+
+            if(volume != 0){
+                disableNew = true;
+            }
+            var menu = {
+                "newfile": {
+                    name: "New File",
+                    icon: "duplicate",
+                    disabled: disableNew
+                },
+                "sep1": "---------",
+                "paste": {
+                    name: "Paste",
+                    icon: "paste",
+                    disabled: disablePaste
+                }
+            }
+
+            $.contextMenu( 'destroy', ".file-browser" );
             $(".file-browser").contextMenu(true);
             $.contextMenu({
                 selector: ".file-browser",
                 callback: function (key) {
                     var d = {
-                        "name" : $(this).attr('data-name'),
-                        "dir" : $(this).attr('data-dir')
+                        "name": $(this).attr('data-name'),
+                        "dir": $(this).attr('data-dir')
                     };
                     contextActions[key](d);
                 },
-                items: {
-                    "newfile": {
-                        name: "New File",
-                        icon: "duplicate"
-                    },
-                    "sep1": "---------",
-                    "paste": {
-                        name: "Paste",
-                        icon: "paste"
-                    }
-                }
+                items: menu
             });
         }
         else {
@@ -998,7 +1107,7 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                                 'data-name': name,
                                 'data-file': filename,
                                 'data-dir': curDir,
-                                'data-type': 'img'
+                                'data-type': 'file'
                             };
                             return attr;
                         case "image/png":
@@ -1006,7 +1115,7 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                                 'data-name': name,
                                 'data-file': filename,
                                 'data-dir': curDir,
-                                'data-type': 'img'
+                                'data-type': 'file'
                             };
                             return attr;
                         default:
@@ -1480,8 +1589,7 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
     };
 
     soyut.browser.initMountPoint = function () {
-        var volumes = fileSystem.mp_list;
-        soyut.browser.mountPointChange(volumes);
+        soyut.browser.listenMountpointChanges();
     };
 
     soyut.browser.initFileList = function (elSelector, volume, curdir, dir) {
@@ -1538,33 +1646,74 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
     };
 
     soyut.browser.initFolderDraggable = function () {
-        $("li.dir, li.file").draggable({
-            distance: 20,
-            cursor: "move",
-            helper: function() {
-                $(this).find("figure").find(".box").css("top", "0px");
-                var b = $(this).clone().css("z-index", 1e3).find(".box").css("box-shadow", "none").css("-webkit-box-shadow", "none").parent().parent();
-                return $(this).addClass("selected"), b;
-            },
-            start: function() {
-                0 == $("#view").val() && $("#main-item-container").addClass("no-effect-slide");
-            },
-            stop: function() {
-                $(this).removeClass("selected"), 0 == $("#view").val() && $("#main-item-container").removeClass("no-effect-slide");
-            }
-        });
-        $("li.dir,li.back").droppable({
-            accept: "ul.grid li",
-            activeClass: "ui-state-highlight",
-            hoverClass: "ui-state-hover",
-            drop: function(b, c) {
-                soyut.browser.dragItems(c.draggable.find("figure"), $(this).find("figure"));
-            }
-        })
+        var volume = $(".volume-browser").val();
+        if(volume == 0) {
+            $("li.dir, li.file").draggable({
+                distance: 20,
+                cursor: "move",
+                helper: function () {
+                    $(this).find("figure").find(".box").css("top", "0px");
+                    var b = $(this).clone().css("z-index", 1e3).find(".box").css("box-shadow", "none").css("-webkit-box-shadow", "none").parent().parent();
+                    return $(this).addClass("selected"), b;
+                },
+                start: function () {
+                    0 == $("#view").val() && $("#main-item-container").addClass("no-effect-slide");
+                },
+                stop: function () {
+                    $(this).removeClass("selected"), 0 == $("#view").val() && $("#main-item-container").removeClass("no-effect-slide");
+                }
+            });
+            $("li.dir,li.back").droppable({
+                accept: "ul.grid li",
+                activeClass: "ui-state-highlight",
+                hoverClass: "ui-state-hover",
+                drop: function (b, c) {
+                    soyut.browser.dragItems(c.draggable.find("figure"), $(this).find("figure"), volume);
+                }
+            });
+        }
     };
 
-    soyut.browser.dragItems = function (obj, tgt) {
-        console.log("asdasdasd")
+    soyut.browser.dragItems = function (obj, tgt, volume) {
+        var curdir = $(getInstanceID('curdir-browser')).val();
+
+        var objfile = obj.attr('data-file');
+        var objdir = obj.attr('data-dir');
+        var objtype = obj.attr('data-type');
+
+        var tgtfile = tgt.attr('data-file');
+        var tgtdir = tgt.attr('data-dir');
+        var tgttype = tgt.attr('data-type');
+
+        if(volume == 0) {
+            soyut.browser.showLoader();
+            document.addEventListener('fileSystem.structureChange', soyut.browser.listenFileChanges);
+
+            if (objtype == 'file') {
+                var srcPath = objdir + objfile;
+                var tgtPath = tgtdir + tgtfile + objfile;
+
+                fileSystem.mv(srcPath, tgtPath, function (err, result) {
+                    if (!err) {
+                        console.log("move file");
+                        soyut.browser.hideLoader();
+                        soyut.browser.refreshBrowser();
+                    }
+                });
+            }
+            else {
+                var srcPath = objdir + objfile;
+                var tgtPath = tgtdir + tgtfile + objfile;
+
+                fileSystem.mvdir(srcPath, tgtPath, function (err, result) {
+                    if (!err) {
+                        console.log("move folder");
+                        soyut.browser.hideLoader();
+                        soyut.browser.refreshBrowser();
+                    }
+                });
+            }
+        }
     };
 
     soyut.browser.refreshBrowser = function () {
@@ -1590,6 +1739,7 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
     };
 
     soyut.browser.initFilterComponent();
+    soyut.browser.initDevices();
     soyut.browser.init();
 
 });

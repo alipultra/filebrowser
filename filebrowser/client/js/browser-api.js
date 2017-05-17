@@ -45,7 +45,7 @@ soyut.browser.viewOfficeDocument = function (file) {
 };
 
 soyut.browser.showLoader = function () {
-    $(".loader-container").show();
+    $(".loader-container").show(500);
 };
 
 soyut.browser.hideLoader = function () {
@@ -100,14 +100,11 @@ soyut.browser.updateOfficeDocument = function (file) {
     saveFileToSystem(file.useraddress);
 };
 
-soyut.browser.mountPointChange = function (volumes) {
-    $(".device-list").html('');
+soyut.browser.listenMountpointChanges = function () {
+    var volumes = fileSystem.mp_list;
+    $(".device-list option:not([value='0'])").remove();
     var curVol = $('.volume-browser').val();
-    var fsSel = '';
-    if(curVol == "0"){
-        fsSel = 'selected';
-    }
-    var html = '<option value="0" '+ fsSel +'>File Sistem</option>';
+    var html = '';
     if(volumes.length > 0){
         volumes.forEach(function (i) {
             var mdSel = '';
@@ -120,24 +117,21 @@ soyut.browser.mountPointChange = function (volumes) {
             html += '<option value="'+ i +'" '+ mdSel +'>'+ nmp +'</option>';
         });
     }
+    else {
+        if(curVol != 0) {
+            console.log("media unplugged");
+            soyut.browser.devicesChanges();
+        }
+    }
     $(".device-list").append(html);
 };
 
-document.addEventListener('fileSystem.mountPointChange', function() {
-    /* do something */
-    console.log("mountpoint change");
-    var volumes = fileSystem.mp_list;
-    soyut.browser.mountPointChange(volumes);
-    //soyut.browser.refreshBrowser();
-}, false);
+document.addEventListener('fileSystem.mountPointChange', soyut.browser.listenMountpointChanges);
 
 soyut.browser.listenFileChanges = function() {
     console.log("file system changes!");
     document.removeEventListener('fileSystem.structureChange', soyut.browser.listenFileChanges);
-    //soyut.browser.refreshBrowser();
 };
-
-document.addEventListener('fileSystem.structureChange', soyut.browser.listenFileChanges);
 
 
 
