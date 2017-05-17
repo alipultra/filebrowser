@@ -4,12 +4,6 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
     var vm;
     var app = getAppInstance();
 
-    // soyut.browser.changeHandler = function() {
-    //     alert("CHANGED xxxx");
-    // };
-
-
-
     soyut.browser.initFilterComponent = function () {
         $(".view-controller button").on("click", function() {
             var current = $(this);
@@ -874,7 +868,7 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                         soyut.browser.initFileList('.file-browser', volume, curdir, filename);
                     }
                     else {
-                        soyut.browser.ViewFile(name, type, url, path);
+                        soyut.browser.ViewFile(name, type, url);
                     }
                 }
 
@@ -1638,10 +1632,10 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
         }
     };
 
-    soyut.browser.ViewFile = function (name, type, url, path) {
+    soyut.browser.ViewFile = function (name, type, url) {
         var activitylistener = getActivityInstanceAsync();
         activitylistener.then(function (activity) {
-            app.launchExternalActivity("soyut.module.browser.fileviewer", {name: name, type: type, url: url, path: path}, activity);
+            app.launchExternalActivity("soyut.module.browser.fileviewer", {name: name, type: type, url: url}, activity);
         });
     };
 

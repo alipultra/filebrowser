@@ -1,5 +1,4 @@
-.media-content {
-
+.selector-content {
   article,
   aside,
   details,
@@ -190,6 +189,13 @@
     float: left;
     min-height: 1px;
     margin-left: 20px
+  }
+  .full-height {
+    height:100%;
+  }
+  .file-browser {
+    overflow-y: auto;
+    height: 100%;
   }
   .container,
   .navbar-fixed-bottom .container,
@@ -773,7 +779,7 @@
     display: inline-block;
     height: 20px;
     padding: 4px 6px;
-    margin-bottom: 10px;
+    margin-bottom: -3px;
     font-size: 14px;
     line-height: 20px;
     color: #555;
@@ -849,7 +855,7 @@
     line-height: 30px
   }
   select {
-    width: 220px;
+    width: 130px;
     border: 1px solid #ccc;
     background-color: #fff
   }
@@ -6296,6 +6302,13 @@
     text-shadow: 0 1px 0 #fff;
     text-align: center
   }
+  .media-btn {
+    background-color: #007AFF;
+    border-color: #007AFF;
+    color: #ffffff;
+    width: auto;
+    text-align: left;
+  }
   .upload-tabbable {
     margin-left: 5px;
     margin-right: 5px
@@ -6321,7 +6334,7 @@
   }
   input#filter-input {
     margin: 0 0 2px;
-    width: 84px;
+    width: 130px;
     height: 26px;
     vertical-align: bottom;
     border-radius: 0;
@@ -6383,17 +6396,30 @@
     position: absolute;
     z-index: 9998;
   }
+  .browser-loader {
+    position: absolute;
+    top: 130px;
+    left: 30%;
+    right: 30%;
+    height: 90px;
+    margin: auto;
+    z-index: 9999;
+    overflow: hidden;
+    background: url(../img/storing_animation.gif) no-repeat top center;
+    text-align: center;
+    padding-top: 65px;
+    color: #fff;
+  }
   .uploader {
     position: absolute;
     top: 50px;
-    left: 15px;
-    bottom: 50px;
-    right: 15px;
+    left: 300px;
+    right: 300px;
     margin: auto;
     z-index: 9999;
     overflow: hidden;
     background: #eee;
-    padding-top: 20px;
+    padding-top: 5px;
     border: 1px solid #ccc;
     box-shadow: 0 0 10px 0 rgba(1, 1, 1, .5)
   }
@@ -6813,6 +6839,9 @@
   .modal-body textarea {
     margin: 0;
     border-radius: 0
+  }
+  .modal-body .input-error {
+    border-color: #b94a48;
   }
   .modal-body .text-center {
     padding-bottom: 6px

@@ -43,79 +43,19 @@
       ]
     },
     {
-      "class":"soyut.module.browser.create.folder",
-      "title":"Folder Create",
-      "launcher" : false,
-      "externalUse": true,
-      "libraryScript":[
-      ],
-      "instanceScript":[
-        {"name":"createjs","url":"/App/create.js"}
-      ],
-      "styles":[
-      ],
-      "contents":[
-        {"name":"create","url":"/App/create.html"}
-      ]
-    },
-    {
-      "class":"soyut.module.browser.create.file",
-      "title":"File Create",
-      "launcher" : false,
-      "externalUse": true,
-      "libraryScript":[
-      ],
-      "instanceScript":[
-        {"name":"newjs","url":"/App/new.js"}
-      ],
-      "styles":[
-      ],
-      "contents":[
-        {"name":"new","url":"/App/new.html"}
-      ]
-    },
-    {
-      "class":"soyut.module.browser.rename",
-      "title":"Rename",
-      "launcher" : false,
-      "externalUse": true,
-      "libraryScript":[],
-      "instanceScript":[
-        {"name":"renamejs","url":"/App/rename.js"}
-      ],
-      "styles":[
-      ],
-      "contents":[
-        {"name":"rename","url":"/App/rename.html"}
-      ]
-    },
-    {
-      "class":"soyut.module.browser.viewer",
-      "title":"File Viewer",
-      "launcher" : false,
-      "externalUse": true,
-      "libraryScript":[
-      ],
-      "instanceScript":[
-        {"name":"viewerjs","url":"/App/viewer.js"}
-      ],
-      "styles":[
-      ],
-      "contents":[
-        {"name":"viewer","url":"/App/viewer.html"}
-      ]
-    },
-    {
       "class":"soyut.module.browser.selector",
       "title":"File Selector",
       "launcher" : false,
       "externalUse": true,
       "libraryScript":[
+        {"name":"contextMenu","url":"/libs/contextMenu.min.js"}
       ],
       "instanceScript":[
         {"name":"selectorjs","url":"/App/selector.js"}
       ],
       "styles":[
+        {"name":"selectorcss","url":"/css/selector.css"},
+        {"name":"filemanagercss","url":"/css/filemanager.css"}
       ],
       "contents":[
         {"name":"selector","url":"/App/selector.html"}
@@ -135,25 +75,6 @@
       ],
       "contents":[
         {"name":"fviewer","url":"/App/fileviewer.html"}
-      ]
-    },
-    {
-      "class":"soyut.module.browser.media",
-      "title":"Media Browser",
-      "requiredPolicies":["browser-admin"],
-      "launcher" : false,
-      "externalUse": true,
-      "libraryScript":[
-        {"name":"mediacm","url":"/libs/contextMenu.min.js"}
-      ],
-      "instanceScript":[
-        {"name":"mediajs","url":"/js/media.js"}
-      ],
-      "styles":[
-        {"name":"mediacss","url":"/css/browser.css"}
-      ],
-      "contents":[
-        {"name":"media","url":"/media.html"}
       ]
     }
   ]
