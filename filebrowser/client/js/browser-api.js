@@ -1,14 +1,14 @@
 soyut.browser = soyut.browser || soyut.Services.getInstance().getService("browserServer");
 var socket = io.connect('https://'+ soyut.browser.origin);
 
-soyut.browser.getDocServerUrl({}, function (err, docserver) {
-    socket.on('edit_document', function (data) {
-        soyut.browser.updateOfficeDocument(data)
-    });
-    socket.on('view_document', function (data) {
-        soyut.browser.viewOfficeDocument(data)
-    });
+socket.on('edit_document', function (data) {
+    soyut.browser.updateOfficeDocument(data)
+});
+socket.on('view_document', function (data) {
+    soyut.browser.viewOfficeDocument(data)
+});
 
+soyut.browser.getDocServerUrl({}, function (err, docserver) {
     $.getScript(docserver + '/web-apps/apps/api/documents/api.js');
 });
 
@@ -39,7 +39,7 @@ soyut.browser.mp_ls = function (req, callback) {
 };
 
 soyut.browser.viewOfficeDocument = function (file) {
-    soyut.browser.deleteFile({file: file.filename}, function (err, resfile) {
+    soyut.browser.deleteFile({file: file.filename, storageKey: file.storagekey}, function (err, resfile) {
         soyut.browser.hideLoader();
     });
 };
@@ -53,14 +53,15 @@ soyut.browser.hideLoader = function () {
 };
 
 soyut.browser.updateOfficeDocument = function (file) {
-    var dataurl = "https://"+ soyut.browser.origin +"/data/"+file.filename;
+    var dataurl = "https://" + soyut.browser.origin + "/data/temp-"+ file.storagekey + "/" + file.filename;
     var curUrl = soyut.browser.origin.split(':');
+    console.log("update doc "+dataurl)
 
     function getFile(furl, callback) {
         var xhr = new XMLHttpRequest();
         xhr.open('GET', furl, true);
         xhr.responseType = 'blob';
-        xhr.onload = function(e) {
+        xhr.onload = function (e) {
             if (this.status == 200) {
                 // get binary data as a response
                 callback(false, this.response);
@@ -72,26 +73,28 @@ soyut.browser.updateOfficeDocument = function (file) {
         xhr.send();
     }
 
-    function saveFileToSystem(targetFolder){
-        soyut.storage.getStorageKeyAsync({userId: fileSystem.userid}).then(function(storageKey) {
+    function saveFileToSystem(targetFolder) {
+        soyut.storage.getStorageKeyAsync({userId: fileSystem.userid}).then(function (storageKey) {
             var storagePath = "/" + targetFolder + file.filename;
 
-            function getPosition(str, m, i) { return str.split(m, i).join(m).length; }
+            function getPosition(str, m, i) {
+                return str.split(m, i).join(m).length;
+            }
 
             var safeUrl = dataurl.substring(0, 8) + curUrl[0] + dataurl.substring(getPosition(dataurl, ':', 2));
 
             // debugger;
-            getFile(safeUrl, function(err, dataBuffer) {
+            getFile(safeUrl, function (err, dataBuffer) {
                 if (err) return;
                 soyut.storage.putAsync({
                     storageKey: storageKey,
                     path: storagePath,
                     dataBuffer: dataBuffer
-                }).then(function() {
-                    soyut.browser.deleteFile({file: file.filename}, function (err, resfile) {
+                }).then(function () {
+                    // soyut.browser.deleteFile({file: file.filename, storageKey: file.useraddress}, function (err, resfile) {
                         soyut.browser.hideLoader();
                         console.log("File telah di update!");
-                    });
+                    // });
                 });
             });
         });

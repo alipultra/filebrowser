@@ -1662,7 +1662,10 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                 activeClass: "ui-state-highlight",
                 hoverClass: "ui-state-hover",
                 drop: function (b, c) {
-                    soyut.browser.dragItems(c.draggable.find("figure"), $(this).find("figure"), volume);
+                    var restricFile = $(this).find("figure").attr('data-file');
+                    if(restricFile != undefined) {
+                        soyut.browser.dragItems(c.draggable.find("figure"), $(this).find("figure"), volume);
+                    }
                 }
             });
         }
@@ -1728,6 +1731,7 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
     };
 
     soyut.browser.init = function(){
+        if (window.event.keyCode == 13 ) return false;
         $('.volume-browser').val('0');
         soyut.browser.initFileList('.file-browser', '0', '', '');
     };

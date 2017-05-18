@@ -49,9 +49,11 @@ var websocketServer = websocket(httpServer);
 app.post('/track', function (req, res){
     var userAddress = req.query.useraddress;
     var fileName = req.query.filename;
+    var storageKey = req.query.storagekey;
+
     var version = 0;
 
-    var pathForSave = "./client/data/"+fileName;
+    var pathForSave = "./client/data/temp-" + storageKey + "/" + fileName;
     var updateFile = function (response, body, path) {
         if (body.status == 2)
         {
@@ -61,14 +63,16 @@ app.post('/track', function (req, res){
             //emit change
             var Obj = {
                 useraddress: userAddress,
-                filename: fileName
+                filename: fileName,
+                storagekey: storageKey
             };
             websocketServer.emit('edit_document', Obj);
         }
         else if(body.status == 4){
             var Obj = {
                 useraddress: userAddress,
-                filename: fileName
+                filename: fileName,
+                storagekey: storageKey
             };
             websocketServer.emit('view_document', Obj);
         }
@@ -167,17 +171,8 @@ httpServer.listen(config.port, function () {
     methods.downloadFile = function(authServerUrl, remoteSocket, reqMsg, resCallback){
         var fileUrl = reqMsg.data.params.url;
         var fileName = reqMsg.data.params.name;
-        var destFile = "./client/data/";
-
-        fs.readdir(destFile, (err, files) => {
-            if (err) throw error;
-
-            for (const file of files) {
-                fs.unlink(path.join(destFile, file), err => {
-                if (err) throw error;
-                });
-            }
-        });
+        var storageKey = reqMsg.data.params.storageKey;
+        var destFile = "./client/data/temp-"+storageKey+"/";
 
         var options = {
             directory: destFile,
@@ -193,7 +188,8 @@ httpServer.listen(config.port, function () {
 
     methods.deleteFile = function(authServerUrl, remoteSocket, reqMsg, resCallback){
         var file = reqMsg.data.params.file;
-        var destFile = "./client/data/";
+        var storageKey = reqMsg.data.params.storageKey;
+        var destFile = "./client/data/temp-"+storageKey+"/";
         var deletePath = destFile + file;
         fs.unlinkSync(deletePath);
         var result = "success";
