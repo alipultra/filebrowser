@@ -91,10 +91,10 @@ soyut.browser.updateOfficeDocument = function (file) {
                     path: storagePath,
                     dataBuffer: dataBuffer
                 }).then(function () {
-                    // soyut.browser.deleteFile({file: file.filename, storageKey: file.useraddress}, function (err, resfile) {
+                    soyut.browser.deleteFile({file: file.filename, storageKey: file.storagekey}, function (err, resfile) {
                         soyut.browser.hideLoader();
                         console.log("File telah di update!");
-                    // });
+                    });
                 });
             });
         });
