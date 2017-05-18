@@ -195,7 +195,7 @@ httpServer.listen(config.port, function () {
         var file = reqMsg.data.params.file;
         var destFile = "./client/data/";
         var deletePath = destFile + file;
-        fs.unlink(deletePath);
+        fs.unlinkSync(deletePath);
         var result = "success";
         resCallback(result);
     };
