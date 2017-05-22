@@ -40,7 +40,7 @@ soyut.browser.mp_ls = function (req, callback) {
 
 soyut.browser.viewOfficeDocument = function (file) {
     soyut.browser.deleteFile({file: file.filename, storageKey: file.storagekey}, function (err, resfile) {
-        soyut.browser.hideLoader();
+        soyut.browser.hideFileLoader(file);
     });
 };
 
@@ -50,6 +50,26 @@ soyut.browser.showLoader = function () {
 
 soyut.browser.hideLoader = function () {
     $(".loader-container").hide(500);
+};
+
+soyut.browser.showFileLoader = function (name, storagekey) {
+    soyut.storage.getStorageKeyAsync({userId: fileSystem.userid}).then(function(curStorageKey) {
+        if (curStorageKey == storagekey) {
+            var fileLoader = $("ul").find("li[data-name='" + name + "']");
+            fileLoader.children("div").removeClass('hide');
+            fileLoader.children("figure").addClass('hide');
+        }
+    });
+};
+
+soyut.browser.hideFileLoader = function (file) {
+    soyut.storage.getStorageKeyAsync({userId: fileSystem.userid}).then(function(curStorageKey) {
+        if (curStorageKey == file.storagekey) {
+            var fileLoader = $("ul").find("li[data-name='" + file.filename + "']");
+            fileLoader.children("div").addClass('hide');
+            fileLoader.children("figure").removeClass('hide');
+        }
+    });
 };
 
 soyut.browser.updateOfficeDocument = function (file) {
@@ -90,7 +110,7 @@ soyut.browser.updateOfficeDocument = function (file) {
                     dataBuffer: dataBuffer
                 }).then(function () {
                     soyut.browser.deleteFile({file: file.filename, storageKey: file.storagekey}, function (err, resfile) {
-                        soyut.browser.hideLoader();
+                        soyut.browser.hideFileLoader(file);
                         console.log("File telah di update!");
                     });
                 });

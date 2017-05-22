@@ -101,8 +101,9 @@ soyut.browser.openFileImage = function () {
     $('.content-data').html(html);
 };
 soyut.browser.openFileDocument = function () {
-    soyut.browser.showLoader();
+    console.log("tes "+ url+" name "+name)
     soyut.storage.getStorageKeyAsync({userId: storagekey}).then(function(storageKey) {
+        soyut.browser.showFileLoader(name, storageKey);
         soyut.browser.downloadFile({url: url, name: name, storageKey: storageKey}, function (err, result) {
 
             soyut.browser.getLocalIP({}, function (err, ip) {
@@ -165,8 +166,8 @@ soyut.browser.openFileDocument = function () {
 };
 
 soyut.browser.openFileSheet = function () {
-    soyut.browser.showLoader();
     soyut.storage.getStorageKeyAsync({userId: storagekey}).then(function(storageKey) {
+        soyut.browser.showFileLoader(name, storageKey);
         soyut.browser.downloadFile({url: url, name: name, storageKey: storageKey}, function (err, result) {
 
             soyut.browser.getLocalIP({}, function (err, ip) {
@@ -228,8 +229,8 @@ soyut.browser.openFileSheet = function () {
     });
 };
 soyut.browser.openFilePresentation = function () {
-    soyut.browser.showLoader();
     soyut.storage.getStorageKeyAsync({userId: storagekey}).then(function(storageKey) {
+        soyut.browser.showFileLoader(name, storageKey);
         soyut.browser.downloadFile({url: url, name: name, storageKey: storageKey}, function (err, result) {
 
             soyut.browser.getLocalIP({}, function (err, ip) {
@@ -292,8 +293,8 @@ soyut.browser.openFilePresentation = function () {
 };
 
 soyut.browser.openFileDocumentx = function () {
-    soyut.browser.showLoader();
     soyut.storage.getStorageKeyAsync({userId: storagekey}).then(function(storageKey) {
+        soyut.browser.showFileLoader(name, storageKey);
         soyut.browser.downloadFile({url: url, name: name, storageKey: storageKey}, function (err, result) {
 
             soyut.browser.getLocalIP({}, function (err, ip) {
@@ -356,8 +357,8 @@ soyut.browser.openFileDocumentx = function () {
 };
 
 soyut.browser.openFileSheetx = function () {
-    soyut.browser.showLoader();
     soyut.storage.getStorageKeyAsync({userId: storagekey}).then(function(storageKey) {
+        soyut.browser.showFileLoader(name, storageKey);
         soyut.browser.downloadFile({url: url, name: name, storageKey: storageKey}, function (err, result) {
 
             soyut.browser.getLocalIP({}, function (err, ip) {
@@ -419,8 +420,8 @@ soyut.browser.openFileSheetx = function () {
     });
 };
 soyut.browser.openFilePresentationx = function () {
-    soyut.browser.showLoader();
     soyut.storage.getStorageKeyAsync({userId: storagekey}).then(function(storageKey) {
+        soyut.browser.showFileLoader(name, storageKey);
         soyut.browser.downloadFile({url: url, name: name, storageKey: storageKey}, function (err, result) {
 
             soyut.browser.getLocalIP({}, function (err, ip) {

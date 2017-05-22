@@ -71,7 +71,6 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                 '<h3 class="modal-title">Buat File</h3>' +
                 '</div>' +
                 '<div class="modal-body">' +
-                '<form>' +
                 '<label class="input-block-level">Nama</label>' +
                 '<input type="text" id="browser-create-file-name" name="browser-create-file-name" class="input-block-level browser-create-file-name" placeholder="">' +
                 '<label class="input-block-level">Tipe</label>' +
@@ -80,7 +79,6 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                 '<option value="xlsx">Excel</option>' +
                 '<option value="pptx">Power Point</option>' +
                 '</select>' +
-                '</form>' +
                 '</div>' +
                 '<div class="modal-footer">' +
                 '<button type="button" class="btn btn-create-file-cancel"> Batal</button>' +
@@ -182,10 +180,8 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                 '<h3 class="modal-title">Buat Folder</h3>' +
                 '</div>' +
                 '<div class="modal-body">' +
-                '<form>' +
                 '<label class="input-block-level">Nama</label>' +
                 '<input type="text" id="browser-create-folder-name" name="browser-create-folder-name" class="input-block-level browser-create-folder-name" placeholder="">' +
-                '</form>' +
                 '</div>' +
                 '<div class="modal-footer">' +
                 '<button type="button" class="btn btn-create-folder-cancel"> Batal</button>' +
@@ -595,10 +591,8 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
             '<h3 class="modal-title">Ubah  '+ data.file +'?</h3>' +
             '</div>' +
             '<div class="modal-body">' +
-            '<form>' +
             '<label class="input-block-level">Nama</label>' +
             '<input type="text" id="browser-file-name" name="browser-file-name" class="input-block-level browser-file-name" placeholder="">' +
-            '</form>' +
             '</div>' +
             '<div class="modal-footer">' +
             '<button type="button" class="btn btn-rename-cancel"> Batal</button>' +
@@ -644,7 +638,8 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
             });
         }
         else {
-            var sourcedir = data.dir + data.file;
+            var foldername = data.file.substr(0, data.file.lastIndexOf("/"));
+            var sourcedir = data.dir + foldername;
             var targetdir = data.dir + changeName;
             fileSystem.mvdir(sourcedir, targetdir, function (err, res) {
                 console.log("rename folder "+sourcedir+" - "+targetdir);

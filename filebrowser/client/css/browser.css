@@ -5061,6 +5061,15 @@
     text-align: center;
     padding-top: 65px;
     color: #fff; }
+  .browser-content .file-uploader {
+    position: relative;
+    display: block;
+    width: 122px;
+    height: 100px;
+    z-index: 9999;
+    text-align: center;
+    background: url(../img/processing.gif) no-repeat center center;
+    border: 1px solid; }
   .browser-content .uploader {
     position: absolute;
     top: 50px;
