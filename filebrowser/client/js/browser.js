@@ -1635,7 +1635,7 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
     soyut.browser.ViewFile = function (name, type, url) {
         var activitylistener = getActivityInstanceAsync();
         activitylistener.then(function (activity) {
-            app.launchExternalActivity("soyut.module.browser.fileviewer", {name: name, type: type, url: url}, activity);
+            app.launchExternalActivity("soyut.module.browser.fileviewer", {name: name, type: type, url: url, storageKey: fileSystem.userid}, activity);
         });
     };
 

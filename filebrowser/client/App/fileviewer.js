@@ -123,7 +123,7 @@ soyut.browser.openFileDocument = function () {
                             var strg = httpstr.substring(httpstr.indexOf("/") + 1);
                             var strkey = strg.substring(strg.indexOf("/") + 1);
                             var dirName = strkey.substr(0, strkey.lastIndexOf("/") + 1);
-
+                            
                             var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
                                 {
                                     width: "100%",

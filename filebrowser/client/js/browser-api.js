@@ -55,7 +55,6 @@ soyut.browser.hideLoader = function () {
 soyut.browser.updateOfficeDocument = function (file) {
     var dataurl = "https://" + soyut.browser.origin + "/data/temp-"+ file.storagekey + "/" + file.filename;
     var curUrl = soyut.browser.origin.split(':');
-    console.log("update doc "+dataurl)
 
     function getFile(furl, callback) {
         var xhr = new XMLHttpRequest();
@@ -74,7 +73,6 @@ soyut.browser.updateOfficeDocument = function (file) {
     }
 
     function saveFileToSystem(targetFolder) {
-        soyut.storage.getStorageKeyAsync({userId: fileSystem.userid}).then(function (storageKey) {
             var storagePath = "/" + targetFolder + file.filename;
 
             function getPosition(str, m, i) {
@@ -87,7 +85,7 @@ soyut.browser.updateOfficeDocument = function (file) {
             getFile(safeUrl, function (err, dataBuffer) {
                 if (err) return;
                 soyut.storage.putAsync({
-                    storageKey: storageKey,
+                    storageKey: file.storagekey,
                     path: storagePath,
                     dataBuffer: dataBuffer
                 }).then(function () {
@@ -97,7 +95,6 @@ soyut.browser.updateOfficeDocument = function (file) {
                     });
                 });
             });
-        });
     }
 
     saveFileToSystem(file.useraddress);
