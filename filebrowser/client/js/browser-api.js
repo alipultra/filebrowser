@@ -55,7 +55,7 @@ soyut.browser.hideLoader = function () {
 soyut.browser.showFileLoader = function (name, storagekey) {
     soyut.storage.getStorageKeyAsync({userId: fileSystem.userid}).then(function(curStorageKey) {
         if (curStorageKey == storagekey) {
-            var fileLoader = $("ul").find("li[data-name='" + name + "']");
+            var fileLoader = $("ul").find("li[data-file='" + name + "']");
             fileLoader.children("div").removeClass('hide');
             fileLoader.children("figure").addClass('hide');
         }
@@ -65,7 +65,7 @@ soyut.browser.showFileLoader = function (name, storagekey) {
 soyut.browser.hideFileLoader = function (file) {
     soyut.storage.getStorageKeyAsync({userId: fileSystem.userid}).then(function(curStorageKey) {
         if (curStorageKey == file.storagekey) {
-            var fileLoader = $("ul").find("li[data-name='" + file.filename + "']");
+            var fileLoader = $("ul").find("li[data-file='" + file.filename + "']");
             fileLoader.children("div").addClass('hide');
             fileLoader.children("figure").removeClass('hide');
         }

@@ -901,12 +901,13 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                 }
                 return escapeHtml(curVal);
             },
-            loadAttr: function(name, isFile, isDirectory, type, size){
+            loadAttr: function(name, filename, isFile, isDirectory, type, size){
                 soyut.browser.loadContextMenu(name, isFile, isDirectory, type, size);
                 if(isDirectory) {
                     var attr;
                     attr = {
                         'data-name': name,
+                        'data-file': filename,
                         'class': 'dir ui-draggable ui-droppable'
                     };
                     return attr;
@@ -917,78 +918,91 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                         case "text/plain":
                             attr = {
                                 'data-name': name,
+                                'data-file': filename,
                                 'class': 'ff-item-type-1 file ui-draggable'
                             };
                             return attr;
                         case "application/pdf":
                             attr = {
                                 'data-name': name,
+                                'data-file': filename,
                                 'class': 'ff-item-type-1 file ui-draggable'
                             };
                             return attr;
                         case "video/mp4":
                             attr = {
                                 'data-name': name,
+                                'data-file': filename,
                                 'class': 'ff-item-type-4 file ui-draggable'
                             };
                             return attr;
                         case "audio/mp3":
                             attr = {
                                 'data-name': name,
+                                'data-file': filename,
                                 'class': 'ff-item-type-5 file ui-draggable'
                             };
                             return attr;
                         case "application/msword":
                             attr = {
                                 'data-name': name,
+                                'data-file': filename,
                                 'class': 'ff-item-type-1 file ui-draggable'
                             };
                             return attr;
                         case "application/vnd.ms-excel":
                             attr = {
                                 'data-name': name,
+                                'data-file': filename,
                                 'class': 'ff-item-type-1 file ui-draggable'
                             };
                             return attr;
                         case "application/vnd.ms-powerpoint":
                             attr = {
                                 'data-name': name,
+                                'data-file': filename,
                                 'class': 'ff-item-type-1 file ui-draggable'
                             };
                             return attr;
                         case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
                             attr = {
                                 'data-name': name,
+                                'data-file': filename,
                                 'class': 'ff-item-type-1 file ui-draggable'
                             };
                             return attr;
                         case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
                             attr = {
                                 'data-name': name,
+                                'data-file': filename,
                                 'class': 'ff-item-type-1 file ui-draggable'
                             };
                             return attr;
                         case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
                             attr = {
                                 'data-name': name,
+                                'data-file': filename,
                                 'class': 'ff-item-type-1 file ui-draggable'
                             };
                             return attr;
                         case "image/jpeg":
                             attr = {
                                 'data-name': name,
+                                'data-file': filename,
                                 'class': 'ff-item-type-2 file ui-draggable'
                             };
                             return attr;
                         case "image/png":
                             attr = {
                                 'data-name': name,
+                                'data-file': filename,
                                 'class': 'ff-item-type-2 file ui-draggable'
                             };
                             return attr;
                         default:
                             attr = {
                                 'data-name': name,
+                                'data-file': filename,
                                 'class': 'ff-item-type-1 file ui-draggable'
                             };
                             return attr;
@@ -1484,7 +1498,15 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                 }
             },
             getFirstChar: function (name) {
-                return name.substring(0,1);
+                var mchar = name.substring(0,1);
+                switch (mchar) {
+                    case ".":
+                        return false;
+                    case "?":
+                        return false;
+                    default:
+                        return true;
+                }
             },
             setBackButton: function () {
                 var curdir = $(getInstanceID('curdir-browser')).val();

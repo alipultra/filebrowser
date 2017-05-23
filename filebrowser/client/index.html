@@ -110,7 +110,7 @@
                 </a>
             </figure>
         </li>
-        <li v-if="getFirstChar(file.name) != '.'" v-for="file in files" v-bind="loadAttr(getFileName(file.name, file.isDirectory), file.isFile, file.isDirectory, file.type, file.size)">
+        <li v-if="getFirstChar(file.name) == true" v-for="file in files" v-bind="loadAttr(getFileName(file.name, file.isDirectory), file.name, file.isFile, file.isDirectory, file.type, file.size)">
             <div class="file-uploader hide"></div>
             <figure v-bind="loadFigureAttr(getFileName(file.name, file.isDirectory), file.name, file.isFile, file.isDirectory, file.type)">
                 <a v-bind="loadLinkAttr(getFileName(file.name, file.isDirectory), file.isFile, file.isDirectory)" href="#" @dblclick="OpenFile(file.isFile, file.isDirectory, file.name, file.type, file.url, file.path)">

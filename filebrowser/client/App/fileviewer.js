@@ -101,7 +101,6 @@ soyut.browser.openFileImage = function () {
     $('.content-data').html(html);
 };
 soyut.browser.openFileDocument = function () {
-    console.log("tes "+ url+" name "+name)
     soyut.storage.getStorageKeyAsync({userId: storagekey}).then(function(storageKey) {
         soyut.browser.showFileLoader(name, storageKey);
         soyut.browser.downloadFile({url: url, name: name, storageKey: storageKey}, function (err, result) {
