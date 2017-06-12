@@ -122,7 +122,8 @@ soyut.browser.updateOfficeDocument = function (file) {
 
 soyut.browser.listenMountpointChanges = function () {
     var volumes = fileSystem.mp_list;
-    $(".device-list option:not([value='0'])").remove();
+
+    $(".device-list option:not([value='0']):not([value='1'])").remove();
     var curVol = $('.volume-browser').val();
     var html = '';
     if(volumes.length > 0){
@@ -138,7 +139,7 @@ soyut.browser.listenMountpointChanges = function () {
         });
     }
     else {
-        if(curVol != 0) {
+        if(curVol != 0 && curVol != 1) {
             console.log("media unplugged");
             soyut.browser.devicesChanges();
         }

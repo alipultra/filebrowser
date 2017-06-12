@@ -328,6 +328,7 @@ soyut.browser.openFileDocumentx = function () {
                                         permissions: {
                                             download: false,
                                             print: false,
+                                            edit: false
                                         }
                                     },
                                     editorConfig: {

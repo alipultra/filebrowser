@@ -56,14 +56,19 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
         if(curVol == "0"){
             fsSel = 'selected';
         }
+        var rgSel = '';
+        if(curVol == "1"){
+            rgSel = 'selected';
+        }
 
         var html = '<option value="0" '+ fsSel +'>File Sistem</option>';
+        html += '<option value="1" '+ rgSel +'>'+ soyut.Session.role.roleGroupName +'</option>';
         $(".device-list").append(html);
     };
 
     soyut.browser.showCreateFile = function () {
         var volume = $('.volume-browser').val();
-        if(volume != 0) {
+        if(volume != 0 && volume != 1) {
             soyut.browser.showModalBrowser('warning', 'Anda tidak dapat membuat file di media!')
         }
         else {
@@ -172,7 +177,7 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
 
     soyut.browser.showCreateFolder = function () {
         var volume = $('.volume-browser').val();
-        if(volume != 0) {
+        if(volume != 0 && volume != 1) {
             soyut.browser.showModalBrowser('warning', 'Anda tidak dapat membuat folder di media!')
         }
         else {
@@ -848,7 +853,7 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                 var curdir = $(getInstanceID('curdir-browser')).val();
                 var volume = $(getInstanceID('volume-browser')).val();
                 var filename = name;
-                if(volume != 0){
+                if(volume != 0 && volume != 1){
                     filename = name + '/';
 
                     if(isDirectory) {
@@ -1626,25 +1631,48 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
         soyut.browser.loadActionContextMenu(cmaction);
 
         if(volume == 0) {
-            soyut.browser.file_ls({path: path}, function (err, files) {
-                vm = new Vue({
-                    el: elSelector,
-                    data: {
-                        files: files
-                    }
+            fileSystem.userid = soyut.Session.id + '/' + soyut.Session.role.id;
+            soyut.storage.getStorageKey({userId: fileSystem.userid}, function(err, storageKey) {
+                fileSystem.storageKey = storageKey;
+                soyut.browser.file_ls({path: path}, function (err, files) {
+                    vm = new Vue({
+                        el: elSelector,
+                        data: {
+                            files: files
+                        }
+                    });
+                    soyut.browser.hideLoader();
                 });
-                soyut.browser.hideLoader();
+            });
+        }
+        else if(volume == 1){
+            fileSystem.userid = soyut.Session.id + '/' + soyut.Session.role.roleGroup;
+            soyut.storage.getStorageKey({userId: fileSystem.userid}, function(err, storageKey) {
+                fileSystem.storageKey = storageKey;
+                soyut.browser.file_ls({path: path}, function (err, files) {
+                    vm = new Vue({
+                        el: elSelector,
+                        data: {
+                            files: files
+                        }
+                    });
+                    soyut.browser.hideLoader();
+                });
             });
         }
         else {
-            soyut.browser.mp_ls({volume: volume, path: path}, function (err, files) {
-                vm = new Vue({
-                    el: elSelector,
-                    data: {
-                        files: files
-                    }
+            fileSystem.userid = soyut.Session.id + '/' + soyut.Session.role.id;
+            soyut.storage.getStorageKey({userId: fileSystem.userid}, function(err, storageKey) {
+                fileSystem.storageKey = storageKey;
+                soyut.browser.mp_ls({volume: volume, path: path}, function (err, files) {
+                    vm = new Vue({
+                        el: elSelector,
+                        data: {
+                            files: files
+                        }
+                    });
+                    soyut.browser.hideLoader();
                 });
-                soyut.browser.hideLoader();
             });
         }
     };
