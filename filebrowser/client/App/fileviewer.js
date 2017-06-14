@@ -7,6 +7,7 @@ var name = getParam('name');
 var url = getParam('url');
 var type = getParam('type');
 var storagekey = getParam('storageKey');
+var editmode = getParam('edit');
 
 soyut.browser.initFileViewer = function () {
     if(type == "application/pdf") {
@@ -137,6 +138,7 @@ soyut.browser.openFileDocument = function () {
                                         permissions: {
                                             download: false,
                                             print: false,
+                                            edit: editmode
                                         }
                                     },
                                     editorConfig: {
@@ -201,6 +203,7 @@ soyut.browser.openFileSheet = function () {
                                         permissions: {
                                             download: false,
                                             print: false,
+                                            edit: editmode
                                         }
                                     },
                                     editorConfig: {
@@ -264,6 +267,7 @@ soyut.browser.openFilePresentation = function () {
                                         permissions: {
                                             download: false,
                                             print: false,
+                                            edit: editmode
                                         }
                                     },
                                     editorConfig: {
@@ -328,7 +332,7 @@ soyut.browser.openFileDocumentx = function () {
                                         permissions: {
                                             download: false,
                                             print: false,
-                                            edit: false
+                                            edit: editmode
                                         }
                                     },
                                     editorConfig: {
@@ -393,6 +397,7 @@ soyut.browser.openFileSheetx = function () {
                                         permissions: {
                                             download: false,
                                             print: false,
+                                            edit: editmode
                                         }
                                     },
                                     editorConfig: {
@@ -456,6 +461,7 @@ soyut.browser.openFilePresentationx = function () {
                                         permissions: {
                                             download: false,
                                             print: false,
+                                            edit: editmode
                                         }
                                     },
                                     editorConfig: {
