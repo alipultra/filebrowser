@@ -49,6 +49,7 @@ soyut.browser.initFileViewer = function () {
 };
 
 soyut.browser.openFilePDF = function () {
+    console.log(url)
     function getPosition(str, m, i) { return str.split(m, i).join(m).length; }
     var safeUrl = url.substring(0, 8) + curUrl[0] + url.substring(getPosition(url, ':', 2));
     console.log(safeUrl);
@@ -104,62 +105,68 @@ soyut.browser.openFileImage = function () {
 soyut.browser.openFileDocument = function () {
     soyut.storage.getStorageKeyAsync({userId: storagekey}).then(function(storageKey) {
         soyut.browser.showFileLoader(name, storageKey);
-        soyut.browser.downloadFile({url: url, name: name, storageKey: storageKey}, function (err, result) {
 
-            soyut.browser.getLocalIP({}, function (err, ip) {
-                var currentUrl = "https://" + ip + ":" + curUrl[1] + "/data/temp-"+ storageKey + "/" + name;
-                soyut.browser.generateDocKey({}, function (err, data) {
-                    initDocEditor(data.key, data.vkey);
-
-                    function initDocEditor(docKey, docVkey) {
-                        soyut.browser.getDocServerUrl({}, function (err, server) {
-                            //save
-                            var onDocumentStateChange = function (event) {
-
-                            };
-
-                            var filesave = encodeURIComponent(name);
-                            var curx = url.split(':');
-                            var httpstr = curx[2].substring(curx[2].indexOf("/") + 1);
-                            var strg = httpstr.substring(httpstr.indexOf("/") + 1);
-                            var strkey = strg.substring(strg.indexOf("/") + 1);
-                            var dirName = strkey.substr(0, strkey.lastIndexOf("/") + 1);
-                            
-                            var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
-                                {
-                                    width: "100%",
-                                    height: "100%",
-                                    documentType: "text",
-                                    document: {
-                                        title: name,
-                                        url: currentUrl,
-                                        key: docKey,
-                                        vkey: docVkey,
-                                        permissions: {
-                                            download: false,
-                                            print: false,
-                                            edit: editmode
-                                        }
-                                    },
-                                    editorConfig: {
-                                        lang: "en",
-                                        location: server + "/web-apps/",
-                                        callbackUrl: 'https://' + ip + ":" + curUrl[1] + '/track?useraddress=' + dirName + '&filename=' + filesave + '&storagekey=' + storageKey,
-                                        customization: {
-                                            about: false,
-                                            logo: {
-                                                image: 'https://' + soyut.browser.origin + '/img/soyut.png'
-                                            }
-                                        }
-                                    },
-                                    events: {
-                                        "onDocumentStateChange": onDocumentStateChange
-                                    }
-                                });
-                        });
-                    }
+        soyut.browser.getLocalIP({}, function (err, ip) {
+            var currentUrl = '';
+            if(editmode) {
+                soyut.browser.downloadFile({url: url, name: name, storageKey: storageKey}, function (err, result) {
                 });
+                currentUrl = "https://" + ip + ":" + curUrl[1] + "/data/temp-"+ storageKey + "/" + name;
+            }
+            else {
+                currentUrl = url;
+            }
 
+            soyut.browser.generateDocKey({}, function (err, data) {
+                initDocEditor(data.key, data.vkey);
+
+                function initDocEditor(docKey, docVkey) {
+                    soyut.browser.getDocServerUrl({}, function (err, server) {
+                        //save
+                        var onDocumentStateChange = function (event) {
+
+                        };
+
+                        var filesave = encodeURIComponent(name);
+                        var curx = url.split(':');
+                        var httpstr = curx[2].substring(curx[2].indexOf("/") + 1);
+                        var strg = httpstr.substring(httpstr.indexOf("/") + 1);
+                        var strkey = strg.substring(strg.indexOf("/") + 1);
+                        var dirName = strkey.substr(0, strkey.lastIndexOf("/") + 1);
+
+                        var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
+                            {
+                                width: "100%",
+                                height: "100%",
+                                documentType: "text",
+                                document: {
+                                    title: name,
+                                    url: currentUrl,
+                                    key: docKey,
+                                    vkey: docVkey,
+                                    permissions: {
+                                        download: false,
+                                        print: false,
+                                        edit: editmode
+                                    }
+                                },
+                                editorConfig: {
+                                    lang: "en",
+                                    location: server + "/web-apps/",
+                                    callbackUrl: 'https://' + ip + ":" + curUrl[1] + '/track?useraddress=' + dirName + '&filename=' + filesave + '&storagekey=' + storageKey,
+                                    customization: {
+                                        about: false,
+                                        logo: {
+                                            image: 'https://' + soyut.browser.origin + '/img/soyut.png'
+                                        }
+                                    }
+                                },
+                                events: {
+                                    "onDocumentStateChange": onDocumentStateChange
+                                }
+                            });
+                    });
+                }
             });
 
         });
@@ -169,62 +176,67 @@ soyut.browser.openFileDocument = function () {
 soyut.browser.openFileSheet = function () {
     soyut.storage.getStorageKeyAsync({userId: storagekey}).then(function(storageKey) {
         soyut.browser.showFileLoader(name, storageKey);
-        soyut.browser.downloadFile({url: url, name: name, storageKey: storageKey}, function (err, result) {
-
-            soyut.browser.getLocalIP({}, function (err, ip) {
-                var currentUrl = "https://" + ip + ":" + curUrl[1] + "/data/temp-"+ storageKey + "/" + name;
-                soyut.browser.generateSheetKey({}, function (err, data) {
-                    initSheetEditor(data.key, data.vkey);
-
-                    function initSheetEditor(docKey, docVkey) {
-                        soyut.browser.getDocServerUrl({}, function (err, server) {
-                            //save
-                            var onDocumentStateChange = function (event) {
-
-                            };
-
-                            var filesave = encodeURIComponent(name);
-                            var curx = url.split(':');
-                            var httpstr = curx[2].substring(curx[2].indexOf("/") + 1);
-                            var strg = httpstr.substring(httpstr.indexOf("/") + 1);
-                            var strkey = strg.substring(strg.indexOf("/") + 1);
-                            var dirName = strkey.substr(0, strkey.lastIndexOf("/") + 1);
-
-                            var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
-                                {
-                                    width: "100%",
-                                    height: "100%",
-                                    documentType: "spreadsheet",
-                                    document: {
-                                        title: name,
-                                        url: currentUrl,
-                                        key: docKey,
-                                        vkey: docVkey,
-                                        permissions: {
-                                            download: false,
-                                            print: false,
-                                            edit: editmode
-                                        }
-                                    },
-                                    editorConfig: {
-                                        lang: "en",
-                                        location: server + "/web-apps/",
-                                        callbackUrl: 'https://' + ip + ":" + curUrl[1] + '/track?useraddress=' + dirName + '&filename=' + filesave + '&storagekey=' + storageKey,
-                                        customization: {
-                                            about: false,
-                                            logo: {
-                                                image: 'https://' + soyut.browser.origin + '/img/soyut.png'
-                                            }
-                                        }
-                                    },
-                                    events: {
-                                        "onDocumentStateChange": onDocumentStateChange
-                                    }
-                                });
-                        });
-                    }
+        soyut.browser.getLocalIP({}, function (err, ip) {
+            var currentUrl = '';
+            if(editmode) {
+                soyut.browser.downloadFile({url: url, name: name, storageKey: storageKey}, function (err, result) {
                 });
+                currentUrl = "https://" + ip + ":" + curUrl[1] + "/data/temp-"+ storageKey + "/" + name;
+            }
+            else {
+                currentUrl = url;
+            }
 
+            soyut.browser.generateSheetKey({}, function (err, data) {
+                initSheetEditor(data.key, data.vkey);
+
+                function initSheetEditor(docKey, docVkey) {
+                    soyut.browser.getDocServerUrl({}, function (err, server) {
+                        //save
+                        var onDocumentStateChange = function (event) {
+
+                        };
+
+                        var filesave = encodeURIComponent(name);
+                        var curx = url.split(':');
+                        var httpstr = curx[2].substring(curx[2].indexOf("/") + 1);
+                        var strg = httpstr.substring(httpstr.indexOf("/") + 1);
+                        var strkey = strg.substring(strg.indexOf("/") + 1);
+                        var dirName = strkey.substr(0, strkey.lastIndexOf("/") + 1);
+
+                        var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
+                            {
+                                width: "100%",
+                                height: "100%",
+                                documentType: "spreadsheet",
+                                document: {
+                                    title: name,
+                                    url: currentUrl,
+                                    key: docKey,
+                                    vkey: docVkey,
+                                    permissions: {
+                                        download: false,
+                                        print: false,
+                                        edit: editmode
+                                    }
+                                },
+                                editorConfig: {
+                                    lang: "en",
+                                    location: server + "/web-apps/",
+                                    callbackUrl: 'https://' + ip + ":" + curUrl[1] + '/track?useraddress=' + dirName + '&filename=' + filesave + '&storagekey=' + storageKey,
+                                    customization: {
+                                        about: false,
+                                        logo: {
+                                            image: 'https://' + soyut.browser.origin + '/img/soyut.png'
+                                        }
+                                    }
+                                },
+                                events: {
+                                    "onDocumentStateChange": onDocumentStateChange
+                                }
+                            });
+                    });
+                }
             });
 
         });
@@ -233,62 +245,68 @@ soyut.browser.openFileSheet = function () {
 soyut.browser.openFilePresentation = function () {
     soyut.storage.getStorageKeyAsync({userId: storagekey}).then(function(storageKey) {
         soyut.browser.showFileLoader(name, storageKey);
-        soyut.browser.downloadFile({url: url, name: name, storageKey: storageKey}, function (err, result) {
 
-            soyut.browser.getLocalIP({}, function (err, ip) {
-                var currentUrl = "https://" + ip + ":" + curUrl[1] + "/data/temp-"+ storageKey + "/" + name;
-                soyut.browser.generatePresentationKey({}, function (err, data) {
-                    initPresentationEditor(data.key, data.vkey);
-
-                    function initPresentationEditor(docKey, docVkey) {
-                        soyut.browser.getDocServerUrl({}, function (err, server) {
-                            //save
-                            var onDocumentStateChange = function (event) {
-
-                            };
-
-                            var filesave = encodeURIComponent(name);
-                            var curx = url.split(':');
-                            var httpstr = curx[2].substring(curx[2].indexOf("/") + 1);
-                            var strg = httpstr.substring(httpstr.indexOf("/") + 1);
-                            var strkey = strg.substring(strg.indexOf("/") + 1);
-                            var dirName = strkey.substr(0, strkey.lastIndexOf("/") + 1);
-
-                            var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
-                                {
-                                    width: "100%",
-                                    height: "100%",
-                                    documentType: "presentation",
-                                    document: {
-                                        title: name,
-                                        url: currentUrl,
-                                        key: docKey,
-                                        vkey: docVkey,
-                                        permissions: {
-                                            download: false,
-                                            print: false,
-                                            edit: editmode
-                                        }
-                                    },
-                                    editorConfig: {
-                                        lang: "en",
-                                        location: server + "/web-apps/",
-                                        callbackUrl: 'https://' + ip + ":" + curUrl[1] + '/track?useraddress=' + dirName + '&filename=' + filesave + '&storagekey=' + storageKey,
-                                        customization: {
-                                            about: false,
-                                            logo: {
-                                                image: 'https://' + soyut.browser.origin + '/img/soyut.png'
-                                            }
-                                        }
-                                    },
-                                    events: {
-                                        "onDocumentStateChange": onDocumentStateChange
-                                    }
-                                });
-                        });
-                    }
+        soyut.browser.getLocalIP({}, function (err, ip) {
+            var currentUrl = '';
+            if(editmode) {
+                soyut.browser.downloadFile({url: url, name: name, storageKey: storageKey}, function (err, result) {
                 });
+                currentUrl = "https://" + ip + ":" + curUrl[1] + "/data/temp-"+ storageKey + "/" + name;
+            }
+            else {
+                currentUrl = url;
+            }
 
+            soyut.browser.generatePresentationKey({}, function (err, data) {
+                initPresentationEditor(data.key, data.vkey);
+
+                function initPresentationEditor(docKey, docVkey) {
+                    soyut.browser.getDocServerUrl({}, function (err, server) {
+                        //save
+                        var onDocumentStateChange = function (event) {
+
+                        };
+
+                        var filesave = encodeURIComponent(name);
+                        var curx = url.split(':');
+                        var httpstr = curx[2].substring(curx[2].indexOf("/") + 1);
+                        var strg = httpstr.substring(httpstr.indexOf("/") + 1);
+                        var strkey = strg.substring(strg.indexOf("/") + 1);
+                        var dirName = strkey.substr(0, strkey.lastIndexOf("/") + 1);
+
+                        var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
+                            {
+                                width: "100%",
+                                height: "100%",
+                                documentType: "presentation",
+                                document: {
+                                    title: name,
+                                    url: currentUrl,
+                                    key: docKey,
+                                    vkey: docVkey,
+                                    permissions: {
+                                        download: false,
+                                        print: false,
+                                        edit: editmode
+                                    }
+                                },
+                                editorConfig: {
+                                    lang: "en",
+                                    location: server + "/web-apps/",
+                                    callbackUrl: 'https://' + ip + ":" + curUrl[1] + '/track?useraddress=' + dirName + '&filename=' + filesave + '&storagekey=' + storageKey,
+                                    customization: {
+                                        about: false,
+                                        logo: {
+                                            image: 'https://' + soyut.browser.origin + '/img/soyut.png'
+                                        }
+                                    }
+                                },
+                                events: {
+                                    "onDocumentStateChange": onDocumentStateChange
+                                }
+                            });
+                    });
+                }
             });
 
         });
@@ -298,127 +316,138 @@ soyut.browser.openFilePresentation = function () {
 soyut.browser.openFileDocumentx = function () {
     soyut.storage.getStorageKeyAsync({userId: storagekey}).then(function(storageKey) {
         soyut.browser.showFileLoader(name, storageKey);
-        soyut.browser.downloadFile({url: url, name: name, storageKey: storageKey}, function (err, result) {
 
-            soyut.browser.getLocalIP({}, function (err, ip) {
-                var currentUrl = "https://" + ip + ":" + curUrl[1] + "/data/temp-"+ storageKey + "/" + name;
-                soyut.browser.generateDocxKey({}, function (err, data) {
-                    initDocxEditor(data.key, data.vkey);
-
-                    function initDocxEditor(docKey, docVkey) {
-                        soyut.browser.getDocServerUrl({}, function (err, server) {
-                            //save
-                            var onDocumentStateChange = function (event) {
-
-                            };
-
-                            var filesave = encodeURIComponent(name);
-                            var curx = url.split(':');
-                            var httpstr = curx[2].substring(curx[2].indexOf("/") + 1);
-                            var strg = httpstr.substring(httpstr.indexOf("/") + 1);
-                            var strkey = strg.substring(strg.indexOf("/") + 1);
-                            var dirName = strkey.substr(0, strkey.lastIndexOf("/") + 1);
-
-                            var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
-                                {
-                                    width: "100%",
-                                    height: "100%",
-                                    documentType: "text",
-                                    document: {
-                                        title: name,
-                                        url: currentUrl,
-                                        key: docKey,
-                                        vkey: docVkey,
-                                        permissions: {
-                                            download: false,
-                                            print: false,
-                                            edit: editmode
-                                        }
-                                    },
-                                    editorConfig: {
-                                        lang: "en",
-                                        location: server + "/web-apps/",
-                                        callbackUrl: 'https://' + ip + ":" + curUrl[1] + '/track?useraddress=' + dirName + '&filename=' + filesave + '&storagekey=' + storageKey,
-                                        customization: {
-                                            about: false,
-                                            logo: {
-                                                image: 'https://' + soyut.browser.origin + '/img/soyut.png'
-                                            }
-                                        }
-                                    },
-                                    events: {
-                                        "onDocumentStateChange": onDocumentStateChange
-                                    }
-                                });
-                        });
-                    }
+        soyut.browser.getLocalIP({}, function (err, ip) {
+            var currentUrl = '';
+            if(editmode) {
+                soyut.browser.downloadFile({url: url, name: name, storageKey: storageKey}, function (err, result) {
                 });
+                currentUrl = "https://" + ip + ":" + curUrl[1] + "/data/temp-"+ storageKey + "/" + name;
+            }
+            else {
+                currentUrl = url;
+            }
 
+            soyut.browser.generateDocxKey({}, function (err, data) {
+                initDocxEditor(data.key, data.vkey);
+
+                function initDocxEditor(docKey, docVkey) {
+                    soyut.browser.getDocServerUrl({}, function (err, server) {
+                        //save
+                        var onDocumentStateChange = function (event) {
+                        };
+
+                        var filesave = encodeURIComponent(name);
+                        var curx = url.split(':');
+                        var httpstr = curx[2].substring(curx[2].indexOf("/") + 1);
+                        var strg = httpstr.substring(httpstr.indexOf("/") + 1);
+                        var strkey = strg.substring(strg.indexOf("/") + 1);
+                        var dirName = strkey.substr(0, strkey.lastIndexOf("/") + 1);
+
+                        var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
+                            {
+                                width: "100%",
+                                height: "100%",
+                                documentType: "text",
+                                document: {
+                                    title: name,
+                                    url: currentUrl,
+                                    key: docKey,
+                                    vkey: docVkey,
+                                    permissions: {
+                                        download: false,
+                                        print: false,
+                                        edit: editmode
+                                    }
+                                },
+                                editorConfig: {
+                                    lang: "en",
+                                    location: server + "/web-apps/",
+                                    callbackUrl: 'https://' + ip + ":" + curUrl[1] + '/track?useraddress=' + dirName + '&filename=' + filesave + '&storagekey=' + storageKey,
+                                    customization: {
+                                        about: false,
+                                        logo: {
+                                            image: 'https://' + soyut.browser.origin + '/img/soyut.png'
+                                        }
+                                    }
+                                },
+                                events: {
+                                    "onDocumentStateChange": onDocumentStateChange
+                                }
+                            });
+                    });
+                }
             });
-
         });
+
     });
 };
 
 soyut.browser.openFileSheetx = function () {
     soyut.storage.getStorageKeyAsync({userId: storagekey}).then(function(storageKey) {
         soyut.browser.showFileLoader(name, storageKey);
-        soyut.browser.downloadFile({url: url, name: name, storageKey: storageKey}, function (err, result) {
 
-            soyut.browser.getLocalIP({}, function (err, ip) {
-                var currentUrl = "https://" + ip + ":" + curUrl[1] + "/data/temp-"+ storageKey + "/" + name;
-                soyut.browser.generateSheetxKey({}, function (err, data) {
-                    initSheetxEditor(data.key, data.vkey);
-
-                    function initSheetxEditor(docKey, docVkey) {
-                        soyut.browser.getDocServerUrl({}, function (err, server) {
-                            //save
-                            var onDocumentStateChange = function (event) {
-
-                            };
-
-                            var filesave = encodeURIComponent(name);
-                            var curx = url.split(':');
-                            var httpstr = curx[2].substring(curx[2].indexOf("/") + 1);
-                            var strg = httpstr.substring(httpstr.indexOf("/") + 1);
-                            var strkey = strg.substring(strg.indexOf("/") + 1);
-                            var dirName = strkey.substr(0, strkey.lastIndexOf("/") + 1);
-
-                            var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
-                                {
-                                    width: "100%",
-                                    height: "100%",
-                                    documentType: "spreadsheet",
-                                    document: {
-                                        title: name,
-                                        url: currentUrl,
-                                        key: docKey,
-                                        vkey: docVkey,
-                                        permissions: {
-                                            download: false,
-                                            print: false,
-                                            edit: editmode
-                                        }
-                                    },
-                                    editorConfig: {
-                                        lang: "en",
-                                        location: server + "/web-apps/",
-                                        callbackUrl: 'https://' + ip + ":" + curUrl[1] + '/track?useraddress=' + dirName + '&filename=' + filesave + '&storagekey=' + storageKey,
-                                        customization: {
-                                            about: false,
-                                            logo: {
-                                                image: 'https://' + soyut.browser.origin + '/img/soyut.png'
-                                            }
-                                        }
-                                    },
-                                    events: {
-                                        "onDocumentStateChange": onDocumentStateChange
-                                    }
-                                });
-                        });
-                    }
+        soyut.browser.getLocalIP({}, function (err, ip) {
+            var currentUrl = '';
+            if(editmode) {
+                soyut.browser.downloadFile({url: url, name: name, storageKey: storageKey}, function (err, result) {
                 });
+                currentUrl = "https://" + ip + ":" + curUrl[1] + "/data/temp-"+ storageKey + "/" + name;
+            }
+            else {
+                currentUrl = url;
+            }
 
+            soyut.browser.generateSheetxKey({}, function (err, data) {
+                initSheetxEditor(data.key, data.vkey);
+
+                function initSheetxEditor(docKey, docVkey) {
+                    soyut.browser.getDocServerUrl({}, function (err, server) {
+                        //save
+                        var onDocumentStateChange = function (event) {
+
+                        };
+
+                        var filesave = encodeURIComponent(name);
+                        var curx = url.split(':');
+                        var httpstr = curx[2].substring(curx[2].indexOf("/") + 1);
+                        var strg = httpstr.substring(httpstr.indexOf("/") + 1);
+                        var strkey = strg.substring(strg.indexOf("/") + 1);
+                        var dirName = strkey.substr(0, strkey.lastIndexOf("/") + 1);
+
+                        var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
+                            {
+                                width: "100%",
+                                height: "100%",
+                                documentType: "spreadsheet",
+                                document: {
+                                    title: name,
+                                    url: currentUrl,
+                                    key: docKey,
+                                    vkey: docVkey,
+                                    permissions: {
+                                        download: false,
+                                        print: false,
+                                        edit: editmode
+                                    }
+                                },
+                                editorConfig: {
+                                    lang: "en",
+                                    location: server + "/web-apps/",
+                                    callbackUrl: 'https://' + ip + ":" + curUrl[1] + '/track?useraddress=' + dirName + '&filename=' + filesave + '&storagekey=' + storageKey,
+                                    customization: {
+                                        about: false,
+                                        logo: {
+                                            image: 'https://' + soyut.browser.origin + '/img/soyut.png'
+                                        }
+                                    }
+                                },
+                                events: {
+                                    "onDocumentStateChange": onDocumentStateChange
+                                }
+                            });
+                    });
+                }
             });
 
         });
@@ -427,62 +456,68 @@ soyut.browser.openFileSheetx = function () {
 soyut.browser.openFilePresentationx = function () {
     soyut.storage.getStorageKeyAsync({userId: storagekey}).then(function(storageKey) {
         soyut.browser.showFileLoader(name, storageKey);
-        soyut.browser.downloadFile({url: url, name: name, storageKey: storageKey}, function (err, result) {
 
-            soyut.browser.getLocalIP({}, function (err, ip) {
-                var currentUrl = "https://" + ip + ":" + curUrl[1] + "/data/temp-"+ storageKey + "/" + name;
-                soyut.browser.generatePresentationxKey({}, function (err, data) {
-                    initPresentationxEditor(data.key, data.vkey);
-
-                    function initPresentationxEditor(docKey, docVkey) {
-                        soyut.browser.getDocServerUrl({}, function (err, server) {
-                            //save
-                            var onDocumentStateChange = function (event) {
-
-                            };
-
-                            var filesave = encodeURIComponent(name);
-                            var curx = url.split(':');
-                            var httpstr = curx[2].substring(curx[2].indexOf("/") + 1);
-                            var strg = httpstr.substring(httpstr.indexOf("/") + 1);
-                            var strkey = strg.substring(strg.indexOf("/") + 1);
-                            var dirName = strkey.substr(0, strkey.lastIndexOf("/") + 1);
-
-                            var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
-                                {
-                                    width: "100%",
-                                    height: "100%",
-                                    documentType: "presentation",
-                                    document: {
-                                        title: name,
-                                        url: currentUrl,
-                                        key: docKey,
-                                        vkey: docVkey,
-                                        permissions: {
-                                            download: false,
-                                            print: false,
-                                            edit: editmode
-                                        }
-                                    },
-                                    editorConfig: {
-                                        lang: "en",
-                                        location: server + "/web-apps/",
-                                        callbackUrl: 'https://' + ip + ":" + curUrl[1] + '/track?useraddress=' + dirName + '&filename=' + filesave + '&storagekey=' + storageKey,
-                                        customization: {
-                                            about: false,
-                                            logo: {
-                                                image: 'https://' + soyut.browser.origin + '/img/soyut.png'
-                                            }
-                                        }
-                                    },
-                                    events: {
-                                        "onDocumentStateChange": onDocumentStateChange
-                                    }
-                                });
-                        });
-                    }
+        soyut.browser.getLocalIP({}, function (err, ip) {
+            var currentUrl = '';
+            if(editmode) {
+                soyut.browser.downloadFile({url: url, name: name, storageKey: storageKey}, function (err, result) {
                 });
+                currentUrl = "https://" + ip + ":" + curUrl[1] + "/data/temp-"+ storageKey + "/" + name;
+            }
+            else {
+                currentUrl = url;
+            }
 
+            soyut.browser.generatePresentationxKey({}, function (err, data) {
+                initPresentationxEditor(data.key, data.vkey);
+
+                function initPresentationxEditor(docKey, docVkey) {
+                    soyut.browser.getDocServerUrl({}, function (err, server) {
+                        //save
+                        var onDocumentStateChange = function (event) {
+
+                        };
+
+                        var filesave = encodeURIComponent(name);
+                        var curx = url.split(':');
+                        var httpstr = curx[2].substring(curx[2].indexOf("/") + 1);
+                        var strg = httpstr.substring(httpstr.indexOf("/") + 1);
+                        var strkey = strg.substring(strg.indexOf("/") + 1);
+                        var dirName = strkey.substr(0, strkey.lastIndexOf("/") + 1);
+
+                        var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
+                            {
+                                width: "100%",
+                                height: "100%",
+                                documentType: "presentation",
+                                document: {
+                                    title: name,
+                                    url: currentUrl,
+                                    key: docKey,
+                                    vkey: docVkey,
+                                    permissions: {
+                                        download: false,
+                                        print: false,
+                                        edit: editmode
+                                    }
+                                },
+                                editorConfig: {
+                                    lang: "en",
+                                    location: server + "/web-apps/",
+                                    callbackUrl: 'https://' + ip + ":" + curUrl[1] + '/track?useraddress=' + dirName + '&filename=' + filesave + '&storagekey=' + storageKey,
+                                    customization: {
+                                        about: false,
+                                        logo: {
+                                            image: 'https://' + soyut.browser.origin + '/img/soyut.png'
+                                        }
+                                    }
+                                },
+                                events: {
+                                    "onDocumentStateChange": onDocumentStateChange
+                                }
+                            });
+                    });
+                }
             });
 
         });

@@ -88,7 +88,6 @@ app.post('/track', function (req, res){
         });
         request.on("end", function () {
             var body = JSON.parse(content);
-            console.log(body)
             updateFile(response, body, path);
         });
     }
