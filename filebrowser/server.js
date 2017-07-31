@@ -15,7 +15,7 @@ rethinkdb = require('rethinkdb');
 var compression = require('compression');
 var ping = require('ping');
 var randomString = require('randomstring');
-var syncRequest = require("sync-request");
+var remoteRequest = require("then-request");
 var path = require('path');
 
 mongoDb = {}
@@ -57,7 +57,7 @@ app.post('/track', function (req, res){
     var updateFile = function (response, body, path) {
         if (body.status == 2)
         {
-            var file = syncRequest("GET", body.url);
+            var file = remoteRequest("GET", body.url);
             fs.writeFileSync(path, file.getBody());
             console.log("load file");
             //emit change
