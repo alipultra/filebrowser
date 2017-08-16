@@ -75,6 +75,7 @@ soyut.browser.hideFileLoader = function (file) {
 soyut.browser.updateOfficeDocument = function (file) {
     var dataurl = "https://" + soyut.browser.origin + "/data/temp-"+ file.storagekey + "/" + file.filename;
     var curUrl = soyut.browser.origin.split(':');
+    var storageServer = 'pivot.filesystem.soyut';
 
     function getFile(furl, callback) {
         var xhr = new XMLHttpRequest();
@@ -99,7 +100,7 @@ soyut.browser.updateOfficeDocument = function (file) {
                 return str.split(m, i).join(m).length;
             }
 
-            var safeUrl = dataurl.substring(0, 8) + curUrl[0] + dataurl.substring(getPosition(dataurl, ':', 2));
+            var safeUrl = dataurl.substring(0, 8) + storageServer + dataurl.substring(getPosition(dataurl, ':', 2));
 
             // debugger;
             getFile(safeUrl, function (err, dataBuffer) {

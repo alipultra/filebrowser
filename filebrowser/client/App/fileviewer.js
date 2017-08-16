@@ -72,7 +72,7 @@ soyut.browser.openFilePDF = function () {
         var blob = new Blob([dataBuffer],{type: 'application/pdf'});
         var geturl = URL.createObjectURL(blob);
 
-        var html = '<iframe title="PDF" type="application/pdf" src="'+ geturl+'#page=1&zoom=100' +'" frameborder="1" scrolling="auto" style="width:100%; height: 95vh;"></iframe>';
+        var html = '<iframe title="PDF" type="application/pdf" src="'+ geturl+'#page=1&zoom=100&toolbar=0&navpanes=0' +'" frameborder="1" scrolling="auto" style="width:100%; height: 95vh;"></iframe>';
         $('.content-data').append(html);
     });
 };

@@ -150,11 +150,12 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
 
         soyut.storage.getStorageKeyAsync({userId: fileSystem.userid}).then(function(storageKey) {
             var storagePath = targetdir;
-            var fileUrl = 'https://'+ curUrl[0] +':5454/storage/' + storageKey + '/' + storagePath;
+            var storageServer = 'pivot.filesystem.soyut';
+            var fileUrl = 'https://'+ storageServer +':5454/storage/' + storageKey + '/' + storagePath;
 
             function getPosition(str, m, i) { return str.split(m, i).join(m).length; }
 
-            var safeUrl = dataurl.substring(0, 8) + curUrl[0] + dataurl.substring(getPosition(dataurl, ':', 2));
+            var safeUrl = dataurl.substring(0, 8) + storageServer + dataurl.substring(getPosition(dataurl, ':', 2));
 
             // debugger;
             getFile(safeUrl, function(err, dataBuffer) {
