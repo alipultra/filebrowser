@@ -15,7 +15,7 @@ rethinkdb = require('rethinkdb');
 var compression = require('compression');
 var ping = require('ping');
 var randomString = require('randomstring');
-var syncRequest = require("sync-request");
+var remoteRequest = require("then-request");
 var path = require('path');
 
 mongoDb = {}
@@ -57,16 +57,32 @@ app.post('/track', function (req, res){
     var updateFile = function (response, body, path) {
         if (body.status == 2)
         {
-            var file = syncRequest("GET", body.url);
-            fs.writeFileSync(path, file.getBody());
-            console.log("load file");
-            //emit change
-            var Obj = {
-                useraddress: userAddress,
-                filename: fileName,
-                storagekey: storageKey
-            };
-            websocketServer.emit('edit_document', Obj);
+            console.log('kuntim');
+            remoteRequest("GET", body.url).done(function(file){
+                console.log("load file");
+                fs.writeFile(path, file.getBody(), function(err) {
+                    if (err) {
+                        response.write("{\"error\":1}");
+                        response.end();
+                    }
+                    else {
+                        //emit change
+                        console.log('write file sakses');
+                        var Obj = {
+                            useraddress: userAddress,
+                            filename: fileName,
+                            storagekey: storageKey
+                        };
+                        websocketServer.emit('edit_document', Obj);
+                        response.write("{\"error\":0}");
+                        response.end();
+                    }
+                });            
+            },
+            function(reason){
+                response.write("{\"error\":1}");
+                response.end();
+            });
         }
         else if(body.status == 4){
             var Obj = {
@@ -75,10 +91,12 @@ app.post('/track', function (req, res){
                 storagekey: storageKey
             };
             websocketServer.emit('view_document', Obj);
+            response.write("{\"error\":0}");
+            response.end();
+        } else {
+            response.write("{\"error\":0}");
+            response.end();
         }
-
-        response.write("{\"error\":0}");
-        response.end();
     }
 
     var readbody = function (request, response, path) {
