@@ -49,13 +49,13 @@ soyut.browser.initFileViewer = function () {
 };
 
 soyut.browser.openFilePDF = function () {
-    console.log(url)
+        console.log(url)
     function getPosition(str, m, i) { return str.split(m, i).join(m).length; }
     var safeUrl = url.substring(0, 8) + curUrl[0] + url.substring(getPosition(url, ':', 2));
-    console.log(safeUrl);
-    function getFile(url, callback) {
+    //console.log(safeUrl);
+    function getFile(murl, callback) {
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', url, true);
+        xhr.open('GET', murl, true);
         xhr.responseType = 'blob';
         xhr.onload = function(e) {
             if (this.status == 200) {
@@ -68,7 +68,7 @@ soyut.browser.openFilePDF = function () {
         };
         xhr.send();
     }
-    getFile(safeUrl, function(err, dataBuffer) {
+    getFile(url, function(err, dataBuffer) {
         var blob = new Blob([dataBuffer],{type: 'application/pdf'});
         var geturl = URL.createObjectURL(blob);
 
