@@ -150,7 +150,7 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
 
         soyut.storage.getStorageKeyAsync({userId: fileSystem.userid}).then(function(storageKey) {
             var storagePath = targetdir;
-            var storageServer = 'pivot.filesystem.soyut';
+            var storageServer = 'storage.soyut';
             var fileUrl = 'https://'+ storageServer +':5454/storage/' + storageKey + '/' + storagePath;
 
             function getPosition(str, m, i) { return str.split(m, i).join(m).length; }
