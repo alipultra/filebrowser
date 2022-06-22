@@ -357,6 +357,54 @@ var curUrl = browserService.origin.split(':');
 
             });
         }
+         else if (files.type == "application/rtf") {
+            browserService.downloadFile({url: files.url, name: files.name}, function (err, result) {
+
+                browserService.getLocalIP({}, function (err, ip){
+                    var currentUrl = "https://" + ip + ":" + curUrl[1] + "/data/"+ files.name;
+                    soyut.Services.getInstance().getService("browserServer").generatePresentationxKey({}, function (err, data) {
+                        initPresentationxEditor(data.key, data.vkey);
+
+                        function initPresentationxEditor(docKey, docVkey) {
+                            browserService.getDocServerUrl({}, function (err, server) {
+                                var filesave = encodeURIComponent(files.name);
+                                var dirName = path.substr(0, path.lastIndexOf("/"));
+
+                                var docEditor = new DocsAPI.DocEditor(frameEditorId[1],
+                                    {
+                                        width: "100%",
+                                        height: "100%",
+                                        documentType: "presentation",
+                                        document: {
+                                            title: files.name,
+                                            url: currentUrl,
+                                            key: docKey,
+                                            vkey: docVkey,
+                                            permissions: {
+                                                download: false,
+                                                print: false,
+                                            }
+                                        },
+                                        editorConfig: {
+                                            lang: "en",
+                                            location: server + "/web-apps/",
+                                            callbackUrl: 'https://'+ ip + ":" + curUrl[1] + '/track?useraddress='+ dirName +'&filename='+filesave,
+                                            customization: {
+                                                about: false,
+                                                logo: {
+                                                    image: 'https://' + browserService.origin + '/img/soyut.png'
+                                                }
+                                            }
+                                        }
+                                    });
+                                });
+                        }
+
+                    });
+                });
+
+            });
+        }
 
         
     });

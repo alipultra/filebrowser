@@ -28,6 +28,7 @@ soyut.browser.initFiles = function (req) {
 
 soyut.browser.file_ls = function (req, callback) {
     fileSystem.ls(req.path, function (err, files) {
+        console.log("dsadsad", files)
         callback(false, files);
     });
 };

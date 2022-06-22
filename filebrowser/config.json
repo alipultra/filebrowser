@@ -1,17 +1,17 @@
 {
-    "hostname": "localhost",
-    "port" : 50710,
-    "terminalCheckInterval" : 10,
-    "authServerUrl" : "https://localhost:3000",
-    "ssl" : {
-        "key"  : "./keys/private-localhost.key",
-        "cert" : "./keys/cert-localhost.crt",
-        "ca"   : "./keys/tesynergy-root-ca.crt"
+    "authServerUrl": "https://pivot.auth.soyut:3000",
+    "docServerUrl": "https://doceditor.soyut",
+    "hostname": "pivot.filebrowser.soyut",
+    "port": 50710,
+    "rethink": {
+        "database": "SOYUT",
+        "host": "rmain.db.soyut",
+        "port": 28015
     },
-    "docServerUrl" : "https://doceditor.soyut",
-    "rethink":{
-        "host":"rmain.db.soyut",
-        "port":28015,
-        "database":"SOYUT"
-    }
+    "ssl": {
+        "ca": "/home/administrator/dev/ssl_new/soyut-root-ca.crt",
+        "cert": "/home/administrator/dev/ssl_new/cert.soyut.crt",
+        "key": "/home/administrator/dev/ssl_new/private.soyut.key"
+    },
+    "terminalCheckInterval": 1000
 }

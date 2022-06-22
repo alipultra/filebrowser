@@ -380,6 +380,8 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                 return 'txt';
             case "application/pdf":
                 return 'pdf';
+            case "application/rtf":
+                return 'rtf';
             case "video/mp4":
                 return 'mp4';
             case "audio/mp3":
@@ -928,6 +930,13 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                                 'class': 'ff-item-type-1 file ui-draggable'
                             };
                             return attr;
+                        case "application/rtf":
+                            attr = {
+                                'data-name': name,
+                                'data-file': filename,
+                                'class': 'ff-item-type-1 file ui-draggable'
+                            };
+                            return attr;
                         case "application/pdf":
                             attr = {
                                 'data-name': name,
@@ -1040,6 +1049,14 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                             };
                             return attr;
                         case "application/pdf":
+                            attr = {
+                                'data-name': name,
+                                'data-file': filename,
+                                'data-dir': curDir,
+                                'data-type': 'file'
+                            };
+                            return attr;
+                        case "application/rtf":
                             attr = {
                                 'data-name': name,
                                 'data-file': filename,
@@ -1202,6 +1219,14 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                                 'style': 'display: inline;'
                             };
                             return attr;
+                        case "application/rtf":
+                            attr = {
+                                'class': 'icon lazy-loaded',
+                                'src': 'https://' + soyut.browser.origin + '/img/ico/rtf.jpg',
+                                'data-original': 'https://' + soyut.browser.origin + '/img/ico/rtf.jpg',
+                                'style': 'display: inline;'
+                            };
+                            return attr;
                         case "application/pdf":
                             attr = {
                                 'class': 'icon lazy-loaded',
@@ -1356,6 +1381,11 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                                 'class': 'filetype pdf'
                             };
                             return attr;
+                        case "application/rtf":
+                            attr = {
+                                'class': 'filetype rtf'
+                            };
+                            return attr;
                         case "video/mp4":
                             attr = {
                                 'class': 'filetype mp4'
@@ -1428,6 +1458,11 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                                 'class': 'cover'
                             };
                             return attr;
+                        case "application/rtf":
+                            attr = {
+                                'class': 'cover'
+                            };
+                            return attr;
                         case "video/mp4":
                             attr = {
                                 'class': 'cover'
@@ -1477,6 +1512,8 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                         return 'txt';
                     case "application/pdf":
                         return 'pdf';
+                    case "application/rtf":
+                        return 'rtf';
                     case "video/mp4":
                         return 'mp4';
                     case "audio/mp3":
@@ -1504,6 +1541,7 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                 }
             },
             getFirstChar: function (name) {
+                console.log("asdsasdasdasddasddsad", name)
                 var mchar = name.substring(0,1);
                 switch (mchar) {
                     case ".":
@@ -1633,9 +1671,13 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
 
         if(volume == 0) {
             fileSystem.userid = soyut.Session.id + '/' + soyut.Session.role.id;
+            console.log("xxxx", fileSystem.userid)
             soyut.storage.getStorageKey({userId: fileSystem.userid}, function(err, storageKey) {
                 fileSystem.storageKey = storageKey;
+                console.log("xwwww", fileSystem.storageKey)
                 soyut.browser.file_ls({path: path}, function (err, files) {
+                    
+                    console.log(files,"xwwww", err)
                     vm = new Vue({
                         el: elSelector,
                         data: {

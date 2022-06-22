@@ -58,6 +58,12 @@ Vue.component('media-component', {
                             'class': 'ff-item-type-1 file ui-draggable'
                         };
                         return attr;
+                    case "application/rtf":
+                        attr = {
+                            'data-name': name,
+                            'class': 'ff-item-type-1 file ui-draggable'
+                        };
+                        return attr;
                     case "video/mp4":
                         attr = {
                             'data-name': name,
@@ -109,7 +115,7 @@ Vue.component('media-component', {
                     case "image/jpeg":
                         attr = {
                             'data-name': name,
-                            'class': 'ff-item-type-2 file ui-draggable'
+                            'class': 'ff-item-type-2 file ui-draggable'
                         };
                         return attr;
                     case "image/png":
@@ -143,6 +149,12 @@ Vue.component('media-component', {
                 var attr;
                 switch (type) {
                     case "text/plain":
+                        attr = {
+                            'data-name': name,
+                            'data-type': 'file'
+                        };
+                        return attr;
+                    case "application/rtf":
                         attr = {
                             'data-name': name,
                             'data-type': 'file'
@@ -287,6 +299,14 @@ Vue.component('media-component', {
                             'style': 'display: inline;'
                         };
                         return attr;
+                    case "application/rtf":
+                        attr = {
+                            'class': 'icon lazy-loaded',
+                            'src': 'https://' + soyut.browser.origin + '/img/ico/rtf.jpg',
+                            'data-original': 'https://' + soyut.browser.origin + '/img/ico/rtf.jpg',
+                            'style': 'display: inline;'
+                        };
+                        return attr;
                     case "application/pdf":
                         attr = {
                             'class': 'icon lazy-loaded',
@@ -416,6 +436,11 @@ Vue.component('media-component', {
                             'class': 'filetype txt'
                         };
                         return attr;
+                    case "application/rtf":
+                        attr = {
+                            'class': 'filetype rtf'
+                        };
+                        return attr;
                     case "application/pdf":
                         attr = {
                             'class': 'filetype pdf'
@@ -488,6 +513,11 @@ Vue.component('media-component', {
                             'class': 'cover'
                         };
                         return attr;
+                    case "application/rtf":
+                        attr = {
+                            'class': 'cover'
+                        };
+                        return attr;
                     case "application/pdf":
                         attr = {
                             'class': 'cover'
@@ -540,6 +570,8 @@ Vue.component('media-component', {
             switch (type) {
                 case "text/plain":
                     return 'txt';
+                case "application/rtf":
+                    return 'rtf';
                 case "application/pdf":
                     return 'pdf';
                 case "video/mp4":

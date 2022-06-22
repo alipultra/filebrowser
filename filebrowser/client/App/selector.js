@@ -233,6 +233,8 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                 return 'jpg';
             case "image/png":
                 return 'png';
+            case "application/rtf":
+                return 'rtf';
             case "directory":
                 return 'folder';
             default:
@@ -332,6 +334,12 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                     var attr;
                     switch (type) {
                         case "text/plain":
+                            attr = {
+                                'data-name': name,
+                                'class': 'ff-item-type-1 file ui-draggable'
+                            };
+                            return attr;
+                        case "application/rtf":
                             attr = {
                                 'data-name': name,
                                 'class': 'ff-item-type-1 file ui-draggable'
@@ -437,6 +445,14 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                             };
                             return attr;
                         case "application/pdf":
+                            attr = {
+                                'data-name': name,
+                                'data-file': filename,
+                                'data-dir': curDir,
+                                'data-type': 'file'
+                            };
+                            return attr;
+                        case "application/rtf":
                             attr = {
                                 'data-name': name,
                                 'data-file': filename,
@@ -607,6 +623,14 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                                 'style': 'display: inline;'
                             };
                             return attr;
+                        case "application/rtf":
+                            attr = {
+                                'class': 'icon lazy-loaded',
+                                'src': 'https://' + soyut.browser.origin + '/img/ico/rtf.jpg',
+                                'data-original': 'https://' + soyut.browser.origin + '/img/ico/rtf.jpg',
+                                'style': 'display: inline;'
+                            };
+                            return attr;
                         case "video/mp4":
                             attr = {
                                 'class': 'icon lazy-loaded',
@@ -753,6 +777,11 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                                 'class': 'filetype pdf'
                             };
                             return attr;
+                        case "application/rtf":
+                            attr = {
+                                'class': 'filetype rtf'
+                            };
+                            return attr;
                         case "video/mp4":
                             attr = {
                                 'class': 'filetype mp4'
@@ -825,6 +854,11 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                                 'class': 'cover'
                             };
                             return attr;
+                        case "application/rtf":
+                            attr = {
+                                'class': 'cover'
+                            };
+                            return attr;
                         case "video/mp4":
                             attr = {
                                 'class': 'cover'
@@ -874,6 +908,8 @@ soyut.browser.getDocServerUrl({}, function (err, docserver) {
                         return 'txt';
                     case "application/pdf":
                         return 'pdf';
+                    case "application/rtf":
+                        return 'rtf';
                     case "video/mp4":
                         return 'mp4';
                     case "audio/mp3":

@@ -46,6 +46,9 @@ soyut.browser.initFileViewer = function () {
     else if(type == "application/vnd.openxmlformats-officedocument.presentationml.presentation"){
             soyut.browser.openFilePresentationx();
     }
+    else if(type == "application/rtf"){
+            soyut.browser.openFileDocument();
+    }
 };
 
 soyut.browser.openFilePDF = function () {

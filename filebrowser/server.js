@@ -23,7 +23,7 @@ remote_service = null
 
 var config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 //require('./waterlineHook')(mongoDb, config.waterline);
-r = require('./rethinkHook')(config.rethink, websocket);
+var r = require('./rethinkHook')(config.rethink, websocket);
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -97,7 +97,7 @@ app.post('/track', function (req, res){
             response.write("{\"error\":0}");
             response.end();
         }
-    }
+    };
 
     var readbody = function (request, response, path) {
         var content = "";
@@ -108,7 +108,7 @@ app.post('/track', function (req, res){
             var body = JSON.parse(content);
             updateFile(response, body, path);
         });
-    }
+    };
 
     readbody(req, res, pathForSave);
 });
@@ -224,7 +224,7 @@ httpServer.listen(config.port, function () {
                     console.log("service initiation success");
 
                     //remote service will be available global
-                    remote_service = remoteService
+                    remote_service = remoteService;
 
                     remoteService.subscribeOnApiAdded('webserver', 'attachscript', function () {
                         remoteService.api.webserver.attachscript([
@@ -243,8 +243,8 @@ httpServer.listen(config.port, function () {
 
                     remoteService.subscribeOnApiAdded('groupPolicyServer','policy_register', function () {
                         remoteService.api.groupPolicyServer.policy_register(api.tokenList, function (data) {
-                            console.log('access token registered')
-                        })
+                            console.log('access token registered');
+                        });
                     });
 
                     remoteService.registerRestrictedApi(restrictedMethods, function (isRegisterSuccess, registeredMethods) {
